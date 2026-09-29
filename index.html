@@ -1114,7 +1114,7 @@ function showInfluenceModal(pi){
   let html = '<h2>\u2B50 Влияние — отрицательная способность</h2><div class="abilities">';
   html += '<button class="ability-btn" onclick="influenceChoose(\'return\', '+pi+')"><span class="ico">\u21A9\uFE0F</span> Возврат<div class="ability-desc">Отправить соперника на Старт</div></button>';
   html += '<button class="ability-btn" onclick="influenceChoose(\'block\', '+pi+')"><span class="ico">\u{1F4B0}</span> Блокировка<div class="ability-desc">Лишить соперников очков на 3 хода</div></button>';
-  html += '<button class="ability-btn" onclick="influenceChoose(\'tax\', '+pi+')"><span class="ico">\u{1F4B5}</span> Налог<div class="ability-desc">Снимать по 10 очков у соперников 3 хода</div></button>';
+  html += '<button class="ability-btn" onclick="influenceChoose(\'tax\', '+pi+')"><span class="ico">\u{1F4B5}</span> Налог<div class="ability-desc">Снимать по 100 очков у соперников 3 хода</div></button>';
   html += '<button class="ability-btn" onclick="influenceChoose(\'mine\', '+pi+')"><span class="ico">\u{1F4A3}</span> Мина<div class="ability-desc">Установить мину на числовую клетку</div></button>';
   html += '<button class="ability-btn" onclick="influenceChoose(\'freeze\', '+pi+')"><span class="ico">\u2744\uFE0F</span> Заморозка<div class="ability-desc">Заморозить соперника — пропуск хода</div></button>';
   html += '</div>';
@@ -1210,8 +1210,8 @@ function applyTax(pi){
       abilities[i].taxAmount *= 2;
       log('\u{1F4B5} '+p.name+' усилил Налог на '+pl.name+': теперь -'+abilities[i].taxAmount+' очков/ход (осталось 3 хода)', 'tax');
     } else {
-      abilities[i].taxAmount = 10;
-      log('\u{1F4B5} '+p.name+' применил Налог на '+pl.name+': -10 очков каждый ход, 3 хода', 'tax');
+      abilities[i].taxAmount = 100;
+      log('\u{1F4B5} '+p.name+' применил Налог на '+pl.name+': -100 очков каждый ход, 3 хода', 'tax');
     }
     abilities[i].taxTurns = 3;
   });
@@ -1301,11 +1301,11 @@ function botChooseInfluence(pi){
     });
     afterInfluence(pi);
   } else if (choice === 2){
-    log('\u{1F916} \u{1F4B5} '+p.name+' применил Налог: -10 очков/ход у соперников 3 хода!', 'tax');
+    log('\u{1F916} \u{1F4B5} '+p.name+' применил Налог: -100 очков/ход у соперников 3 хода!', 'tax');
     players.forEach((pl,i)=>{
       if (i===pi || eliminated.has(i) || pl.finished) return;
       if (!abilities[i]) initAbilities(i);
-      if (abilities[i].taxTurns > 0){ abilities[i].taxAmount *= 2; } else { abilities[i].taxAmount = 10; }
+      if (abilities[i].taxTurns > 0){ abilities[i].taxAmount *= 2; } else { abilities[i].taxAmount = 100; }
       abilities[i].taxTurns = 3;
     });
     afterInfluence(pi);
