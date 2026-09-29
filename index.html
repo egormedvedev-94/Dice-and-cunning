@@ -358,6 +358,7 @@
 <div class="tabs">
     <div class="tab active" data-page="game">&#127922; Игра</div>
     <div class="tab" data-page="rules">&#128214; Правила</div>
+    <div class="tab" data-page="updates">&#128260; Обновления</div>
   </div>
 
   <!-- ИГРА -->
@@ -467,7 +468,7 @@
           <li>❄️ Заморозка (если игрок был заморожен)</li>
           <li>💰 Блокировка (если игрок был заблокирован)</li>
           <li>💴 Налог (если на игроке был активен налог)</li>
-          <li>🗝 Жетон освобождения — <b>не сбрасывается</b>, его можно использовать для выхода из Полиции</li>
+          <li>🗝 Жетон освобождения — <b>не сбрасывается</b> при попадании в Полицию. После использования — <b>израсходуется</b></li>
           <li>💣 Все мины, установленные этим игроком</li>
         </ul>
 
@@ -508,6 +509,21 @@
     </div>
   </div>
 </div>
+
+  <!-- ОБНОВЛЕНИЯ -->
+  <div class="page" id="page-updates">
+    <div class="card">
+      <div class="rules">
+        <h3>&#128260; История обновлений</h3>
+        <p>Здесь фиксируются все изменения в игре.</p>
+        <ul>
+          <li><b>💴 Налог</b> — базовая сумма списания увеличена с 10 до <b>100 очков</b>. При повторной активации на клетке «Влияние» налог удваивается: 100 → 200 → 400 и т.д.</li>
+          <li><b>🗝 Жетон освобождения</b> — теперь израсходуется после использования для выхода из Полиции. Можно получить заново при попадании на клетку «Старт».</li>
+          <li><b>📄 Страница обновлений</b> — добавлена вкладка «Обновления» с историей изменений игры.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
 <div class="modal-overlay" id="influenceModal" style="display:none">
   <div class="modal" id="influenceModalContent"></div>
@@ -915,7 +931,8 @@ function useReleaseToken(){
   if (!abilities[pi] || !abilities[pi].token || !inPoliceMode[pi]) return;
   inPoliceMode[pi] = false;
   policeAttempts[pi] = 0;
-  log('\u{1F5DD}\uFE0F '+players[pi].name+' использовал Жетон освобождения — выход из Полиции!', 'win');
+  log('\u{1F5DD}\uFE0F '+players[pi].name+' использовал Жетон освобождения — выход из Полиции! Жетон израсходован.', 'win');
+  abilities[pi].token = false;
   // Player will roll normally next
   updateUI();
   // Don't advance turn — player gets to roll now
