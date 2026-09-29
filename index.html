@@ -265,6 +265,30 @@
   .voice-btn { padding: 10px 14px; border-radius: 12px; cursor: pointer; background: rgba(59,130,246,.1); color: #2563eb; border: 1px solid rgba(59,130,246,.3); font-weight: 700; font-size: 13px; width: 100%; }
   .voice-btn.on { background: linear-gradient(140deg, #27ae60, #2ecc71); color: #fff; border-color: transparent; }
   .voice-participants { font-size: 11px; color: #8a7a60; margin-top: 6px; }
+
+  /* Reviews */
+  .review-form { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; padding: 18px; background: rgba(255,252,245,.5); border-radius: 14px; border: 1px solid rgba(180,160,130,.2); }
+  .review-input { padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(180,160,130,.3); background: rgba(255,252,245,.7); font-size: 14px; color: #4a3d2e; }
+  .review-input:focus { outline: none; border-color: #e67e22; }
+  .review-stars { display: flex; gap: 4px; }
+  .review-stars .star { font-size: 28px; cursor: pointer; color: #ccc; transition: .15s; user-select: none; }
+  .review-stars .star:hover, .review-stars .star.active { color: #f39c12; }
+  .review-textarea { padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(180,160,130,.3); background: rgba(255,252,245,.7); font-size: 14px; color: #4a3d2e; min-height: 80px; resize: vertical; font-family: inherit; }
+  .review-textarea:focus { outline: none; border-color: #e67e22; }
+  .review-submit { padding: 10px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #e67e22, #d35400); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: .15s; align-self: flex-start; }
+  .review-submit:hover { filter: brightness(1.1); }
+  .review-summary { font-size: 16px; font-weight: 700; color: #4a3d2e; margin: 10px 0; }
+  .review-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+  .review-card { padding: 14px 18px; background: rgba(255,252,245,.5); border-radius: 12px; border: 1px solid rgba(180,160,130,.15); }
+  .review-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .review-card-name { font-weight: 700; color: #4a3d2e; font-size: 14px; }
+  .review-card-stars { color: #f39c12; font-size: 14px; }
+  .review-card-date { color: #8a7a60; font-size: 12px; }
+  .review-card-text { color: #5a4d3e; font-size: 14px; line-height: 1.5; }
+  .review-card-delete { background: none; border: none; color: #c0392b; cursor: pointer; font-size: 12px; padding: 2px 8px; border-radius: 6px; transition: .15s; }
+  .review-card-delete:hover { background: rgba(192,57,43,.1); }
+  .review-empty { color: #8a7a60; font-size: 14px; text-align: center; padding: 30px; }
+
 </style>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
@@ -359,6 +383,7 @@
     <div class="tab active" data-page="game">&#127922; Игра</div>
     <div class="tab" data-page="rules">&#128214; Правила</div>
     <div class="tab" data-page="updates">&#128260; Обновления</div>
+    <div class="tab" data-page="reviews">&#128172; Отзывы</div>
   </div>
 
   <!-- ИГРА -->
@@ -520,10 +545,38 @@
           <li><b>🗝 Жетон освобождения — расход</b><br>Жетон израсходуется после использования для выхода из Полиции. Не сбрасывается при попадании в Полицию. Можно получить заново при попадании на клетку «Старт».</li>
           <li><b>🔄 Страница «Обновления»</b><br>Добавлена новая вкладка для отслеживания всех изменений в игре.</li>
           <li><b>⚙️ Тумблеры по умолчанию</b><br>Тумблер «Автопереход на Финиш» и тумблер «Создать комнату» теперь отключены по умолчанию.</li>
-        </ul>
+        
+          <li><b>&#128172; Страница «Отзывы»</b><br>Добавлена новая вкладка для отзывов. Игроки могут оставлять оценки и комментарии, отзывы сохраняются в браузере.</li></ul>
       </div>
     </div>
   </div>
+<div class="page" id="page-reviews">
+    <div class="card">
+      <div class="rules">
+        <h3>💬 Отзывы</h3>
+        <p>Поделитесь впечатлениями об игре! Ваш отзыв поможет сделать игру лучше.</p>
+        <div class="review-form">
+          <input type="text" id="reviewName" placeholder="Ваше имя (необязательно)" maxlength="30" class="review-input">
+          <div class="review-stars" id="reviewStars">
+            <span class="star" data-val="1">&#9733;</span>
+            <span class="star" data-val="2">&#9733;</span>
+            <span class="star" data-val="3">&#9733;</span>
+            <span class="star" data-val="4">&#9733;</span>
+            <span class="star" data-val="5">&#9733;</span>
+          </div>
+          <textarea id="reviewText" placeholder="Напишите отзыв (до 500 символов)" maxlength="500" class="review-textarea"></textarea>
+          <button class="review-submit" onclick="submitReview()">Опубликовать отзыв</button>
+        </div>
+        <div class="review-summary" id="reviewSummary" style="display:none">
+          <span id="reviewAvg"></span> &#9733; · <span id="reviewCount"></span>
+        </div>
+        <div class="review-list" id="reviewList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 </div>
 
 <div class="modal-overlay" id="influenceModal" style="display:none">
@@ -1960,6 +2013,94 @@ renderDice(1,1);
 log('Новая игра. '+(botMode?'Режим: против бота':'Игроков: '+playerCount)+', цель: '+winSum);
 updateUI();
 updateSettingsSummary();
+
+// Reviews
+let selectedRating = 0;
+
+function initReviewStars() {
+  const stars = document.querySelectorAll('#reviewStars .star');
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      selectedRating = parseInt(star.dataset.val);
+      stars.forEach(s => s.classList.remove('active'));
+      for (let i = 0; i < selectedRating; i++) {
+        stars[i].classList.add('active');
+      }
+    });
+    star.addEventListener('mouseenter', () => {
+      const val = parseInt(star.dataset.val);
+      stars.forEach(s => s.classList.remove('active'));
+      for (let i = 0; i < val; i++) {
+        stars[i].classList.add('active');
+      }
+    });
+  });
+  document.getElementById('reviewStars').addEventListener('mouseleave', () => {
+    stars.forEach(s => s.classList.remove('active'));
+    for (let i = 0; i < selectedRating; i++) {
+      stars[i].classList.add('active');
+    }
+  });
+}
+
+function loadReviews() {
+  const reviews = JSON.parse(localStorage.getItem('kk_reviews') || '[]');
+  const list = document.getElementById('reviewList');
+  const summary = document.getElementById('reviewSummary');
+  if (reviews.length === 0) {
+    list.innerHTML = '<div class="review-empty">Пока нет отзывов. Будьте первым!</div>';
+    summary.style.display = 'none';
+    return;
+  }
+  summary.style.display = 'block';
+  const avg = (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1);
+  document.getElementById('reviewAvg').textContent = avg;
+  document.getElementById('reviewCount').textContent = reviews.length + ' отзыв' + (reviews.length === 1 ? '' : 'ов');
+  list.innerHTML = reviews.map((r, i) => {
+    const stars = '&#9733;'.repeat(r.rating) + '&#9734;'.repeat(5 - r.rating);
+    return '<div class="review-card">' +
+      '<div class="review-card-header">' +
+        '<span class="review-card-name">' + escapeHtml(r.name) + '</span>' +
+        '<span class="review-card-date">' + r.date + '</span>' +
+      '</div>' +
+      '<div class="review-card-stars">' + stars + '</div>' +
+      '<div class="review-card-text">' + escapeHtml(r.text) + '</div>' +
+      '<button class="review-card-delete" onclick="deleteReview(' + i + ')">Удалить</button>' +
+    '</div>';
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function submitReview() {
+  const name = document.getElementById('reviewName').value.trim() || 'Аноним';
+  const text = document.getElementById('reviewText').value.trim();
+  if (!text) { alert('Введите текст отзыва'); return; }
+  if (selectedRating === 0) { alert('Выберите оценку'); return; }
+  const reviews = JSON.parse(localStorage.getItem('kk_reviews') || '[]');
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('ru-RU') + ' ' + now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  reviews.unshift({ name, text, rating: selectedRating, date: dateStr });
+  localStorage.setItem('kk_reviews', JSON.stringify(reviews));
+  document.getElementById('reviewName').value = '';
+  document.getElementById('reviewText').value = '';
+  selectedRating = 0;
+  document.querySelectorAll('#reviewStars .star').forEach(s => s.classList.remove('active'));
+  loadReviews();
+}
+
+function deleteReview(idx) {
+  const reviews = JSON.parse(localStorage.getItem('kk_reviews') || '[]');
+  reviews.splice(idx, 1);
+  localStorage.setItem('kk_reviews', JSON.stringify(reviews));
+  loadReviews();
+}
+
+initReviewStars();
+loadReviews();
+
 </script>
 </body>
 </html>
