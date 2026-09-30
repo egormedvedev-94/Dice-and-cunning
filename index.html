@@ -180,12 +180,12 @@
   .rules .tag.s { background: #27ae60; }
   .rules .tag.f { background: #e67e22; }
   .rules .tag.p { background: #2c3e50; }
-  .rules .tag.i { background: #8e44ad; }
+  .rules .tag.i { background: #dc2626; }
   .rules .tag.n { background: #8a7a60; }
   .rules .pos { color: #15803d; font-weight: 700; }
   .rules .neg { color: #c0392b; font-weight: 700; }
 
-  .cell.influence { background: linear-gradient(150deg, #8e44ad, #9b59b6); color: #fff; border: none; box-shadow: 0 0 16px rgba(142,68,173,.45); font-size: clamp(13px, 1.7vw, 22px); }
+  .cell.influence { background: linear-gradient(150deg, #dc2626, #ef4444); color: #fff; border: none; box-shadow: 0 0 16px rgba(220,38,38,.45); font-size: clamp(13px, 1.7vw, 22px); }
   .cell .mine-icon { position: absolute; top: 2px; right: 2px; font-size: 14px; z-index: 3; pointer-events: none; }
   .cell.mine-target { cursor: crosshair; animation: minePulse 0.6s infinite alternate; }
   @keyframes minePulse { from { box-shadow: 0 0 8px rgba(239,68,68,.5); border-color: #ef4444; } to { box-shadow: 0 0 20px rgba(239,68,68,.9); border-color: #dc2626; } }
@@ -281,6 +281,17 @@
   .star-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: #ccc; padding: 0 2px; transition: .15s; }
   .star-btn.active { color: #f39c12; }
   .star-btn:hover { color: #f1c40f; }
+
+  /* Admin Panel */
+  .admin-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+  .admin-box { background: #fefcf7; border-radius: 16px; padding: 28px; max-width: 420px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+  .admin-box h2 { margin-bottom: 18px; font-size: 20px; }
+  .admin-box .field { margin-bottom: 14px; }
+  .admin-box input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(180,160,130,.4); font-size: 15px; background: rgba(255,252,245,.8); }
+  .admin-box .btn { width: 100%; margin-top: 6px; }
+  .admin-status { margin-top: 10px; font-size: 13px; color: #6b5d4e; text-align: center; }
+  .admin-saved { color: #16a34a; font-weight: 700; }
+
 </style>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
@@ -391,7 +402,7 @@
             <span><i style="background:#22c55e"></i>Старт</span>
             <span><i style="background:#fcd34d"></i>Финиш</span>
             <span><i style="background:#3b82f6"></i>Полиция</span>
-            <span><i style="background:#9b59b6"></i>Влияние</span>
+            <span><i style="background:#dc2626"></i>Влияние</span>
           </div>
         </div>
       </div>
@@ -543,8 +554,9 @@
           <li><b>🔄 Новый интерфейс</b><br>Приветственный экран удалён. Настройки теперь открываются значком шестерёнки ⚙️. Онлайн-игра вынесена в отдельное окно 🌐. Кнопки «Закрыть» заменены на крестик ×.</li>
           <li><b>👁 Режим зрителя для хоста</b><br>Хост может создать комнату в режиме зрителя — он не участвует в игре, но видит поле, позиции фишек, лог и может писать в чат. Игроки подключаются по коду комнаты и играют между собой (минимум 2 игрока).</li>
           <li><b>💬 Вкладка «Отзывы»</b><br>Добавлена четвёртая вкладка для отзывов. Пользователи могут оставить оценку звёздами и текстовый отзыв. Отзывы сохраняются в браузере.</li>
-          <li><b>💭 Пожелания и предложения</b><br>Во вкладке «Отзывы» добавлено окошко для пожеланий. Пользователи могут делиться идеями по улучшению игры. Пожелания сохраняются в браузере.</li>
-          <li><b>🔔 Telegram-уведомления создателю</b><br>Создатель получает уведомления в Telegram о новых отзывах и пожеланиях. Настройка доступна через скрытую админ-панель. Видна только создателю.</li>
+- 🔔 Telegram-уведомления создателюПри новом отзыве или пожелании создателю приходит сообщение в Telegram. Настройка в админ-панели (?admin=true).
+- 🔐 Админ-панель с защитой по почтеДоступ к админ-панели через ?admin=true. Код подтверждения отправляется на почту создателя через Web3Forms. Первичная настройка через ?admin=true&setup=true.
+- 💭 Пожелания и предложенияВо вкладке «Отзывы» добавлено окошко для пожеланий и предложений. Пользователи могут делиться идеями по улучшению игры. Пожелания сохраняются в браузере.
         </ul>
       </div>
     </div>
@@ -569,12 +581,10 @@
           <textarea id="reviewText" placeholder="Расскажите о впечатлениях..." maxlength="500" style="width:100%;min-height:80px;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:14px;resize:vertical"></textarea>
         </div>
         <button class="btn primary" id="reviewSubmit" style="margin-top:8px">Опубликовать отзыв</button>
-        <div id="reviewsList" style="margin-top:20px"></div>
-
+                <div id="reviewsList" style="margin-top:20px"></div>
         <hr style="border:none;border-top:1px solid rgba(180,160,130,.3);margin:24px 0">
-
         <h3>&#128173; Пожелания и предложения</h3>
-        <p style="font-size:13px;color:#7a6b55;margin-bottom:12px">Поделитесь идеями для улучшения игры, новыми механиками или комментариями.</p>
+        <p style="font-size:13px;color:#6b5d4e;margin-bottom:12px">Поделитесь идеями для улучшения игры, новыми механиками или комментариями.</p>
         <div class="field">
           <label>Ваше имя (необязательно)</label>
           <input type="text" id="wishName" placeholder="Аноним" maxlength="20" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:14px;font-weight:600">
@@ -590,33 +600,47 @@
   </div>
 </div>
 
-<!-- СКРЫТАЯ АДМИН-ПАНЕЛЬ (доступ через ?admin=true) -->
-<div class="modal-overlay" id="adminOverlay" style="display:none">
-    <div class="modal" style="max-width:420px;position:relative">
-      <button class="close-x" id="adminCloseX" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
-      <h2>&#128274; Админ-панель создателя</h2>
-      <p style="font-size:13px;color:#7a6b55;margin-bottom:14px">Настройте Telegram-бота для получения уведомлений об отзывах и пожеланиях. Эти данные видны только вам.</p>
-      <div class="field">
-        <label>Telegram Bot Token</label>
-        <input type="text" id="adminTgToken" placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:13px;font-weight:600">
-      </div>
-      <div class="field">
-        <label>Telegram Chat ID</label>
-        <input type="text" id="adminTgChatId" placeholder="123456789" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:14px;font-weight:600">
-      </div>
-      <button class="btn primary" id="adminSaveBtn" style="margin-top:8px">Сохранить</button>
-      <button class="btn" id="adminTestBtn" style="margin-top:8px;margin-left:8px">Тест-сообщение</button>
-      <div id="adminStatus" style="margin-top:10px;font-size:13px;font-weight:600"></div>
-      <hr style="border:none;border-top:1px solid rgba(180,160,130,.3);margin:16px 0">
-      <p style="font-size:12px;color:#8a7a60"><b>Как получить:</b><br>1. Откройте @BotFather в Telegram &rarr; /newbot &rarr; получите токен<br>2. Напишите боту любое сообщение<br>3. Откройте @userinfobot &rarr; получите свой Chat ID</p>
-    </div>
-</div>
-
 <div class="modal-overlay" id="influenceModal" style="display:none">
   <div class="modal" id="influenceModalContent"></div>
 </div>
 <div class="modal-overlay" id="startModal" style="display:none">
   <div class="modal" id="startModalContent"></div>
+</div>
+
+
+<div class="admin-overlay" id="adminOverlay" style="display:none">
+  <div class="admin-box" id="adminBox">
+    <div id="adminLoginView">
+      <h2>&#128274; Вход в админ-панель</h2>
+      <p style="font-size:13px;color:#6b5d4e;margin-bottom:16px">Код доступа отправлен на почту создателя.</p>
+      <div class="field">
+        <input type="text" id="adminCodeInput" placeholder="Введите 6-значный код" maxlength="6" style="text-align:center;font-size:20px;letter-spacing:8px">
+      </div>
+      <button class="btn primary" id="adminCodeBtn">Отправить код на почту</button>
+      <button class="btn" id="adminVerifyBtn" style="margin-top:8px">Войти</button>
+      <div class="admin-status" id="adminStatus"></div>
+    </div>
+    <div id="adminPanelView" style="display:none">
+      <h2>&#9881; Админ-панель</h2>
+      <div class="field">
+        <label style="font-size:13px;font-weight:700;margin-bottom:4px;display:block">Web3Forms Access Key</label>
+        <input type="text" id="w3fKey" placeholder="Ключ от web3forms.com">
+      </div>
+      <hr style="border:none;border-top:1px solid rgba(180,160,130,.2);margin:16px 0">
+      <h3 style="font-size:16px;margin-bottom:10px">&#128229; Telegram-уведомления</h3>
+      <div class="field">
+        <label style="font-size:13px;font-weight:700;margin-bottom:4px;display:block">Bot Token</label>
+        <input type="text" id="tgToken" placeholder="От @BotFather">
+      </div>
+      <div class="field">
+        <label style="font-size:13px;font-weight:700;margin-bottom:4px;display:block">Chat ID</label>
+        <input type="text" id="tgChatId" placeholder="От @userinfobot">
+      </div>
+      <button class="btn primary" id="tgTestBtn">Тест-сообщение</button>
+      <button class="btn" id="adminSaveBtn" style="margin-top:8px">Сохранить</button>
+      <div class="admin-status" id="adminPanelStatus"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -2158,7 +2182,6 @@ document.getElementById('reviewSubmit').addEventListener('click', function(){
   const reviews = loadReviews();
   reviews.unshift({name, rating: reviewRating, text, date: Date.now()});
   saveReviews(reviews);
-  sendTgNotification('\u2B50 Новое отзыв (оценка: ' + reviewRating + '/5)', 'Имя: ' + name + '\nОценка: ' + '\u2605'.repeat(reviewRating) + '\u2606'.repeat(5-reviewRating) + '\n' + text);
   document.getElementById('reviewName').value = '';
   document.getElementById('reviewText').value = '';
   reviewRating = 0;
@@ -2176,7 +2199,6 @@ document.querySelectorAll('.tab').forEach(tab=>{
       this.classList.add('active');
       document.getElementById('page-reviews').classList.add('active');
       renderReviews();
-      renderWishes();
     }
   });
 });
@@ -2184,132 +2206,222 @@ document.querySelectorAll('.tab').forEach(tab=>{
 initReviewStars();
 renderReviews();
 
+
 // ===== WISHES =====
-function loadWishes(){
-  try { return JSON.parse(localStorage.getItem('diceWishes') || '[]'); }
-  catch(e){ return []; }
-}
-
-function saveWishes(arr){
-  localStorage.setItem('diceWishes', JSON.stringify(arr));
-}
-
+function loadWishes(){ try { return JSON.parse(localStorage.getItem('diceWishes') || '[]'); } catch(e){ return []; } }
+function saveWishes(arr){ localStorage.setItem('diceWishes', JSON.stringify(arr)); }
 function renderWishes(){
   const wishes = loadWishes();
-  const listEl = document.getElementById('wishesList');
-  if (!listEl) return;
-  if (wishes.length === 0){
-    listEl.innerHTML = '<p style="color:#8a7a60;font-size:13px">Пока нет пожеланий. Будьте первым!</p>';
-    return;
-  }
-  listEl.innerHTML = wishes.map((w,idx)=>{
-    const date = new Date(w.date).toLocaleDateString('ru-RU');
-    return '<div class="review-card"><div class="r-head"><span class="r-name">' + w.name + '</span><span class="r-date">' + date + '</span></div><div class="r-text">' + w.text + '</div><button class="r-del" onclick="deleteWish(' + idx + ')">Удалить</button></div>';
+  const el = document.getElementById('wishesList');
+  if (!el) return;
+  if (wishes.length === 0){ el.innerHTML = '<p style="color:#9a8b76;font-size:14px">Пока нет пожеланий. Будьте первым!</p>'; return; }
+  el.innerHTML = wishes.map((w,idx)=>{
+    const d = new Date(w.date).toLocaleDateString('ru-RU');
+    return '<div class="review-card"><div class="r-head"><span class="r-name">'+w.name+'</span><span class="r-date">'+d+'</span></div><div class="r-text">'+w.text+'</div><button class="r-del" onclick="deleteWish('+idx+')">\u00d7</button></div>';
   }).join('');
 }
-
-function deleteWish(idx){
-  const wishes = loadWishes();
-  wishes.splice(idx, 1);
-  saveWishes(wishes);
-  renderWishes();
+function deleteWish(idx){ const w = loadWishes(); w.splice(idx,1); saveWishes(w); renderWishes(); }
+function sendTelegramNotification(message){
+  const token = localStorage.getItem('tgBotToken');
+  const chatId = localStorage.getItem('tgChatId');
+  if (!token || !chatId) return;
+  fetch('https://api.telegram.org/bot'+token+'/sendMessage', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
+  }).catch(()=>{});
 }
-
-document.getElementById('wishSubmit').addEventListener('click', function(){
-  const name = document.getElementById('wishName').value.trim() || 'Аноним';
-  const text = document.getElementById('wishText').value.trim();
-  if (!text){ alert('Введите текст пожелания'); return; }
-  const wishes = loadWishes();
-  wishes.unshift({name, text, date: Date.now()});
-  saveWishes(wishes);
-  sendTgNotification('💭 Новое пожелание', 'Имя: ' + name + '\n' + text);
-  document.getElementById('wishName').value = '';
-  document.getElementById('wishText').value = '';
+document.addEventListener('DOMContentLoaded', function(){
+  const wishBtn = document.getElementById('wishSubmit');
+  if (wishBtn){
+    wishBtn.addEventListener('click', function(){
+      const name = document.getElementById('wishName').value.trim() || '\u0410\u043d\u043e\u043d\u0438\u043c';
+      const text = document.getElementById('wishText').value.trim();
+      if (!text){ alert('\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0442\u0435\u043a\u0441\u0442'); return; }
+      const wishes = loadWishes();
+      wishes.unshift({ name, text, date: Date.now() });
+      saveWishes(wishes);
+      document.getElementById('wishName').value = '';
+      document.getElementById('wishText').value = '';
+      renderWishes();
+      sendTelegramNotification('\u{1F4AD} \u041d\u043e\u0432\u043e\u0435 \u043f\u043e\u0436\u0435\u043b\u0430\u043d\u0438\u0435\n\u0418\u043c\u044f: '+name+'\n'+text);
+    });
+  }
   renderWishes();
 });
 
-renderWishes();
+// ===== ADMIN PANEL =====
+const ADMIN_EMAIL = 'egor.medvede2014@yandex.ru';
+let adminCode = null;
+let adminCodeTime = null;
 
-// ===== TELEGRAM NOTIFICATIONS (creator only) =====
-function getTgCredentials(){
-  const token = localStorage.getItem('creatorTgToken') || '';
-  const chatId = localStorage.getItem('creatorTgChatId') || '';
-  return { token, chatId };
+function isAdminUrl(){
+  const url = new URL(window.location.href);
+  return url.searchParams.get('admin') === 'true';
 }
 
-function sendTgNotification(title, body){
-  const creds = getTgCredentials();
-  if (!creds.token || !creds.chatId) return; // silently skip if not configured
-  const msg = '\u{1F3B4} Кубики и коварство\n\n' + title + '\n\n' + body;
-  fetch('https://api.telegram.org/bot' + creds.token + '/sendMessage', {
+function openAdminLogin(){
+  document.getElementById('adminOverlay').style.display = 'flex';
+  document.getElementById('adminLoginView').style.display = 'block';
+  document.getElementById('adminPanelView').style.display = 'none';
+  document.getElementById('adminStatus').textContent = '';
+  document.getElementById('adminCodeInput').value = '';
+}
+
+function openAdminPanel(){
+  document.getElementById('adminOverlay').style.display = 'flex';
+  document.getElementById('adminLoginView').style.display = 'none';
+  document.getElementById('adminPanelView').style.display = 'block';
+  const key = localStorage.getItem('w3fKey') || '';
+  const token = localStorage.getItem('tgBotToken') || '';
+  const chatId = localStorage.getItem('tgChatId') || '';
+  document.getElementById('w3fKey').value = key;
+  document.getElementById('tgToken').value = token;
+  document.getElementById('tgChatId').value = chatId;
+}
+
+function sendAdminCode(){
+  const key = localStorage.getItem('w3fKey');
+  if (!key){
+    document.getElementById('adminStatus').innerHTML = '<span style="color:#dc2626">\u041d\u0443\u0436\u0435\u043d Web3Forms Access Key. \u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 ?admin=true&setup=true</span>';
+    return;
+  }
+  adminCode = String(Math.floor(100000 + Math.random() * 900000));
+  adminCodeTime = Date.now();
+  
+  const statusEl = document.getElementById('adminStatus');
+  statusEl.innerHTML = '\u041e\u0442\u043f\u0440\u0430\u0432\u043a\u0430 \u043a\u043e\u0434\u0430...';
+  
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      access_key: key,
+      subject: '\u041a\u043e\u0434 \u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u0432 \u0430\u0434\u043c\u0438\u043d-\u043f\u0430\u043d\u0435\u043b\u044c',
+      from_name: '\u041a\u0443\u0431\u0438\u043a\u0438 \u0438 \u043a\u043e\u0432\u0430\u0440\u0441\u0442\u0432\u043e',
+      message: '\u0412\u0430\u0448 \u043a\u043e\u0434 \u0434\u043e\u0441\u0442\u0443\u043f\u0430: ' + adminCode + '\n\n\u041a\u043e\u0434 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0442\u0435\u043b\u0435\u043d 10 \u043c\u0438\u043d\u0443\u0442.',
+      to: ADMIN_EMAIL
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success){
+      statusEl.innerHTML = '<span class="admin-saved">\u041a\u043e\u0434 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d \u043d\u0430 '+ADMIN_EMAIL+'</span>';
+    } else {
+      statusEl.innerHTML = '<span style="color:#dc2626">\u041e\u0448\u0438\u0431\u043a\u0430: '+(data.message||'\u043d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c')+'</span>';
+    }
+  })
+  .catch(() => {
+    statusEl.innerHTML = '<span style="color:#dc2626">\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0442\u0438. \u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u043a\u043b\u044e\u0447 Web3Forms.</span>';
+  });
+}
+
+function verifyAdminCode(){
+  const input = document.getElementById('adminCodeInput').value.trim();
+  const statusEl = document.getElementById('adminStatus');
+  if (!adminCode || !adminCodeTime){
+    statusEl.innerHTML = '<span style="color:#dc2626">\u0421\u043d\u0430\u0447\u0430\u043b\u0430 \u043e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u043a\u043e\u0434</span>';
+    return;
+  }
+  if (Date.now() - adminCodeTime > 600000){
+    statusEl.innerHTML = '<span style="color:#dc2626">\u041a\u043e\u0434 \u0438\u0441\u0442\u0451\u043a. \u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u043d\u043e\u0432\u044b\u0439.</span>';
+    return;
+  }
+  if (input === adminCode){
+    sessionStorage.setItem('adminAuth', '1');
+    openAdminPanel();
+  } else {
+    statusEl.innerHTML = '<span style="color:#dc2626">\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u043a\u043e\u0434</span>';
+  }
+}
+
+function saveAdminSettings(){
+  const key = document.getElementById('w3fKey').value.trim();
+  const token = document.getElementById('tgToken').value.trim();
+  const chatId = document.getElementById('tgChatId').value.trim();
+  localStorage.setItem('w3fKey', key);
+  localStorage.setItem('tgBotToken', token);
+  localStorage.setItem('tgChatId', chatId);
+  document.getElementById('adminPanelStatus').innerHTML = '<span class="admin-saved">\u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u043e!</span>';
+}
+
+function testTelegram(){
+  const token = document.getElementById('tgToken').value.trim();
+  const chatId = document.getElementById('tgChatId').value.trim();
+  if (!token || !chatId){
+    document.getElementById('adminPanelStatus').innerHTML = '<span style="color:#dc2626">\u0417\u0430\u043f\u043e\u043b\u043d\u0438\u0442\u0435 \u043e\u0431\u0430 \u043f\u043e\u043b\u044f</span>';
+    return;
+  }
+  fetch('https://api.telegram.org/bot'+token+'/sendMessage', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: creds.chatId, text: msg, parse_mode: 'HTML' })
-  }).catch(function(){ /* silent fail */ });
+    body: JSON.stringify({ chat_id: chatId, text: '\u2705 \u0422\u0435\u0441\u0442! \u0423\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u044f \u0440\u0430\u0431\u043e\u0442\u0430\u044e\u0442!' })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok){
+      document.getElementById('adminPanelStatus').innerHTML = '<span class="admin-saved">\u0422\u0435\u0441\u0442 \u0443\u0441\u043f\u0435\u0448\u043d\u044b\u0439!</span>';
+    } else {
+      document.getElementById('adminPanelStatus').innerHTML = '<span style="color:#dc2626">\u041e\u0448\u0438\u0431\u043a\u0430: '+(data.description||'')+'</span>';
+    }
+  })
+  .catch(() => {
+    document.getElementById('adminPanelStatus').innerHTML = '<span style="color:#dc2626">\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0442\u0438</span>';
+  });
 }
 
-// ===== ADMIN PANEL (hidden, via ?admin=true) =====
-(function initAdmin(){
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('admin') !== 'true') return;
-
-  const overlay = document.getElementById('adminOverlay');
-  if (!overlay) return;
-  overlay.style.display = 'flex';
-
-  // Load saved credentials
-  const tokenInput = document.getElementById('adminTgToken');
-  const chatInput = document.getElementById('adminTgChatId');
-  const statusEl = document.getElementById('adminStatus');
-  tokenInput.value = localStorage.getItem('creatorTgToken') || '';
-  chatInput.value = localStorage.getItem('creatorTgChatId') || '';
-
-  document.getElementById('adminCloseX').addEventListener('click', function(){
-    overlay.style.display = 'none';
+// Hook into review submission to send Telegram notification
+function hookReviewSubmit(){
+  const btn = document.getElementById('reviewSubmit');
+  if (!btn || btn.dataset.hooked) return;
+  btn.dataset.hooked = '1';
+  btn.addEventListener('click', function(){
+    setTimeout(() => {
+      const reviews = loadReviews();
+      if (reviews.length > 0){
+        const r = reviews[0];
+        sendTelegramNotification('\u2B50 \u041d\u043e\u0432\u044b\u0439 \u043e\u0442\u0437\u044b\u0432\n\u0418\u043c\u044f: '+r.name+'\n\u041e\u0446\u0435\u043d\u043a\u0430: '+r.rating+'\n'+r.text);
+      }
+    }, 200);
   });
-  overlay.addEventListener('click', function(e){
-    if (e.target === overlay) overlay.style.display = 'none';
-  });
+}
 
-  document.getElementById('adminSaveBtn').addEventListener('click', function(){
-    localStorage.setItem('creatorTgToken', tokenInput.value.trim());
-    localStorage.setItem('creatorTgChatId', chatInput.value.trim());
-    statusEl.textContent = '\u2705 Сохранено! Уведомления будут приходить вам в Telegram.';
-    statusEl.style.color = '#22c55e';
-  });
-
-  document.getElementById('adminTestBtn').addEventListener('click', function(){
-    const token = tokenInput.value.trim();
-    const chatId = chatInput.value.trim();
-    if (!token || !chatId){
-      statusEl.textContent = '\u26A0\uFE0F Введите токен и Chat ID';
-      statusEl.style.color = '#c0392b';
-      return;
+document.addEventListener('DOMContentLoaded', function(){
+  // Admin panel events
+  const codeBtn = document.getElementById('adminCodeBtn');
+  const verifyBtn = document.getElementById('adminVerifyBtn');
+  const saveBtn = document.getElementById('adminSaveBtn');
+  const testBtn = document.getElementById('tgTestBtn');
+  
+  if (codeBtn) codeBtn.addEventListener('click', sendAdminCode);
+  if (verifyBtn) verifyBtn.addEventListener('click', verifyAdminCode);
+  if (saveBtn) saveBtn.addEventListener('click', saveAdminSettings);
+  if (testBtn) testBtn.addEventListener('click', testTelegram);
+  
+  // Check admin URL
+  if (isAdminUrl()){
+    const url = new URL(window.location.href);
+    const isSetup = url.searchParams.get('setup') === 'true';
+    if (isSetup || sessionStorage.getItem('adminAuth') === '1'){
+      openAdminPanel();
+    } else {
+      openAdminLogin();
     }
-    statusEl.textContent = '\u23F3 Отправка...';
-    statusEl.style.color = '#7a6b55';
-    fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text: '\u{1F3B4} Кубики и коварство\n\n\u2705 Тест-сообщение от админ-панели. Уведомления работают!' })
-    }).then(function(r){ return r.json(); })
-      .then(function(data){
-        if (data.ok){
-          statusEl.textContent = '\u2705 Тест отправлен! Проверьте Telegram.';
-          statusEl.style.color = '#22c55e';
-          localStorage.setItem('creatorTgToken', token);
-          localStorage.setItem('creatorTgChatId', chatId);
-        } else {
-          statusEl.textContent = '\u274C Ошибка: ' + (data.description || 'неверные данные');
-          statusEl.style.color = '#c0392b';
-        }
-      })
-      .catch(function(){
-        statusEl.textContent = '\u274C Не удалось подключиться. Проверьте токен.';
-        statusEl.style.color = '#c0392b';
-      });
-  });
-})();
+  }
+  
+  hookReviewSubmit();
+});
+
+// Close admin overlay on background click
+document.addEventListener('DOMContentLoaded', function(){
+  const overlay = document.getElementById('adminOverlay');
+  if (overlay){
+    overlay.addEventListener('click', function(e){
+      if (e.target === overlay) overlay.style.display = 'none';
+    });
+  }
+});
+
 
 </script>
 </body>
