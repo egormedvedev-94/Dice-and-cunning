@@ -339,10 +339,7 @@
         <label>Штраф за Финиш</label>
         <input type="number" id="finishPenalty" value="50" min="0">
       </div>
-      <div class="field">
-        <label>Штраф Полиции</label>
-        <input type="number" id="policePenalty" value="50" min="0">
-      </div>
+     
       <div class="field switch">
         <span>Автопереход на Финиш</span>
         <div class="tgl" id="autoTgl"></div>
@@ -517,12 +514,14 @@
         <h3>Штрафы</h3>
         <ul>
           <li><b>Штраф за Финиш</b> — вычитается, если игрок встал на Финиш, но не набрал нужную сумму.</li>
-          <li><b>Штраф Полиции</b> — вычитается при попадании в Полицию.</li>
+          
           <li>Сумма не может опуститься ниже нуля.</li>
         </ul>
 
+
         <h3>Блокировка настроек</h3>
         <p>После нажатия «Начать игру» настройки блокируются. Чтобы изменить их — нажмите «Сброс».</p>
+        <li><b>Штраф Полиции</b> — 10% от суммы для победы. Вычитается при попадании в Полицию.</li>
 
         <h3>Онлайн-игра</h3>
         <p>Нажмите значок 🌐 в шапке, чтобы открыть окно онлайн-игры.</p>
@@ -548,6 +547,8 @@
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
         <ul>
           <li><b>💸 Налог — перебалансировка</b><br>Базовая сумма налога увеличена с 10 до 100 очков. При повторной активации на клетке «Влияние» налог удваивается: 100 → 200 → 400 и т.д., таймер обнуляется до 3 ходов.</li>
+          <li><b>🚔 Штраф Полиции — авторасчёт</b><br>Штраф Полиции больше не настраивается вручную. Теперь он равен 10% от суммы для победы.</li>
+
           <li><b>🗝 Жетон освобождения — расход</b><br>Жетон израсходуется после использования для выхода из Полиции. Не сбрасывается при попадании в Полицию. Можно получить заново при попадании на клетку «Старт».</li>
           <li><b>🔄 Страница «Обновления»</b><br>Добавлена новая вкладка для отслеживания всех изменений в игре.</li>
           <li><b>⚙️ Тумблеры по умолчанию</b><br>Тумблер «Автопереход на Финиш» и тумблер «Создать комнату» теперь отключены по умолчанию.</li>
@@ -655,7 +656,7 @@ let gameStarted = false;
 let gameOver = false;
 let rolling = false;
 let autoFinish = false;
-let winSum = 500, finishPenalty = 50, policePenalty = 50;
+let winSum = 500, finishPenalty = 50, policePenalty = Math.floor(winSum * 0.1);
 let playerCount = 2;
 let botMode = false;
 let botDifficulty = 'easy';
@@ -849,13 +850,14 @@ function updateSettingsSummary(){
   s.innerHTML = 'Игроков: <b>'+(botMode?'2 (1 человек + 1 бот)':playerCount)+'</b><br>'+
     'Сумма для победы: <b>'+winSum+'</b><br>'+
     'Штраф за Финиш: <b>'+finishPenalty+'</b><br>'+
-    'Штраф Полиции: <b>'+policePenalty+'</b><br>'+
-    'Автопереход: <b>'+(autoFinish?'вкл':'выкл')+'</b><br>'+
+    'Штраф Полиции: <b>'+policePenalty+' (10% от '+winSum+')</b><br>'+
+        'Автопереход: <b>'+(autoFinish?'вкл':'выкл')+'</b><br>'+
     'Режим: <b>'+(botMode?'Против бота ('+botDifficulty+')':'Игроки')+'</b>';
 }
 
 function lockSettings(){
-  document.querySelectorAll('#winSum,#finishPenalty,#policePenalty,#playersSeg button').forEach(el=> el.disabled=true);
+  document.querySelectorAll('#winSum,#finishPenalty,#playersSeg button')
+.forEach(el=> el.disabled=true);
   document.getElementById('autoTgl').classList.add('locked');
   document.getElementById('botTgl').classList.add('locked');
   document.querySelectorAll('#botDiffSeg button').forEach(b=> b.disabled=true);
@@ -864,7 +866,8 @@ function lockSettings(){
   if (st){ st.className = 'settings-status locked'; st.textContent = 'Игра идёт — настройки заблокированы'; }
 }
 function unlockSettings(){
-  document.querySelectorAll('#winSum,#finishPenalty,#policePenalty,#playersSeg button').forEach(el=> el.disabled=false);
+document.querySelectorAll('#winSum,#finishPenalty,#playersSeg button')
+.forEach(el=> el.disabled=false);
   document.getElementById('autoTgl').classList.remove('locked');
   document.getElementById('botTgl').classList.remove('locked');
   document.querySelectorAll('#botDiffSeg button').forEach(b=> b.disabled=false);
@@ -876,8 +879,8 @@ function unlockSettings(){
 function readSettings(){
   winSum = Math.max(1, parseInt(document.getElementById('winSum').value)||500);
   finishPenalty = Math.max(0, parseInt(document.getElementById('finishPenalty').value)||0);
-  policePenalty = Math.max(0, parseInt(document.getElementById('policePenalty').value)||0);
-  updateSettingsSummary();
+policePenalty = Math.floor(winSum * 0.1);
+    updateSettingsSummary();
 }
 
 function winGame(p){
@@ -1751,7 +1754,8 @@ function renderSpectatorStatus(){
 function startOnlineGame(data){
   winSum = data.winSum || 500;
   finishPenalty = data.finishPenalty || 50;
-  policePenalty = data.policePenalty || 50;
+  policePenalty = Math.floor((data.winSum || 500) * 0.1);
+
   autoFinish = data.autoFinish !== false;
   playerCount = data.players.length;
   players = [];
