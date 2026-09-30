@@ -266,29 +266,21 @@
   .voice-btn.on { background: linear-gradient(140deg, #27ae60, #2ecc71); color: #fff; border-color: transparent; }
   .voice-participants { font-size: 11px; color: #8a7a60; margin-top: 6px; }
 
+  /* Close X button */
+  .close-x:hover { color: #e74c3c !important; }
+  
   /* Reviews */
-  .review-form { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; padding: 18px; background: rgba(255,252,245,.5); border-radius: 14px; border: 1px solid rgba(180,160,130,.2); }
-  .review-input { padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(180,160,130,.3); background: rgba(255,252,245,.7); font-size: 14px; color: #4a3d2e; }
-  .review-input:focus { outline: none; border-color: #e67e22; }
-  .review-stars { display: flex; gap: 4px; }
-  .review-stars .star { font-size: 28px; cursor: pointer; color: #ccc; transition: .15s; user-select: none; }
-  .review-stars .star:hover, .review-stars .star.active { color: #f39c12; }
-  .review-textarea { padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(180,160,130,.3); background: rgba(255,252,245,.7); font-size: 14px; color: #4a3d2e; min-height: 80px; resize: vertical; font-family: inherit; }
-  .review-textarea:focus { outline: none; border-color: #e67e22; }
-  .review-submit { padding: 10px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #e67e22, #d35400); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: .15s; align-self: flex-start; }
-  .review-submit:hover { filter: brightness(1.1); }
-  .review-summary { font-size: 16px; font-weight: 700; color: #4a3d2e; margin: 10px 0; }
-  .review-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
-  .review-card { padding: 14px 18px; background: rgba(255,252,245,.5); border-radius: 12px; border: 1px solid rgba(180,160,130,.15); }
-  .review-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .review-card-name { font-weight: 700; color: #4a3d2e; font-size: 14px; }
-  .review-card-stars { color: #f39c12; font-size: 14px; }
-  .review-card-date { color: #8a7a60; font-size: 12px; }
-  .review-card-text { color: #5a4d3e; font-size: 14px; line-height: 1.5; }
-  .review-card-delete { background: none; border: none; color: #c0392b; cursor: pointer; font-size: 12px; padding: 2px 8px; border-radius: 6px; transition: .15s; }
-  .review-card-delete:hover { background: rgba(192,57,43,.1); }
-  .review-empty { color: #8a7a60; font-size: 14px; text-align: center; padding: 30px; }
-
+  .review-card { background: rgba(255,252,245,.7); border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 1px solid rgba(180,160,130,.3); }
+  .review-card .r-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .review-card .r-name { font-weight: 700; font-size: 14px; color: #4a3d2e; }
+  .review-card .r-date { font-size: 11px; color: #8a7a60; }
+  .review-card .r-stars { font-size: 16px; margin-bottom: 6px; }
+  .review-card .r-text { font-size: 13px; color: #5a4d3e; line-height: 1.5; }
+  .review-card .r-del { font-size: 11px; color: #c0392b; cursor: pointer; border: none; background: none; margin-top: 6px; }
+  .review-card .r-del:hover { text-decoration: underline; }
+  .star-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: #ccc; padding: 0 2px; transition: .15s; }
+  .star-btn.active { color: #f39c12; }
+  .star-btn:hover { color: #f1c40f; }
 </style>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
@@ -299,14 +291,16 @@
       <h1>Кубики и <span>коварство</span></h1>
       <div class="sub">Бросьте два кубика и двигайте фишку по кругу</div>
     </div>
+    <button class="fs-btn" id="onlineBtn" title="Онлайн-игра" style="font-size:18px">&#127760;</button>
+    <button class="fs-btn" id="settingsBtn" title="Настройки" style="font-size:18px">&#9881;</button>
     <button class="fs-btn" id="fsBtn" title="Полноэкранный режим">&#9974;</button>
   </div>
 
-    <!-- ПРИВЕТСТВЕННЫЙ ЭКРАН -->
-  <div class="modal-overlay" id="welcomeOverlay">
-    <div class="modal" style="max-width:380px">
-      <h2>🎲 Кубики и коварство</h2>
-      <p style="text-align:center;color:#7a6b55;font-size:12px;margin-bottom:10px">Настройте игру перед началом</p>
+    <!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
+<div class="modal-overlay" id="settingsOverlay" style="display:none">
+    <div class="modal" style="max-width:380px;position:relative">
+      <button class="close-x" id="settingsCloseX" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
+      <h2>&#9881; Настройки игры</h2>
       <div class="field">
         <label>Количество игроков</label>
         <div class="seg" id="playersSeg">
@@ -344,41 +338,41 @@
       </div>
       <div class="locknote" id="lockNote">Настройки зафиксированы до «Сброса»</div>
       <div class="settings-status ok" id="settingsStatus" style="margin:12px 0">Настройки можно менять</div>
-
-      <div class="online-section">
-        <div class="field switch">
-          <span>Онлайн-игра</span>
-          <div class="tgl" id="onlineTgl"></div>
-        </div>
-        <div id="onlineFields" style="display:none">
-          <div class="field">
-            <label>Ваш никнейм</label>
-            <input type="text" id="nicknameInput" placeholder="Введите никнейм" maxlength="16" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:14px;font-weight:600">
-          </div>
-          <div class="field switch">
-            <span>Создать комнату</span>
-            <div class="tgl" id="hostTgl"></div>
-          </div>
-          <div id="hostFields" style="display:none">
-            <div class="code-display" id="roomCodeDisplay" style="display:none"></div>
-          </div>
-          <div class="field" id="joinFields">
-            <label>Код комнаты</label>
-            <input type="text" id="roomCodeInput" placeholder="Введите код" maxlength="5" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:16px;font-weight:700;text-align:center;letter-spacing:3px;text-transform:uppercase">
-          </div>
-          <div class="online-status" id="onlineStatus" style="display:none"></div>
-          <div class="player-list" id="onlinePlayers"></div>
-          <button class="btn primary" id="onlineConnectBtn" style="margin-top:8px">Подключиться</button>
-        </div>
-      </div>
-
-      <div style="display:flex;gap:10px;margin-top:16px">
-        <button class="btn primary" id="welcomeStart" style="flex:1">▶ Начать игру</button>
-        <button class="btn ghost" id="welcomeRules" style="flex:0 0 auto">📖 Правила</button>
-      </div>
     </div>
   </div>
 
+<!-- МОДАЛЬНОЕ ОКНО ОНЛАЙН-ИГРЫ -->
+<div class="modal-overlay" id="onlineOverlay" style="display:none">
+    <div class="modal" style="max-width:380px;position:relative">
+      <button class="close-x" id="onlineCloseX" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
+      <h2>&#127760; Онлайн-игра</h2>
+      <div id="onlineFields">
+        <div class="field">
+          <label>Ваш никнейм</label>
+          <input type="text" id="nicknameInput" placeholder="Введите никнейм" maxlength="16" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:14px;font-weight:600">
+        </div>
+        <div class="field switch">
+          <span>Создать комнату</span>
+          <div class="tgl" id="hostTgl"></div>
+        </div>
+        <div id="hostFields" style="display:none">
+          <div class="field switch">
+            <span>&#128065; Режим зрителя (хост не играет)</span>
+            <div class="tgl" id="spectatorTgl"></div>
+          </div>
+          <div class="code-display" id="roomCodeDisplay" style="display:none"></div>
+        </div>
+        <div class="field" id="joinFields">
+          <label>Код комнаты</label>
+          <input type="text" id="roomCodeInput" placeholder="Введите код" maxlength="5" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:16px;font-weight:700;text-align:center;letter-spacing:3px;text-transform:uppercase">
+        </div>
+        <div class="online-status" id="onlineStatus" style="display:none"></div>
+        <div class="player-list" id="onlinePlayers"></div>
+        <button class="btn primary" id="onlineConnectBtn" style="margin-top:8px">Подключиться</button>
+        <button class="btn primary" id="onlineStartBtn" style="margin-top:8px;display:none">&#9654; Начать игру</button>
+      </div>
+    </div>
+  </div>
 <div class="tabs">
     <div class="tab active" data-page="game">&#127922; Игра</div>
     <div class="tab" data-page="rules">&#128214; Правила</div>
@@ -504,7 +498,7 @@
         <p>Игрок может выйти выбросив дубль (3 попытки) или использовав 🗝 Жетон освобождения (только в свой ход). После использования жетон израсходуется.</p>
 
         <h3>Игра против бота</h3>
-        <p>На приветственном экране можно включить режим «Игра против бота». Бот ходит автоматически. Доступны два уровня сложности.</p>
+        <p>В окне настроек (значок ⚙️) можно включить режим «Игра против бота». Бот ходит автоматически. Доступны два уровня сложности.</p>
 
         <h3>Автопереход на Финиш</h3>
         <p>Если включён — при достижении целевой суммы игрок автоматически переходит на Финиш и побеждает.</p>
@@ -520,7 +514,7 @@
         <p>После нажатия «Начать игру» настройки блокируются. Чтобы изменить их — нажмите «Сброс».</p>
 
         <h3>Онлайн-игра</h3>
-        <p>Включите «Онлайн-игра» на приветственном экране, чтобы играть с друзьями на разных устройствах.</p>
+        <p>Нажмите значок 🌐 в шапке, чтобы открыть окно онлайн-игры.</p>
         <ul>
           <li><b>Создать комнату</b> — хост получает код из 5 символов и делится им с другими игроками.</li>
           <li><b>Подключиться</b> — введите код комнаты и нажмите «Подключиться».</li>
@@ -529,6 +523,7 @@
           <li>Используется бесплатный брокер EMQX (MQTT через WebSocket) — работает в России без регистрации.</li>
           <li>Чат и голосовой чат доступны во время игры.</li>
           <li>Голосовой чат требует разрешения на доступ к микрофону.</li>
+          <li><b>👁 Режим зрителя</b> — хост может включить «Режим зрителя» при создании комнаты. В этом режиме хост не участвует в игре, но видит всё происходящее и может писать в чат. Игроки подключаются по коду и играют между собой (минимум 2 игрока).</li>
         </ul>
       </div>
     </div>
@@ -545,38 +540,76 @@
           <li><b>🗝 Жетон освобождения — расход</b><br>Жетон израсходуется после использования для выхода из Полиции. Не сбрасывается при попадании в Полицию. Можно получить заново при попадании на клетку «Старт».</li>
           <li><b>🔄 Страница «Обновления»</b><br>Добавлена новая вкладка для отслеживания всех изменений в игре.</li>
           <li><b>⚙️ Тумблеры по умолчанию</b><br>Тумблер «Автопереход на Финиш» и тумблер «Создать комнату» теперь отключены по умолчанию.</li>
-        
-          <li><b>&#128172; Страница «Отзывы»</b><br>Добавлена новая вкладка для отзывов. Игроки могут оставлять оценки и комментарии, отзывы сохраняются в браузере.</li></ul>
+          <li><b>🔄 Новый интерфейс</b><br>Приветственный экран удалён. Настройки теперь открываются значком шестерёнки ⚙️. Онлайн-игра вынесена в отдельное окно 🌐. Кнопки «Закрыть» заменены на крестик ×.</li>
+          <li><b>👁 Режим зрителя для хоста</b><br>Хост может создать комнату в режиме зрителя — он не участвует в игре, но видит поле, позиции фишек, лог и может писать в чат. Игроки подключаются по коду комнаты и играют между собой (минимум 2 игрока).</li>
+          <li><b>💬 Вкладка «Отзывы»</b><br>Добавлена четвёртая вкладка для отзывов. Пользователи могут оставить оценку звёздами и текстовый отзыв. Отзывы сохраняются в браузере.</li>
+          <li><b>💭 Пожелания и предложения</b><br>Во вкладке «Отзывы» добавлено окошко для пожеланий. Пользователи могут делиться идеями по улучшению игры. Пожелания сохраняются в браузере.</li>
+          <li><b>🔔 Telegram-уведомления создателю</b><br>Создатель получает уведомления в Telegram о новых отзывах и пожеланиях. Настройка доступна через скрытую админ-панель (параметр <code>?admin=true</code> в URL). Видна только создателю.</li>
+        </ul>
       </div>
     </div>
   </div>
-<div class="page" id="page-reviews">
+
+  <!-- ОТЗЫВЫ -->
+  <div class="page" id="page-reviews">
     <div class="card">
       <div class="rules">
-        <h3>💬 Отзывы</h3>
-        <p>Поделитесь впечатлениями об игре! Ваш отзыв поможет сделать игру лучше.</p>
-        <div class="review-form">
-          <input type="text" id="reviewName" placeholder="Ваше имя (необязательно)" maxlength="30" class="review-input">
-          <div class="review-stars" id="reviewStars">
-            <span class="star" data-val="1">&#9733;</span>
-            <span class="star" data-val="2">&#9733;</span>
-            <span class="star" data-val="3">&#9733;</span>
-            <span class="star" data-val="4">&#9733;</span>
-            <span class="star" data-val="5">&#9733;</span>
-          </div>
-          <textarea id="reviewText" placeholder="Напишите отзыв (до 500 символов)" maxlength="500" class="review-textarea"></textarea>
-          <button class="review-submit" onclick="submitReview()">Опубликовать отзыв</button>
+        <h3>&#128172; Отзывы</h3>
+        <div id="reviewsSummary" style="margin-bottom:16px;font-size:15px;font-weight:700;color:#4a3d2e"></div>
+        <div class="field">
+          <label>Ваше имя (необязательно)</label>
+          <input type="text" id="reviewName" placeholder="Аноним" maxlength="20" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:14px;font-weight:600">
         </div>
-        <div class="review-summary" id="reviewSummary" style="display:none">
-          <span id="reviewAvg"></span> &#9733; · <span id="reviewCount"></span>
+        <div class="field">
+          <label>Оценка</label>
+          <div id="reviewStars" style="display:flex;gap:6px;font-size:28px;cursor:pointer"></div>
         </div>
-        <div class="review-list" id="reviewList"></div>
+        <div class="field">
+          <label>Ваш отзыв</label>
+          <textarea id="reviewText" placeholder="Расскажите о впечатлениях..." maxlength="500" style="width:100%;min-height:80px;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:14px;resize:vertical"></textarea>
+        </div>
+        <button class="btn primary" id="reviewSubmit" style="margin-top:8px">Опубликовать отзыв</button>
+        <div id="reviewsList" style="margin-top:20px"></div>
+
+        <hr style="border:none;border-top:1px solid rgba(180,160,130,.3);margin:24px 0">
+
+        <h3>&#128173; Пожелания и предложения</h3>
+        <p style="font-size:13px;color:#7a6b55;margin-bottom:12px">Поделитесь идеями для улучшения игры, новыми механиками или комментариями.</p>
+        <div class="field">
+          <label>Ваше имя (необязательно)</label>
+          <input type="text" id="wishName" placeholder="Аноним" maxlength="20" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:14px;font-weight:600">
+        </div>
+        <div class="field">
+          <label>Ваше пожелание</label>
+          <textarea id="wishText" placeholder="Например: добавить новую клетку, изменить правила..." maxlength="500" style="width:100%;min-height:80px;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:14px;resize:vertical"></textarea>
+        </div>
+        <button class="btn primary" id="wishSubmit" style="margin-top:8px">Отправить пожелание</button>
+        <div id="wishesList" style="margin-top:20px"></div>
       </div>
     </div>
   </div>
 </div>
 
-
+<!-- СКРЫТАЯ АДМИН-ПАНЕЛЬ (доступ через ?admin=true) -->
+<div class="modal-overlay" id="adminOverlay" style="display:none">
+    <div class="modal" style="max-width:420px;position:relative">
+      <button class="close-x" id="adminCloseX" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
+      <h2>&#128274; Админ-панель создателя</h2>
+      <p style="font-size:13px;color:#7a6b55;margin-bottom:14px">Настройте Telegram-бота для получения уведомлений об отзывах и пожеланиях. Эти данные видны только вам.</p>
+      <div class="field">
+        <label>Telegram Bot Token</label>
+        <input type="text" id="adminTgToken" placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:13px;font-weight:600">
+      </div>
+      <div class="field">
+        <label>Telegram Chat ID</label>
+        <input type="text" id="adminTgChatId" placeholder="123456789" style="width:100%;padding:7px 10px;border-radius:9px;background:rgba(255,252,245,.7);border:1px solid rgba(180,160,130,.3);font-size:14px;font-weight:600">
+      </div>
+      <button class="btn primary" id="adminSaveBtn" style="margin-top:8px">Сохранить</button>
+      <button class="btn" id="adminTestBtn" style="margin-top:8px;margin-left:8px">Тест-сообщение</button>
+      <div id="adminStatus" style="margin-top:10px;font-size:13px;font-weight:600"></div>
+      <hr style="border:none;border-top:1px solid rgba(180,160,130,.3);margin:16px 0">
+      <p style="font-size:12px;color:#8a7a60"><b>Как получить:</b><br>1. Откройте @BotFather в Telegram &rarr; /newbot &rarr; получите токен<br>2. Напишите боту любое сообщение<br>3. Откройте @userinfobot &rarr; получите свой Chat ID</p>
+    </div>
 </div>
 
 <div class="modal-overlay" id="influenceModal" style="display:none">
@@ -1435,7 +1468,8 @@ function startGame(){
   readSettings();
   gameStarted = true;
   lockSettings();
-  document.getElementById('welcomeOverlay').style.display = 'none';
+  document.getElementById('settingsOverlay').style.display = 'none';
+  document.getElementById('onlineOverlay').style.display = 'none';
   document.getElementById('startScreen').style.display = 'none';
   document.getElementById('gameControls').style.display = 'block';
   log('Игра началась. Цель: '+winSum+'. '+(botMode?'Режим: против бота ('+botDifficulty+')':'Игроков: '+players.length)+'. Автопереход: '+(autoFinish?'вкл':'выкл'));
@@ -1452,7 +1486,8 @@ function reset(){
   const fc = document.querySelector('.cell.finish');
   if (fc) fc.classList.remove('won');
   renderMines();
-  document.getElementById('welcomeOverlay').style.display = 'flex';
+  document.getElementById('settingsOverlay').style.display = 'none';
+  document.getElementById('onlineOverlay').style.display = 'none';
   document.getElementById('startScreen').style.display = 'block';
   document.getElementById('gameControls').style.display = 'none';
   renderDice(1,1);
@@ -1528,12 +1563,12 @@ document.getElementById('resetBtn').addEventListener('click', reset);
 document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
 
 // Welcome screen
-document.getElementById('welcomeStart').addEventListener('click', ()=>{ switchToGame(); startGame(); });
-document.getElementById('welcomeRules').addEventListener('click', ()=>{ document.getElementById('welcomeOverlay').style.display = 'none'; switchToRules(); });
+// Settings/Online modal buttons removed (welcome screen deleted)
 
 // ===== ONLINE MULTIPLAYER (MQTT + EMQX) =====
 let onlineMode = false;
 let isHost = false;
+let spectatorMode = false;
 let myNickname = '';
 let roomCode = '';
 let mqttClient = null;
@@ -1579,9 +1614,15 @@ function connectMQTT(){
       document.getElementById('roomCodeDisplay').style.display = 'block';
       document.getElementById('onlineConnectBtn').textContent = 'Ожидание игроков...';
       document.getElementById('onlineConnectBtn').disabled = true;
-      myPlayerId = 0;
-      onlinePlayers = [{id: 0, nickname: myNickname, connected: true}];
+      if (spectatorMode){
+        myPlayerId = -1;
+        onlinePlayers = [];
+      } else {
+        myPlayerId = 0;
+        onlinePlayers = [{id: 0, nickname: myNickname, connected: true}];
+      }
       renderOnlinePlayers();
+      renderSpectatorStatus();
     } else {
       mqttClient.subscribe('dice/' + roomCode + '/state');
       mqttClient.subscribe('dice/' + roomCode + '/voice');
@@ -1608,7 +1649,7 @@ function connectMQTT(){
 function handleMQTTMessage(topic, data){
   if (topic.endsWith('/join') && isHost){
     if (data.type === 'join'){
-      const newId = onlinePlayers.length;
+      const newId = spectatorMode ? onlinePlayers.length : onlinePlayers.length;
       onlinePlayers.push({id: newId, nickname: data.nickname, connected: true, clientId: data.clientId});
       mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({
         type: 'joined', playerId: newId,
@@ -1616,7 +1657,10 @@ function handleMQTTMessage(topic, data){
       }));
       setOnlineStatus('Игрок "' + data.nickname + '" подключился! Всего: ' + onlinePlayers.length, false, true);
       renderOnlinePlayers();
-      if (onlinePlayers.length >= 2){
+      if (spectatorMode){
+        renderSpectatorStatus();
+      }
+      if (onlinePlayers.length >= 2 && !spectatorMode){
         document.getElementById('onlineConnectBtn').textContent = '\u25B6 Начать онлайн-игру (' + onlinePlayers.length + ' игр.)';
         document.getElementById('onlineConnectBtn').disabled = false;
       }
@@ -1658,9 +1702,26 @@ function handleMQTTMessage(topic, data){
 function renderOnlinePlayers(){
   const el = document.getElementById('onlinePlayers');
   if (!el) return;
-  if (onlinePlayers.length === 0){ el.innerHTML = ''; return; }
-  el.innerHTML = '<div style="font-weight:700;margin-bottom:4px">Игроки онлайн (' + onlinePlayers.length + '):</div>' +
-    onlinePlayers.map(p=>'<div>' + (p.id===myPlayerId?'\u2192 ':'') + (p.id+1) + '. ' + p.nickname + (p.id===0 && isHost?' (\u0445\u043E\u0441\u0442)':'') + '</div>').join('');
+  let html_str = '';
+  if (spectatorMode && isHost){
+    html_str += '<div style="font-weight:700;margin-bottom:4px;color:#8e44ad">\u{1F441} ' + myNickname + ' (\u0437\u0440\u0438\u0442\u0435\u043B\u044C-\u0445\u043E\u0441\u0442)</div>';
+  }
+  if (onlinePlayers.length === 0 && !(spectatorMode && isHost)){ el.innerHTML = ''; return; }
+  if (onlinePlayers.length > 0){
+    html_str += '<div style="font-weight:700;margin-bottom:4px">\u0418\u0433\u0440\u043E\u043A\u0438 (' + onlinePlayers.length + '):</div>';
+    html_str += onlinePlayers.map(p=>'<div>' + (p.id===myPlayerId?'\u2192 ':'') + (p.id+1) + '. ' + p.nickname + '</div>').join('');
+  }
+  el.innerHTML = html_str;
+}
+
+function renderSpectatorStatus(){
+  const startBtn = document.getElementById('onlineStartBtn');
+  if (!startBtn) return;
+  if (spectatorMode && isHost){
+    startBtn.style.display = 'inline-block';
+    startBtn.textContent = onlinePlayers.length >= 2 ? '\u25B6 \u041D\u0430\u0447\u0430\u0442\u044C \u0438\u0433\u0440\u0443 (' + onlinePlayers.length + ' \u0438\u0433\u0440.)' : '\u041E\u0436\u0438\u0434\u0430\u043D\u0438\u0435 \u0438\u0433\u0440\u043E\u043A\u043E\u0432...';
+    startBtn.disabled = onlinePlayers.length < 2;
+  }
 }
 
 function startOnlineGame(data){
@@ -1679,7 +1740,8 @@ function startOnlineGame(data){
   mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false;
   gameStarted = true; gameOver = false;
   lockSettings();
-  document.getElementById('welcomeOverlay').style.display = 'none';
+  document.getElementById('settingsOverlay').style.display = 'none';
+  document.getElementById('onlineOverlay').style.display = 'none';
   document.getElementById('startScreen').style.display = 'none';
   document.getElementById('gameControls').style.display = 'block';
   document.getElementById('chatPanel').classList.add('show');
@@ -1702,7 +1764,8 @@ function hostStartOnlineGame(){
   mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false;
   gameStarted = true; gameOver = false;
   lockSettings();
-  document.getElementById('welcomeOverlay').style.display = 'none';
+  document.getElementById('settingsOverlay').style.display = 'none';
+    document.getElementById('onlineOverlay').style.display = 'none';
   document.getElementById('startScreen').style.display = 'none';
   document.getElementById('gameControls').style.display = 'block';
   document.getElementById('chatPanel').classList.add('show');
@@ -1740,7 +1803,8 @@ function applyOnlineState(data){
   mines = data.mines || {};
   eliminated = new Set(data.eliminated || []);
   if (gameStarted){
-    document.getElementById('welcomeOverlay').style.display = 'none';
+    document.getElementById('settingsOverlay').style.display = 'none';
+    document.getElementById('onlineOverlay').style.display = 'none';
     document.getElementById('startScreen').style.display = 'none';
     document.getElementById('gameControls').style.display = 'block';
     document.getElementById('chatPanel').classList.add('show');
@@ -1770,12 +1834,13 @@ function sendChat(){
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
   if (!text || !mqttClient) return;
+  const displayName = (spectatorMode && isHost) ? '\u{1F441} ' + myNickname : myNickname;
   if (isHost){
-    mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'chat', nickname: myNickname, text: text}));
-    addChatMessage(myNickname, text, true);
+    mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'chat', nickname: displayName, text: text}));
+    addChatMessage(displayName, text, true);
   } else {
-    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'chat', nickname: myNickname, text: text}));
-    addChatMessage(myNickname, text, true);
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'chat', nickname: displayName, text: text}));
+    addChatMessage(displayName, text, true);
   }
   input.value = '';
 }
@@ -1858,22 +1923,37 @@ function updateVoiceParticipants(){
 }
 
 // Online UI event listeners
-document.getElementById('onlineTgl').addEventListener('click', function(){
-  if (gameStarted) return;
-  onlineMode = !onlineMode;
-  this.classList.toggle('on', onlineMode);
-  document.getElementById('onlineFields').style.display = onlineMode ? 'block' : 'none';
-  if (!onlineMode && mqttClient){ mqttClient.end(); mqttClient = null; setOnlineStatus('', false, false); onlinePlayers = []; renderOnlinePlayers(); document.getElementById('roomCodeDisplay').style.display = 'none'; }
+// Settings modal
+document.getElementById('settingsBtn').addEventListener('click', function(){
+  document.getElementById('settingsOverlay').style.display = 'flex';
+});
+document.getElementById('settingsCloseX').addEventListener('click', function(){
+  document.getElementById('settingsOverlay').style.display = 'none';
+});
+
+// Online modal
+document.getElementById('onlineBtn').addEventListener('click', function(){
+  document.getElementById('onlineOverlay').style.display = 'flex';
+  onlineMode = true;
+});
+document.getElementById('onlineCloseX').addEventListener('click', function(){
+  document.getElementById('onlineOverlay').style.display = 'none';
 });
 
 document.getElementById('hostTgl').addEventListener('click', function(){
-  if (!onlineMode) return;
   isHost = !isHost;
   this.classList.toggle('on', isHost);
   document.getElementById('hostFields').style.display = isHost ? 'block' : 'none';
   document.getElementById('joinFields').style.display = isHost ? 'none' : 'block';
   document.getElementById('onlineConnectBtn').textContent = isHost ? 'Создать комнату' : 'Подключиться';
+  if (!isHost){ spectatorMode = false; document.getElementById('spectatorTgl').classList.remove('on'); }
   setOnlineStatus('', false, false);
+});
+
+// Spectator toggle
+document.getElementById('spectatorTgl').addEventListener('click', function(){
+  spectatorMode = !spectatorMode;
+  this.classList.toggle('on', spectatorMode);
 });
 
 document.getElementById('onlineConnectBtn').addEventListener('click', function(){
@@ -1888,27 +1968,23 @@ document.getElementById('onlineConnectBtn').addEventListener('click', function()
   }
 });
 
+document.getElementById('onlineStartBtn').addEventListener('click', function(){
+  if (spectatorMode && isHost){
+    if (onlinePlayers.length >= 2) hostStartOnlineGame();
+    else setOnlineStatus('Нужно минимум 2 игрока', true, false);
+  }
+});
+
 document.getElementById('chatSendBtn').addEventListener('click', sendChat);
 document.getElementById('chatInput').addEventListener('keydown', e=>{ if (e.key === 'Enter') sendChat(); });
 document.getElementById('voiceBtn').addEventListener('click', toggleVoice);
 
-// Override welcomeStart for online mode
-document.getElementById('welcomeStart').addEventListener('click', function(e){
-  if (onlineMode){
-    e.preventDefault();
-    e.stopPropagation();
-    if (isHost){
-      if (onlinePlayers.length >= 2) hostStartOnlineGame();
-      else setOnlineStatus('Нужно минимум 2 игрока для онлайн-игры', true, false);
-    } else {
-      setOnlineStatus('Ожидайте, пока хост начнёт игру...', false, false);
-    }
-  }
-}, true);
+// Online start handled by onlineStartBtn
 
 // Override roll for online
 document.getElementById('rollBtn').addEventListener('click', function(e){
   if (onlineMode){
+    if (spectatorMode && isHost){ e.preventDefault(); e.stopPropagation(); return; }
     if (isHost){
       if (currentPlayer === myPlayerId && !isCurrentBot()){
         e.preventDefault(); e.stopPropagation();
@@ -1926,6 +2002,7 @@ document.getElementById('rollBtn').addEventListener('click', function(e){
 // Override release for online
 document.getElementById('releaseBtn').addEventListener('click', function(e){
   if (onlineMode){
+    if (spectatorMode && isHost){ e.preventDefault(); e.stopPropagation(); return; }
     if (isHost){ useReleaseToken(); setTimeout(onlineSync, 200); }
     else if (mqttClient){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'release', playerId: myPlayerId})); }
   }
@@ -1992,12 +2069,16 @@ placeMine = function(pi, cellIdx){
   if (onlineMode && isHost) setTimeout(onlineSync, 300);
 };
 
-// Override updateTurn to disable buttons when not your turn
+// Override updateTurn to disable buttons when not your turn or spectator
 updateTurn = function(){
   updateTurnOrig();
   if (onlineMode){
     const rollBtn = document.getElementById('rollBtn');
-    if (currentPlayer !== myPlayerId) rollBtn.disabled = true;
+    const releaseBtn = document.getElementById('releaseBtn');
+    if (spectatorMode && isHost){
+      rollBtn.disabled = true;
+      if (releaseBtn) releaseBtn.disabled = true;
+    } else if (currentPlayer !== myPlayerId) rollBtn.disabled = true;
     else if (!gameOver && !rolling) rollBtn.disabled = false;
   }
 };
@@ -2014,92 +2095,221 @@ log('Новая игра. '+(botMode?'Режим: против бота':'Игр
 updateUI();
 updateSettingsSummary();
 
-// Reviews
-let selectedRating = 0;
+// ===== REVIEWS =====
+let reviewRating = 0;
 
-function initReviewStars() {
-  const stars = document.querySelectorAll('#reviewStars .star');
-  stars.forEach(star => {
-    star.addEventListener('click', () => {
-      selectedRating = parseInt(star.dataset.val);
-      stars.forEach(s => s.classList.remove('active'));
-      for (let i = 0; i < selectedRating; i++) {
-        stars[i].classList.add('active');
-      }
+function initReviewStars(){
+  const container = document.getElementById('reviewStars');
+  if (!container) return;
+  container.innerHTML = '';
+  for (let i=1; i<=5; i++){
+    const btn = document.createElement('button');
+    btn.className = 'star-btn';
+    btn.textContent = '\u2605';
+    btn.dataset.val = i;
+    btn.addEventListener('click', function(){
+      reviewRating = i;
+      document.querySelectorAll('.star-btn').forEach((b,idx)=> b.classList.toggle('active', idx < i));
     });
-    star.addEventListener('mouseenter', () => {
-      const val = parseInt(star.dataset.val);
-      stars.forEach(s => s.classList.remove('active'));
-      for (let i = 0; i < val; i++) {
-        stars[i].classList.add('active');
-      }
-    });
-  });
-  document.getElementById('reviewStars').addEventListener('mouseleave', () => {
-    stars.forEach(s => s.classList.remove('active'));
-    for (let i = 0; i < selectedRating; i++) {
-      stars[i].classList.add('active');
-    }
-  });
+    container.appendChild(btn);
+  }
 }
 
-function loadReviews() {
-  const reviews = JSON.parse(localStorage.getItem('kk_reviews') || '[]');
-  const list = document.getElementById('reviewList');
-  const summary = document.getElementById('reviewSummary');
-  if (reviews.length === 0) {
-    list.innerHTML = '<div class="review-empty">Пока нет отзывов. Будьте первым!</div>';
-    summary.style.display = 'none';
+function loadReviews(){
+  try { return JSON.parse(localStorage.getItem('diceReviews') || '[]'); }
+  catch(e){ return []; }
+}
+
+function saveReviews(arr){
+  localStorage.setItem('diceReviews', JSON.stringify(arr));
+}
+
+function renderReviews(){
+  const reviews = loadReviews();
+  const listEl = document.getElementById('reviewsList');
+  const sumEl = document.getElementById('reviewsSummary');
+  if (!listEl) return;
+  if (reviews.length === 0){
+    sumEl.textContent = '';
+    listEl.innerHTML = '<p style="color:#8a7a60;font-size:13px">Пока нет отзывов. Будьте первым!</p>';
     return;
   }
-  summary.style.display = 'block';
-  const avg = (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1);
-  document.getElementById('reviewAvg').textContent = avg;
-  document.getElementById('reviewCount').textContent = reviews.length + ' отзыв' + (reviews.length === 1 ? '' : 'ов');
-  list.innerHTML = reviews.map((r, i) => {
-    const stars = '&#9733;'.repeat(r.rating) + '&#9734;'.repeat(5 - r.rating);
-    return '<div class="review-card">' +
-      '<div class="review-card-header">' +
-        '<span class="review-card-name">' + escapeHtml(r.name) + '</span>' +
-        '<span class="review-card-date">' + r.date + '</span>' +
-      '</div>' +
-      '<div class="review-card-stars">' + stars + '</div>' +
-      '<div class="review-card-text">' + escapeHtml(r.text) + '</div>' +
-      '<button class="review-card-delete" onclick="deleteReview(' + i + ')">Удалить</button>' +
-    '</div>';
+  const avg = (reviews.reduce((s,r)=>s+r.rating,0) / reviews.length).toFixed(1);
+  sumEl.innerHTML = '\u2B50 ' + avg + ' \u00B7 ' + reviews.length + ' ' + (reviews.length === 1 ? 'отзыв' : reviews.length < 5 ? 'отзыва' : 'отзывов');
+  listEl.innerHTML = reviews.map((r,idx)=>{
+    const stars = '\u2605'.repeat(r.rating) + '\u2606'.repeat(5-r.rating);
+    const date = new Date(r.date).toLocaleDateString('ru-RU');
+    return '<div class="review-card"><div class="r-head"><span class="r-name">' + r.name + '</span><span class="r-date">' + date + '</span></div><div class="r-stars">' + stars + '</div><div class="r-text">' + r.text + '</div><button class="r-del" onclick="deleteReview(' + idx + ')">Удалить</button></div>';
   }).join('');
 }
 
-function escapeHtml(s) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function deleteReview(idx){
+  const reviews = loadReviews();
+  reviews.splice(idx, 1);
+  saveReviews(reviews);
+  renderReviews();
 }
 
-function submitReview() {
+document.getElementById('reviewSubmit').addEventListener('click', function(){
   const name = document.getElementById('reviewName').value.trim() || 'Аноним';
   const text = document.getElementById('reviewText').value.trim();
-  if (!text) { alert('Введите текст отзыва'); return; }
-  if (selectedRating === 0) { alert('Выберите оценку'); return; }
-  const reviews = JSON.parse(localStorage.getItem('kk_reviews') || '[]');
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('ru-RU') + ' ' + now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-  reviews.unshift({ name, text, rating: selectedRating, date: dateStr });
-  localStorage.setItem('kk_reviews', JSON.stringify(reviews));
+  if (!text){ alert('Введите текст отзыва'); return; }
+  if (reviewRating === 0){ alert('Поставьте оценку'); return; }
+  const reviews = loadReviews();
+  reviews.unshift({name, rating: reviewRating, text, date: Date.now()});
+  saveReviews(reviews);
+  sendTgNotification('\u2B50 Новое отзыв (оценка: ' + reviewRating + '/5)', 'Имя: ' + name + '\nОценка: ' + '\u2605'.repeat(reviewRating) + '\u2606'.repeat(5-reviewRating) + '\n' + text);
   document.getElementById('reviewName').value = '';
   document.getElementById('reviewText').value = '';
-  selectedRating = 0;
-  document.querySelectorAll('#reviewStars .star').forEach(s => s.classList.remove('active'));
-  loadReviews();
-}
+  reviewRating = 0;
+  document.querySelectorAll('.star-btn').forEach(b=> b.classList.remove('active'));
+  renderReviews();
+});
 
-function deleteReview(idx) {
-  const reviews = JSON.parse(localStorage.getItem('kk_reviews') || '[]');
-  reviews.splice(idx, 1);
-  localStorage.setItem('kk_reviews', JSON.stringify(reviews));
-  loadReviews();
-}
+// Tab switching for reviews
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', function(){
+    if (this.dataset.page === 'reviews'){
+      switchToGame();
+      document.querySelectorAll('.page').forEach(p=> p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t=> t.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('page-reviews').classList.add('active');
+      renderReviews();
+      renderWishes();
+    }
+  });
+});
 
 initReviewStars();
-loadReviews();
+renderReviews();
+
+// ===== WISHES =====
+function loadWishes(){
+  try { return JSON.parse(localStorage.getItem('diceWishes') || '[]'); }
+  catch(e){ return []; }
+}
+
+function saveWishes(arr){
+  localStorage.setItem('diceWishes', JSON.stringify(arr));
+}
+
+function renderWishes(){
+  const wishes = loadWishes();
+  const listEl = document.getElementById('wishesList');
+  if (!listEl) return;
+  if (wishes.length === 0){
+    listEl.innerHTML = '<p style="color:#8a7a60;font-size:13px">Пока нет пожеланий. Будьте первым!</p>';
+    return;
+  }
+  listEl.innerHTML = wishes.map((w,idx)=>{
+    const date = new Date(w.date).toLocaleDateString('ru-RU');
+    return '<div class="review-card"><div class="r-head"><span class="r-name">' + w.name + '</span><span class="r-date">' + date + '</span></div><div class="r-text">' + w.text + '</div><button class="r-del" onclick="deleteWish(' + idx + ')">Удалить</button></div>';
+  }).join('');
+}
+
+function deleteWish(idx){
+  const wishes = loadWishes();
+  wishes.splice(idx, 1);
+  saveWishes(wishes);
+  renderWishes();
+}
+
+document.getElementById('wishSubmit').addEventListener('click', function(){
+  const name = document.getElementById('wishName').value.trim() || 'Аноним';
+  const text = document.getElementById('wishText').value.trim();
+  if (!text){ alert('Введите текст пожелания'); return; }
+  const wishes = loadWishes();
+  wishes.unshift({name, text, date: Date.now()});
+  saveWishes(wishes);
+  sendTgNotification('💭 Новое пожелание', 'Имя: ' + name + '\n' + text);
+  document.getElementById('wishName').value = '';
+  document.getElementById('wishText').value = '';
+  renderWishes();
+});
+
+renderWishes();
+
+// ===== TELEGRAM NOTIFICATIONS (creator only) =====
+function getTgCredentials(){
+  const token = localStorage.getItem('creatorTgToken') || '';
+  const chatId = localStorage.getItem('creatorTgChatId') || '';
+  return { token, chatId };
+}
+
+function sendTgNotification(title, body){
+  const creds = getTgCredentials();
+  if (!creds.token || !creds.chatId) return; // silently skip if not configured
+  const msg = '\u{1F3B4} Кубики и коварство\n\n' + title + '\n\n' + body;
+  fetch('https://api.telegram.org/bot' + creds.token + '/sendMessage', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: creds.chatId, text: msg, parse_mode: 'HTML' })
+  }).catch(function(){ /* silent fail */ });
+}
+
+// ===== ADMIN PANEL (hidden, via ?admin=true) =====
+(function initAdmin(){
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('admin') !== 'true') return;
+
+  const overlay = document.getElementById('adminOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+
+  // Load saved credentials
+  const tokenInput = document.getElementById('adminTgToken');
+  const chatInput = document.getElementById('adminTgChatId');
+  const statusEl = document.getElementById('adminStatus');
+  tokenInput.value = localStorage.getItem('creatorTgToken') || '';
+  chatInput.value = localStorage.getItem('creatorTgChatId') || '';
+
+  document.getElementById('adminCloseX').addEventListener('click', function(){
+    overlay.style.display = 'none';
+  });
+  overlay.addEventListener('click', function(e){
+    if (e.target === overlay) overlay.style.display = 'none';
+  });
+
+  document.getElementById('adminSaveBtn').addEventListener('click', function(){
+    localStorage.setItem('creatorTgToken', tokenInput.value.trim());
+    localStorage.setItem('creatorTgChatId', chatInput.value.trim());
+    statusEl.textContent = '\u2705 Сохранено! Уведомления будут приходить вам в Telegram.';
+    statusEl.style.color = '#22c55e';
+  });
+
+  document.getElementById('adminTestBtn').addEventListener('click', function(){
+    const token = tokenInput.value.trim();
+    const chatId = chatInput.value.trim();
+    if (!token || !chatId){
+      statusEl.textContent = '\u26A0\uFE0F Введите токен и Chat ID';
+      statusEl.style.color = '#c0392b';
+      return;
+    }
+    statusEl.textContent = '\u23F3 Отправка...';
+    statusEl.style.color = '#7a6b55';
+    fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: '\u{1F3B4} Кубики и коварство\n\n\u2705 Тест-сообщение от админ-панели. Уведомления работают!' })
+    }).then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data.ok){
+          statusEl.textContent = '\u2705 Тест отправлен! Проверьте Telegram.';
+          statusEl.style.color = '#22c55e';
+          localStorage.setItem('creatorTgToken', token);
+          localStorage.setItem('creatorTgChatId', chatId);
+        } else {
+          statusEl.textContent = '\u274C Ошибка: ' + (data.description || 'неверные данные');
+          statusEl.style.color = '#c0392b';
+        }
+      })
+      .catch(function(){
+        statusEl.textContent = '\u274C Не удалось подключиться. Проверьте токен.';
+        statusEl.style.color = '#c0392b';
+      });
+  });
+})();
 
 </script>
 </body>
