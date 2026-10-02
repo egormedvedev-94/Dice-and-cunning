@@ -330,6 +330,7 @@
   .shop-item .shop-owned { font-size:12px; color:#22c55e; font-weight:700; flex:none; }
 
 
+  .badge-reroll { background:rgba(245,158,11,.18); color:#b45309; }
   .badge-plus1 { background:rgba(34,197,94,.18); color:#15803d; }
 
 </style>
@@ -460,6 +461,8 @@
             <div class="dice" id="dice"></div>
             <button class="btn primary" id="rollBtn">Бросить кубики</button>
             <button class="btn shop-btn" id="shopBtn" style="display:none;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;font-weight:700">🛒 Магазин навыков</button>
+            <button class="btn reroll-btn" id="rerollBtn" style="display:none;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-weight:700">🎵 Перебросить</button>
+            <button class="btn" id="continueBtn" style="display:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:700">✓ Принять</button>
             <button class="btn release-btn" id="releaseBtn" style="display:none">&#128274; Использовать жетон освобождения</button>
           </div>
           <button class="btn ghost" id="resetBtn">Сброс</button>
@@ -567,12 +570,13 @@
         <p><b>Штраф Полиции</b> — 10% от суммы для победы. Вычитается при попадании в Полицию.</p>
 
         <h3>🛒 Магазин навыков</h3>
-        <p>В свой ход, до броска кубиков, игрок может открыть магазин и купить способности за очки. Каждая покупка — это компромисс: очки идут в зачёт победы или тратятся на тактику.</p>
+        <p>В свой ход, до броска кубиков, игрок может открыть магазин один раз и купить способности за очки. Каждая покупка — это компромисс: очки идут в зачёт победы или тратятся на тактику.</p>
         <table style="width:100%;font-size:13px;border-collapse:collapse;margin:8px 0">
           <tr style="font-weight:700;color:#4a3d2e"><td style="padding:4px">Навык</td><td style="padding:4px">Цена</td><td style="padding:4px">Эффект</td></tr>
           <tr><td style="padding:4px">🛡 Сапёр</td><td style="padding:4px">150</td><td style="padding:4px">Обезвреживает мину при наступлении</td></tr>
           <tr><td style="padding:4px">🛡 Защита</td><td style="padding:4px">150</td><td style="padding:4px">Блокирует Возврат/Заморозку 1 раз</td></tr>
           <tr><td style="padding:4px">🗝 Жетон</td><td style="padding:4px">100</td><td style="padding:4px">Выход из Полиции без дубля</td></tr>
+          <tr><td style="padding:4px">🎵 Переброс</td><td style="padding:4px">120</td><td style="padding:4px">Перебросить оба кубика после броска</td></tr>
           <tr><td style="padding:4px">➕ +1 к броску</td><td style="padding:4px">80</td><td style="padding:4px">+1 к следующему броску кубиков</td></tr>
           <tr><td style="padding:4px">💣 Мина</td><td style="padding:4px">150</td><td style="padding:4px">Установить мину на числовую клетку</td></tr>
           <tr><td style="padding:4px">💰 Блокировка</td><td style="padding:4px">250</td><td style="padding:4px">Лишить соперников очков на 3 хода</td></tr>
@@ -580,6 +584,7 @@
           <tr><td style="padding:4px">↩️ Возврат</td><td style="padding:4px">200</td><td style="padding:4px">Отправить соперника на Старт (без +100)</td></tr>
           <tr><td style="padding:4px">❄️ Заморозка</td><td style="padding:4px">180</td><td style="padding:4px">Заморозить соперника — пропуск хода</td></tr>
         </table>
+        <p style="font-size:13px;color:#6b5d4e">🎵 <b>Переброс</b>: после броска кубиков, если у вас есть переброс, появляются кнопки «Перебросить» и «Принять». Переброс заменяет результат, но не может быть использован повторно за ход.</p>
         <p style="font-size:13px;color:#6b5d4e">➕ <b>+1 к броску</b>: автоматически добавляется к следующему броску. Можно накапливать.</p>
 
         <h3>Блокировка настроек</h3>
@@ -619,10 +624,10 @@
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
         <ul>
-          <li><b>🛒 Магазин навыков</b><br>Добавлен магазин — покупайте способности за очки в свой ход до броска. Сапёр (150), Защита (150), Жетон (100), +1 к броску (80), Мина (150), Блокировка (250), Налог (200), Возврат (200), Заморозка (180). Каждая покупка отдаляет от цели победы.</li>
+          <li><b>🛒 Магазин навыков</b><br>Добавлен магазин — покупайте способности за очки в свой ход до броска. Сапёр (150), Защита (150), Жетон (100), Переброс (120), +1 к броску (80), Мина (150), Блокировка (250), Налог (200), Возврат (200), Заморозка (180). Каждая покупка отдаляет от цели победы.</li>
           <li><b>🏁 Финиш без штрафа</b><br>Штраф за Финиш удалён. Теперь при недоборе очков игрок возвращается на Старт без права выбора способностей. При Возврате от соперника — на Старт без +100, но с выбором защиты.</li>
           <li><b>💰 Сумма для победы — 2000</b><br>Минимальная сумма увеличена с 500 до 2000 очков, чтобы магазин навыков был осмысленным выбором, а не жертвой трети пути.</li>
-          <li><b>➕ +1 к броску</b><br>Новый навык только через магазин. +1 добавляется к следующему броску. У игроков с этим навыком появляется бейджик.</li>
+          <li><b>🎵 Переброс и ➕ +1 к броску</b><br>Два новых навыка только через магазин. Переброс позволяет перебросить кубики после броска. +1 добавляется к следующему броску. У игроков с этими навыками появляются бейджики.</li>
           <li><b>🎓 Режим новичка</b><br>Добавлен режим новичка с контекстными подсказками. Включается индивидуально в настройках (⚙) или онлайн-игре (🌐). Игроки с режимом получают бейджик «новичок» в списке игроков. Подсказки всплывают при ключевых событиях и не повторяются за партию.</li>
           <li><b>💸 Налог — перебалансировка</b><br>Базовая сумма налога увеличена с 10 до 100 очков. При повторной активации на клетке «Влияние» налог удваивается: 100 → 200 → 400 и т.д., таймер обнуляется до 3 ходов.</li>
           <li><b>🚔 Штраф Полиции — авторасчёт</b><br>Штраф Полиции больше не настраивается вручную. Теперь он равен 10% от суммы для победы.</li>
@@ -761,7 +766,10 @@ let abilities = {};
 let beginnerMode = false;
 let shopAbilities = {};
 let pendingStartAbilities = {}; // {pi: 'noBonus' | 'none'} - controls what happens when player lands on Start
-let plus1Bonus = {}; // {pi: amount}
+let rerollAvailable = {}; // {pi: true/false}
+let lastRollData = null; // Stores last roll for reroll/accept
+let plus1Bonus = {};
+let shopUsedThisTurn = false; // {pi: amount}
 let onlineBeginnerModes = {};
 let shownHints = new Set();
 let hintTimeout = null;
@@ -832,7 +840,7 @@ function log(text, cls){
 }
 
 function initAbilities(pi){
-  abilities[pi] = { sapper: false, protect: false, token: false, frozen: false, taxBlockTurns: 0, taxTurns: 0, taxAmount: 0 }; plus1Bonus[pi] = 0;
+  abilities[pi] = { sapper: false, protect: false, token: false, frozen: false, taxBlockTurns: 0, taxTurns: 0, taxAmount: 0 }; rerollAvailable[pi] = false; plus1Bonus[pi] = 0;
 }
 
 function resetAllAbilities(pi){
@@ -869,7 +877,7 @@ function makePlayers(){
   policeAttempts = {};
   abilities = {};
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; plus1Bonus = {};
+  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; rerollAvailable = {}; plus1Bonus = {}; shopUsedThisTurn = false;
 }
 
 function isCurrentBot(){ return players[currentPlayer] && players[currentPlayer].isBot; }
@@ -909,6 +917,7 @@ function updatePlayers(){
     if (ab.frozen) badges += '<span class="badge badge-freeze">\u2744\uFE0F заморозка</span>';
     if (ab.taxBlockTurns > 0) badges += '<span class="badge badge-taxblock">\u{1F4B0} блок: '+ab.taxBlockTurns+'</span>';
     if (ab.taxTurns > 0) badges += '<span class="badge badge-tax">\u{1F4B5} налог: '+ab.taxTurns+' (-'+ab.taxAmount+')</span>';
+    if (rerollAvailable[i]) badges += '<span class="badge badge-reroll">\u{1F3B5} переброс</span>';
     if (plus1Bonus[i] > 0) badges += '<span class="badge badge-plus1">\u2795 +1 к броску</span>';
     if (beginnerMode && !p.isBot) badges += '<span class="badge badge-beginner">\u{1F393} новичок</span>';
     row.innerHTML = '<div class="dot" style="background:'+p.color+'"></div>'+
@@ -953,7 +962,7 @@ function updateTurn(){
   document.getElementById('rollBtn').disabled = gameOver || rolling;
   const shopBtn = document.getElementById('shopBtn');
   if (shopBtn){
-    if (!gameOver && !rolling && !inPoliceMode[currentPlayer] && !minePlacingMode && !influencePending && !startAbilityPending && !isCurrentBot()){
+    if (!gameOver && !rolling && !inPoliceMode[currentPlayer] && !minePlacingMode && !influencePending && !startAbilityPending && !isCurrentBot() && !shopUsedThisTurn){
       shopBtn.style.display = 'block';
     } else {
       shopBtn.style.display = 'none';
@@ -1244,10 +1253,11 @@ function nextTurn(){
       continue;
     }
     currentPlayer = idx;
+    shopUsedThisTurn = false;
     return;
   }
   for (let i=0;i<players.length;i++){
-    if (!eliminated.has(i) && !players[i].finished){ currentPlayer = i; return; }
+    if (!eliminated.has(i) && !players[i].finished){ currentPlayer = i; shopUsedThisTurn = false; return; }
   }
 }
 
@@ -1337,6 +1347,14 @@ function doRoll(){
     }
 
     log((p.isBot?'\u{1F916} ':'')+p.name+': выпало '+d1+' + '+d2+' = '+steps+(isDouble?' (дубль!)':''), botTag);
+    // Reroll check - if player has reroll available and it's not a double
+    if (rerollAvailable[pi] && !p.isBot && !isDouble && !inPoliceMode[pi]){
+      document.getElementById('rerollBtn').style.display = 'block';
+      document.getElementById('continueBtn').style.display = 'block';
+      // Store last roll for continue
+      lastRollData = {d1, d2, isDouble, pi, p, steps, botTag};
+      return; // Wait for player decision
+    }
 
     if (isDouble){
       doublesInRow[pi]++
@@ -1689,6 +1707,7 @@ function reset(){
   document.getElementById('gameControls').style.display = 'none';
   renderDice(1,1);
   log('Новая игра. '+(botMode?'Режим: против бота':'Игроков: '+playerCount)+', цель: '+winSum);
+  shopUsedThisTurn = false;
   updateUI();
   updateSettingsSummary();
 }
@@ -1767,18 +1786,46 @@ document.getElementById('beginnerTgl').addEventListener('click', function(){
 
 document.getElementById('startBtn').addEventListener('click', startGame);
 document.getElementById('rollBtn').addEventListener('click', ()=>{ if (!isCurrentBot()) doRoll(); });
-document.getElementById('shopBtn').addEventListener('click', ()=>{ if (!isCurrentBot() && !gameOver && !rolling) showShop(); });
+document.getElementById('shopBtn').addEventListener('click', ()=>{ if (!isCurrentBot() && !gameOver && !rolling && !shopUsedThisTurn) showShop(); });
+document.getElementById('rerollBtn').addEventListener('click', ()=>{ if (!isCurrentBot() && !gameOver && !rolling) doReroll(); });
+document.getElementById('continueBtn').addEventListener('click', acceptRoll);
 document.getElementById('shopBtn').addEventListener('click', function(e){
   if (onlineMode && !isHost && currentPlayer === myPlayerId && mqttClient){
     e.preventDefault(); e.stopPropagation();
     // Client can't use shop directly - shop requires spending points which is host-side
     // For now, show shop but purchases will be sent to host
-    showShop();
+    if (!shopUsedThisTurn) showShop();
   }
 }, true);
 
-;
+// Override acceptRoll for online clients
+var acceptRollOrig = acceptRoll;
+acceptRoll = function(){
+  if (onlineMode && !isHost && mqttClient){
+    document.getElementById('rerollBtn').style.display = 'none';
+    document.getElementById('continueBtn').style.display = 'none';
+    if (lastRollData){
+      mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'acceptRoll', playerId: myPlayerId}));
+      lastRollData = null;
+    }
+    return;
+  }
+  acceptRollOrig();
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
 
+// Override doReroll for online clients
+var doRerollOrig = doReroll;
+doReroll = function(){
+  if (onlineMode && !isHost && currentPlayer === myPlayerId && mqttClient){
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'reroll', playerId: myPlayerId}));
+    document.getElementById('rerollBtn').style.display = 'none';
+    document.getElementById('continueBtn').style.display = 'none';
+    return;
+  }
+  doRerollOrig();
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
 document.getElementById('releaseBtn').addEventListener('click', useReleaseToken);
 document.getElementById('resetBtn').addEventListener('click', reset);
 document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
@@ -1788,11 +1835,113 @@ document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
 
 
 
+function doReroll(){
+  const pi = currentPlayer;
+  if (!rerollAvailable[pi]) return;
+  rerollAvailable[pi] = false;
+  log('🎵 '+players[pi].name+' использовал переброс кубиков!', 'win');
+  document.getElementById('rerollBtn').style.display = 'none';
+  document.getElementById('continueBtn').style.display = 'none';
+  lastRollData = null;
+  // Do a fresh roll
+  let d1 = 1 + Math.floor(Math.random()*6);
+  let d2 = 1 + Math.floor(Math.random()*6);
+  if (plus1Bonus[pi] > 0){
+    d2 = Math.min(6, d2 + 1);
+    plus1Bonus[pi]--;
+    log('➕ '+players[pi].name+' использовал +1 к броску! Теперь: '+d1+' + '+d2);
+  }
+  const isDouble = d1 === d2;
+  const p = players[pi];
+  const steps = d1 + d2;
+  renderDice(1+Math.floor(Math.random()*6), 1+Math.floor(Math.random()*6));
+  document.querySelectorAll('.die').forEach(d=> d.classList.add('rolling'));
+  setTimeout(()=>{
+    renderDice(d1, d2);
+    document.querySelectorAll('.die').forEach(d=> d.classList.remove('rolling'));
+    log('🎵 '+p.name+': переброс — '+d1+' + '+d2+' = '+steps+(isDouble?' (дубль!)':''));
+    if (isDouble){
+      doublesInRow[pi]++;
+      if (doublesInRow[pi] >= 3){
+        log('ТРИ ДУБЛЯ ПОДРЯД! '+p.name+' → Полиция!', 'pen');
+        p.pos = POLICE_INDEX;
+        p.sum = Math.max(0, p.sum - policePenalty);
+        resetAllAbilities(pi);
+        doublesInRow[pi] = 0;
+        inPoliceMode[pi] = true;
+        policeAttempts[pi] = 0;
+        rolling = false;
+        if (!gameOver) nextTurn();
+        updateUI();
+        if (!gameOver && isCurrentBot()) setTimeout(doRoll, 1200);
+        return;
+      }
+      movePlayer(p, pi, steps);
+      if (gameOver){ rolling = false; updateUI(); return; }
+      if (eliminated.has(pi)){ rolling = false; if (!gameOver) nextTurn(); updateUI(); if (!gameOver && isCurrentBot()) setTimeout(doRoll, 1200); return; }
+      if (influencePending || startAbilityPending){ rolling = false; updateUI(); return; }
+      rolling = false;
+      updateUI();
+      if (isCurrentBot()) setTimeout(doRoll, 1200);
+      return;
+    }
+    doublesInRow[pi] = 0;
+    movePlayer(p, pi, steps);
+    rolling = false;
+    if (eliminated.has(pi)){ if (!gameOver) nextTurn(); updateUI(); if (!gameOver && isCurrentBot()) setTimeout(doRoll, 1200); return; }
+    if (!gameOver && !influencePending && !startAbilityPending) nextTurn();
+    updateUI();
+    if (!gameOver && !influencePending && !startAbilityPending && isCurrentBot()) setTimeout(doRoll, 1200);
+  }, 460);
+}
+
+function acceptRoll(){
+  if (!lastRollData) return;
+  document.getElementById('rerollBtn').style.display = 'none';
+  document.getElementById('continueBtn').style.display = 'none';
+  const {d1, d2, isDouble, pi, p, steps, botTag} = lastRollData;
+  lastRollData = null;
+  // Continue with the original roll
+  if (isDouble){
+    doublesInRow[pi]++;
+    if (doublesInRow[pi] >= 3){
+      log('ТРИ ДУБЛЯ ПОДРЯД! '+p.name+' → Полиция!', 'pen');
+      p.pos = POLICE_INDEX;
+      p.sum = Math.max(0, p.sum - policePenalty);
+      resetAllAbilities(pi);
+      doublesInRow[pi] = 0;
+      inPoliceMode[pi] = true;
+      policeAttempts[pi] = 0;
+      rolling = false;
+      if (!gameOver) nextTurn();
+      updateUI();
+      if (!gameOver && isCurrentBot()) setTimeout(doRoll, 1200);
+      return;
+    }
+    movePlayer(p, pi, steps);
+    if (gameOver){ rolling = false; updateUI(); return; }
+    if (eliminated.has(pi)){ rolling = false; if (!gameOver) nextTurn(); updateUI(); if (!gameOver && isCurrentBot()) setTimeout(doRoll, 1200); return; }
+    if (influencePending || startAbilityPending){ rolling = false; updateUI(); return; }
+    rolling = false;
+    updateUI();
+    if (isCurrentBot()) setTimeout(doRoll, 1200);
+    return;
+  }
+  doublesInRow[pi] = 0;
+  movePlayer(p, pi, steps);
+  rolling = false;
+  if (eliminated.has(pi)){ if (!gameOver) nextTurn(); updateUI(); if (!gameOver && isCurrentBot()) setTimeout(doRoll, 1200); return; }
+  if (!gameOver && !influencePending && !startAbilityPending) nextTurn();
+  updateUI();
+  if (!gameOver && !influencePending && !startAbilityPending && isCurrentBot()) setTimeout(doRoll, 1200);
+}
+
 // ===== SHOP =====
 const SHOP_ITEMS = [
   {id:'sapper', icon:'🛡', name:'Сапёр', desc:'Обезвреживает мину при наступлении', price:150},
   {id:'protect', icon:'🛡', name:'Защита', desc:'Блокирует Возврат/Заморозку 1 раз', price:150},
   {id:'token', icon:'🗝', name:'Жетон освобождения', desc:'Выход из Полиции без дубля', price:100},
+  {id:'reroll', icon:'🎵', name:'Переброс кубиков', desc:'Перебросить оба кубика 1 раз', price:120},
   {id:'plus1', icon:'➕', name:'+1 к броску', desc:'+1 к следующему броску кубиков', price:80},
   {id:'mine', icon:'💣', name:'Мина', desc:'Установить мину на числовую клетку', price:150},
   {id:'block', icon:'💰', name:'Блокировка', desc:'Лишить соперников очков на 3 хода', price:250},
@@ -1802,9 +1951,10 @@ const SHOP_ITEMS = [
 ];
 
 function showShop(){
-  if (gameOver || rolling) return;
+  if (gameOver || rolling || shopUsedThisTurn) return;
   const pi = currentPlayer;
   if (isCurrentBot()) return;
+  shopUsedThisTurn = true;
   const p = players[pi];
   if (!abilities[pi]) initAbilities(pi);
   const modal = document.getElementById('shopModal');
@@ -1814,7 +1964,7 @@ function showShop(){
     const owned = (item.id === 'sapper' && abilities[pi].sapper) ||
                   (item.id === 'protect' && abilities[pi].protect) ||
                   (item.id === 'token' && abilities[pi].token) ||
-                  false;
+                  (item.id === 'reroll' && rerollAvailable[pi]);
     const canAfford = p.sum >= item.price;
     const disabled = owned || !canAfford;
     html += '<div class="shop-item' + (disabled ? ' disabled' : '') + '"' +
@@ -1840,6 +1990,7 @@ function buyAbility(itemId, pi){
   if (itemId === 'sapper'){ abilities[pi].sapper = true; }
   else if (itemId === 'protect'){ abilities[pi].protect = true; }
   else if (itemId === 'token'){ abilities[pi].token = true; }
+  else if (itemId === 'reroll'){ rerollAvailable[pi] = true; }
   else if (itemId === 'plus1'){ plus1Bonus[pi] = (plus1Bonus[pi] || 0) + 1; log('➕ '+p.name+' получит +1 к следующему броску!'); }
   else if (itemId === 'mine'){
     document.getElementById('shopModal').style.display = 'none';
@@ -2068,6 +2219,10 @@ function handleMQTTMessage(topic, data){
       applyFreezeOrig(data.playerId, data.targetIdx); setTimeout(onlineSync, 300);
     } else if (data.type === 'placeMine' && data.playerId === currentPlayer){
       placeMineOrig(data.playerId, data.cellIdx); setTimeout(onlineSync, 300);
+    } else if (data.type === 'reroll' && data.playerId === currentPlayer){
+      doRerollOrig(); setTimeout(onlineSync, 700);
+    } else if (data.type === 'acceptRoll' && data.playerId === currentPlayer){
+      acceptRollOrig(); setTimeout(onlineSync, 700);
     } else if (data.type === 'buyAbility' && data.playerId === currentPlayer){
       buyAbilityOrig(data.itemId, data.playerId); setTimeout(onlineSync, 300);
     }
@@ -2127,7 +2282,7 @@ function startOnlineGame(data){
   currentPlayer = 0;
   doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {};
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; plus1Bonus = {};
+  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; rerollAvailable = {}; plus1Bonus = {}; shopUsedThisTurn = false;
   gameStarted = true; gameOver = false;
   lockSettings();
   document.getElementById('settingsOverlay').style.display = 'none';
@@ -2151,7 +2306,7 @@ function hostStartOnlineGame(){
   currentPlayer = 0;
   doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {};
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; plus1Bonus = {};
+  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; rerollAvailable = {}; plus1Bonus = {}; shopUsedThisTurn = false;
   gameStarted = true; gameOver = false;
   lockSettings();
   document.getElementById('settingsOverlay').style.display = 'none';
@@ -2177,7 +2332,7 @@ function broadcastGameState(msgType){
     doublesInRow: doublesInRow, inPoliceMode: inPoliceMode, policeAttempts: policeAttempts,
     abilities: abilities, mines: mines, eliminated: Array.from(eliminated),
     beginnerModes: onlineBeginnerModes,
-    pendingStartAbilities: pendingStartAbilities, plus1Bonus: plus1Bonus
+    pendingStartAbilities: pendingStartAbilities, rerollAvailable: rerollAvailable, plus1Bonus: plus1Bonus
   }));
 }
 
@@ -2196,6 +2351,7 @@ function applyOnlineState(data){
   eliminated = new Set(data.eliminated || []);
   if (data.beginnerModes) onlineBeginnerModes = data.beginnerModes;
   if (data.pendingStartAbilities) pendingStartAbilities = data.pendingStartAbilities;
+  if (data.rerollAvailable) rerollAvailable = data.rerollAvailable;
   if (data.plus1Bonus) plus1Bonus = data.plus1Bonus;
   renderOnlinePlayers();
   if (gameStarted){
