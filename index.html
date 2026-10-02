@@ -2960,4 +2960,61 @@ function testTelegram(){
 function hookReviewSubmit(){
   const btn = document.getElementById('reviewSubmit');
   if (!btn || btn.dataset.hooked) return;
-  btn.dataset.hooke
+  btn.dataset.hooked = '1';
+  btn.addEventListener('click', function(){
+    setTimeout(() => {
+      const reviews = loadReviews();
+      if (reviews.length > 0){
+        const r = reviews[0];
+        sendTelegramNotification('\u2B50 \u041d\u043e\u0432\u044b\u0439 \u043e\u0442\u0437\u044b\u0432\n\u0418\u043c\u044f: '+r.name+'\n\u041e\u0446\u0435\u043d\u043a\u0430: '+r.rating+'\n'+r.text);
+      }
+    }, 200);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  // Admin panel events
+  const codeBtn = document.getElementById('adminCodeBtn');
+  const verifyBtn = document.getElementById('adminVerifyBtn');
+  const saveBtn = document.getElementById('adminSaveBtn');
+  const testBtn = document.getElementById('tgTestBtn');
+  
+  if (codeBtn) codeBtn.addEventListener('click', sendAdminCode);
+  if (verifyBtn) verifyBtn.addEventListener('click', verifyAdminCode);
+  if (saveBtn) saveBtn.addEventListener('click', saveAdminSettings);
+  if (testBtn) testBtn.addEventListener('click', testTelegram);
+  
+  // Check admin URL
+  if (isAdminUrl()){
+    const url = new URL(window.location.href);
+    const isSetup = url.searchParams.get('setup') === 'true';
+    if (isSetup || sessionStorage.getItem('adminAuth') === '1'){
+      openAdminPanel();
+    } else {
+      openAdminLogin();
+    }
+  }
+  
+  hookReviewSubmit();
+});
+
+// Close admin overlay on background click
+document.addEventListener('DOMContentLoaded', function(){
+  const overlay = document.getElementById('adminOverlay');
+  if (overlay){
+    overlay.addEventListener('click', function(e){
+      if (e.target === overlay) overlay.style.display = 'none';
+    });
+  }
+});
+
+
+</script>
+<div class="beginner-hint" id="beginnerHint">
+    <span class="hint-close" onclick="closeBeginnerHint()">&times;</span>
+    <div class="hint-title" id="beginnerHintTitle"></div>
+    <div id="beginnerHintBody"></div>
+    <button class="hint-btn" onclick="closeBeginnerHint()">Понятно</button>
+  </div>
+</body>
+</html>
