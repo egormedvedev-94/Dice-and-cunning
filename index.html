@@ -131,8 +131,6 @@
   .btn.start-btn:hover { filter: brightness(1.08); }
   .btn.release-btn { background: linear-gradient(140deg, #f59e0b, #fbbf24); color: #fff; box-shadow: 0 6px 18px rgba(245,158,11,.35); margin-top: 8px; }
   .btn.release-btn:hover { filter: brightness(1.08); }
-  .btn.surrender-btn { margin-top: 8px; background: rgba(192,57,43,.08); color: #c0392b; border: 1px solid rgba(192,57,43,.35); }
-  .btn.surrender-btn:hover { background: rgba(192,57,43,.18); }
   .turn { text-align: center; font-size: 13px; color: #7a6b55; margin-bottom: 12px; min-height: 18px; }
   .turn b { color: #4a3d2e; }
   .hint { text-align: center; font-size: 13px; color: #8a7a60; margin-bottom: 10px; padding: 8px 12px; border-radius: 10px; background: rgba(230,126,34,.1); border: 1px solid rgba(230,126,34,.2); }
@@ -332,6 +330,13 @@
   .shop-item .shop-owned { font-size:12px; color:#22c55e; font-weight:700; flex:none; }
 
 
+  .badge-inv { background:rgba(139,92,246,.18); color:#6d28d9; }
+  .inv-panel { display:none; flex-direction:column; gap:6px; margin-top:8px; }
+  .inv-title { font-size:11px; color:#8a7a60; font-weight:700; text-transform:uppercase; letter-spacing:.8px; }
+  .inv-chip { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:10px; background:rgba(139,92,246,.1); border:1px solid rgba(139,92,246,.3); }
+  .inv-chip .inv-ico { font-size:16px; }
+  .inv-chip .inv-name { font-size:12px; font-weight:700; color:#4a3d2e; flex:1; }
+  .inv-chip .inv-use { padding:4px 10px; border-radius:8px; border:none; cursor:pointer; background:linear-gradient(135deg,#8b5cf6,#7c3aed); color:#fff; font-size:11px; font-weight:700; }
   .badge-plus1 { background:rgba(34,197,94,.18); color:#15803d; }
 
 </style>
@@ -364,9 +369,9 @@
       </div>
       <div class="field switch">
         <span>Игра против бота (1 человек + 1 бот)</span>
-        <div class="tgl" id="botTgl"></div>
+        <div class="tgl on" id="botTgl"></div>
       </div>
-      <div class="field" id="botDifficultyField" style="display:none">
+      <div class="field" id="botDifficultyField" style="display:block">
         <label>Сложность бота</label>
         <div class="seg" id="botDiffSeg">
           <button data-d="easy" class="active">Лёгкий</button>
@@ -462,8 +467,9 @@
             <div class="dice" id="dice"></div>
             <button class="btn primary" id="rollBtn">Бросить кубики</button>
             <button class="btn shop-btn" id="shopBtn" style="display:none;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;font-weight:700">🛒 Магазин навыков</button>
+            <div class="inv-panel" id="invPanel"></div>
             <button class="btn release-btn" id="releaseBtn" style="display:none">&#128274; Использовать жетон освобождения</button>
-            <button class="btn surrender-btn" id="surrenderBtn" style="display:none">&#128681; Сдаться</button>
+            <button class="btn" id="surrenderBtn" style="display:none;background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;font-weight:700">&#128683; Сдаться</button>
           </div>
           <button class="btn ghost" id="resetBtn">Сброс</button>
         </div>
@@ -533,7 +539,7 @@
           <li><b>💰 Блокировка</b> — временно лишает всех соперников возможности получать очки с числовых клеток на 3 хода.</li>
           <li><b>💴 Налог</b> — временно снимает по 100 очков у всех соперников каждый ход на протяжении 3 ходов. При повторной активации сумма списания удваивается (100 → 200 → 400 и т.д.), таймер обнуляется до 3 ходов.</li>
           <li><b>💣 Мина</b> — установить мину на числовую клетку. Соперник, наступивший на мину, выбывает (если нет Сапёра).</li>
-          <li><b>❄️ Заморозка</b> — заморозить выбранного соперника. Он пропускает следующий ход. Блокируется Защитой.</li>
+          <li><b>❄️ Заморозка</b> — заморозить выбранного соперника. Он пропускает следующий ход. Блокируется Защитой.<br>🎒 Выбранная способность не срабатывает сразу — она попадает на панель способностей и активируется в любой ваш ход до броска кубиков.</li>
         </ul>
 
         <h3>Полиция — сброс всех способностей</h3>
@@ -547,14 +553,14 @@
           <li>💣 Все мины, установленные этим игроком</li>
         </ul>
 
-        <h3>Сдача</h3>
-        <p>В свой ход можно нажать кнопку «Сдаться» — игрок выбывает из игры (как при подрыве на мине): его способности и мины сбрасываются. Если после сдачи остался один игрок — он побеждает.</p>
-
         <h3>Три дубля подряд</h3>
         <p>Если игрок выбрасывает три дубля подряд, его фишка отправляется в Полицию. Счётчик дублей обнуляется.</p>
 
         <h3>Выход из Полиции</h3>
         <p>Игрок может выйти выбросив дубль (3 попытки) или использовав 🗝 Жетон освобождения (только в свой ход). После использования жетон израсходуется.</p>
+
+        <h3>🏳 Сдача</h3>
+        <p>В свой ход до броска кубиков игрок может нажать 🏳 «Сдаться» и подтвердить решение. Игрок выбывает из игры: способности и мины сбрасываются как при Полиции, ход переходит следующему. Вернуться в партию после сдачи нельзя. Если после сдачи остался один игрок — он побеждает. Из Полиции сдаться нельзя.</p>
 
         <h3>Игра против бота</h3>
         <p>В окне настроек (значок ⚙️) можно включить режим «Игра против бота». Бот ходит автоматически. Доступны два уровня сложности.</p>
@@ -576,7 +582,7 @@
         <p>Во время игры очки автоматически начисляются за следующие события. <b>Если сумма игрока уже достигла цели — очки не начисляются</b>, пока сумма снова не опустится ниже цели.</p>
         <ul>
           <li><b>🚔 Прошли мимо Полиции</b> — +100 очков. Если при ходе фишка пересекает клетку Полиции, но не останавливается на ней.</li>
-          <li><b>🎲 Освобождение из Полиции дублем</b> — +200 очков. Если игрок вышел из Полиции, выбросив дубль.</li>
+          <li><b>🎲 Освобождение из Полиции дублем</b> — +200 очков. Если игрок выбросил дубль, выходя из Полиции.</li>
           <li><b>💣 Прошли мину соперника</b> — +300 очков. Если при ходе фишка пересекла клетку с миной, но не наступила на неё.</li>
           <li><b>💥 Соперник подорвался на вашей мине</b> — +400 очков. Владелец мины получает бонус, когда соперник наступает на неё.</li>
         </ul>
@@ -595,6 +601,7 @@
           <tr><td style="padding:4px">↩️ Возврат</td><td style="padding:4px">200</td><td style="padding:4px">Отправить соперника на Старт (без +100)</td></tr>
           <tr><td style="padding:4px">❄️ Заморозка</td><td style="padding:4px">180</td><td style="padding:4px">Заморозить соперника — пропуск хода</td></tr>
         </table>
+        <p style="font-size:13px;color:#6b5d4e">🎒 <b>Панель способностей</b>: активные способности (Мина, Блокировка, Налог, Возврат, Заморозка) из магазина и с клетки «Влияние» не срабатывают сразу — они попадают на панель в блоке «Ход». Активировать можно в любой свой ход до броска кубиков. Если применить способность нельзя, она остаётся на панели. Полиция сбрасывает панель вместе с остальными способностями.</p>
         <p style="font-size:13px;color:#6b5d4e">➕ <b>+1 к броску</b>: автоматически добавляется к следующему броску. Можно накапливать.</p>
 
         <h3>Блокировка настроек</h3>
@@ -634,12 +641,15 @@
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
         <ul>
+          <li><b>🏳 Сдача</b><br>Добавлена кнопка «Сдаться» в блоке «Ход». Доступна в свой ход до броска кубиков: после подтверждения игрок выбывает как при подрыве на мине — способности и мины сбрасываются, ход переходит следующему. Если остался один игрок — он побеждает. Работает в локальной и онлайн-игре.</li>
           <li><b>🏁 Очки при достигнутой сумме</b><br>Когда игрок набирает нужную сумму для победы, очки больше не начисляются — остаётся добраться до Финиша. Если сумма снова опустится ниже цели (налог, штраф Полиции), очки возобновляются. +200 за дубль заменён на +200 за освобождение из Полиции дублем.</li>
           <li><b>🎲 Очки за случайные действия</b><br>Добавлены бонусы за случайные события: +100 за проход мимо Полиции, +200 за освобождение из Полиции дублем, +300 за проход мимо мины соперника, +400 когда соперник подорвался на вашей мине.</li>
           <li><b>🛒 Магазин навыков</b><br>Добавлен магазин — покупайте способности за очки в свой ход до броска. Сапёр (150), Защита (150), Жетон (100), +1 к броску (80), Мина (150), Блокировка (250), Налог (200), Возврат (200), Заморозка (180). Каждая покупка отдаляет от цели победы.</li>
           <li><b>🏁 Финиш без штрафа</b><br>Штраф за Финиш удалён. Теперь при недоборе очков игрок возвращается на Старт без права выбора способностей. При Возврате от соперника — на Старт без +100, но с выбором защиты.</li>
           <li><b>💰 Сумма для победы — 2000</b><br>Минимальная сумма увеличена с 500 до 2000 очков, чтобы магазин навыков был осмысленным выбором, а не жертвой трети пути.</li>
-          <li><b>➕ +1 к броску</b><br>Новый навык только через магазин. +1 добавляется к следующему броску. У игроков с этим навыком появляется бейджик.</li>
+          <li><b>🎒 Панель способностей</b><br>Активные способности (Мина, Блокировка, Налог, Возврат, Заморозка) из магазина и с клетки «Влияние» попадают на панель в блоке «Ход». Активируйте в любой свой ход до броска кубиков.</li>
+          <li><b>🗑 Переброс кубиков удалён</b><br>Навык «Переброс» убран из магазина и из правил.</li>
+          <li><b>💸 Налог — исправлено удвоение</b><br>Удвоение налога теперь считается по числу активаций игрока: 1-я активация — 100, 2-я — 200, 3-я — 400 и т.д. Удвоение сохраняется, даже если предыдущий налог уже снялся (таймер всё равно обнуляется до 3 ходов). Попадание в Полицию сбрасывает прогресс удвоения.</li>
           <li><b>🎓 Режим новичка</b><br>Добавлен режим новичка с контекстными подсказками. Включается индивидуально в настройках (⚙) или онлайн-игре (🌐). Игроки с режимом получают бейджик «новичок» в списке игроков. Подсказки всплывают при ключевых событиях и не повторяются за партию.</li>
           <li><b>💸 Налог — перебалансировка</b><br>Базовая сумма налога увеличена с 10 до 100 очков. При повторной активации на клетке «Влияние» налог удваивается: 100 → 200 → 400 и т.д., таймер обнуляется до 3 ходов.</li>
           <li><b>🚔 Штраф Полиции — авторасчёт</b><br>Штраф Полиции больше не настраивается вручную. Теперь он равен 10% от суммы для победы.</li>
@@ -763,7 +773,7 @@ let rolling = false;
 let autoFinish = false;
 let winSum = 2000, finishPenalty = 0, policePenalty = Math.floor(winSum * 0.1);
 let playerCount = 2;
-let botMode = false;
+let botMode = true;
 let botDifficulty = 'easy';
 let doublesInRow = {};
 let inPoliceMode = {};
@@ -778,6 +788,157 @@ let abilities = {};
 let beginnerMode = false;
 let shopAbilities = {};
 let pendingStartAbilities = {}; // {pi: 'noBonus' | 'none'} - controls what happens when player lands on Start
+let inventory = {}; // {pi: [itemId,...]} — панель способностей
+
+// ===== ПАНЕЛЬ СПОСОБНОСТЕЙ =====
+const INV_META = {
+  mine:{icon:'\u{1F4A3}', name:'Мина'}, block:{icon:'\u{1F4B0}', name:'Блокировка'},
+  tax:{icon:'\u{1F4B4}', name:'Налог'}, return:{icon:'\u21A9\uFE0F', name:'Возврат'},
+  freeze:{icon:'\u2744\uFE0F', name:'Заморозка'}
+};
+function invRivals(pi){ return players.map((pl,i)=>({pl,i})).filter(({i})=> i!==pi && !eliminated.has(i) && !pl_finished_check(i)); }
+function invConsume(pi, itemId){ const k = (inventory[pi]||[]).indexOf(itemId); if (k !== -1) inventory[pi].splice(k, 1); }
+function invCanAct(){
+  if (!gameStarted || gameOver || players.length === 0 || rolling) return false;
+  const cp = players[currentPlayer];
+  if (!cp || cp.isBot || eliminated.has(currentPlayer)) return false;
+  if (inPoliceMode[currentPlayer]) return false;
+  if (typeof influencePending !== 'undefined' && influencePending) return false;
+  if (typeof startAbilityPending !== 'undefined' && startAbilityPending) return false;
+  if (onlineMode && !isHost && currentPlayer !== myPlayerId) return false;
+  if (onlineMode && isHost && spectatorMode) return false;
+  return true;
+}
+function renderInvPanel(){
+  const panel = document.getElementById('invPanel');
+  if (!panel) return;
+  const canAct = invCanAct();
+  const inv = canAct ? (inventory[currentPlayer] || []) : [];
+  if (!canAct || inv.length === 0){ panel.style.display = 'none'; panel.innerHTML = ''; return; }
+  let html = '<div class="inv-title">\u{1F392} Панель способностей — активируйте до броска</div>';
+  inv.forEach(itemId=>{
+    const meta = INV_META[itemId];
+    if (!meta) return;
+    html += '<div class="inv-chip"><span class="inv-ico">'+meta.icon+'</span><span class="inv-name">'+meta.name+'</span><button class="inv-use" onclick="useInvItem('+currentPlayer+', \''+itemId+'\')">Активировать</button></div>';
+  });
+  panel.innerHTML = html;
+  panel.style.display = 'flex';
+}
+function useInvItem(pi, itemId, botPick){
+  const p = players[pi];
+  if (!(inventory[pi]||[]).includes(itemId)) return;
+  const rivals = invRivals(pi);
+  if (itemId === 'block'){
+    if (rivals.length === 0){ log('\u{1F4B0} '+p.name+': Блокировка не применилась — нет соперников. Осталась на панели.', 'tax'); return; }
+    invConsume(pi, itemId);
+    log('\u{1F4B0} '+p.name+' применил Блокировку: соперники не получают очки 3 хода!', 'tax');
+    rivals.forEach(({i})=>{ if (!abilities[i]) initAbilities(i); abilities[i].taxBlockTurns = 3; });
+  } else if (itemId === 'tax'){
+    if (rivals.length === 0){ log('\u{1F4B4} '+p.name+': Налог не применился — нет соперников. Остался на панели.', 'tax'); return; }
+    invConsume(pi, itemId);
+    if (!abilities[pi]) initAbilities(pi);
+    abilities[pi].taxLevel = (abilities[pi].taxLevel || 0) + 1;
+    const taxSum = 100 * Math.pow(2, abilities[pi].taxLevel - 1);
+    rivals.forEach(({i})=>{
+      if (!abilities[i]) initAbilities(i);
+      abilities[i].taxAmount = taxSum;
+      abilities[i].taxTurns = 3;
+    });
+    log('\u{1F4B4} '+p.name+' применил Налог: -'+taxSum+' очков/ход у соперников 3 хода (уровень '+abilities[pi].taxLevel+')!', 'tax');
+  } else if (itemId === 'mine'){
+    const numericCells = [];
+    PATH_VALUES.forEach((v,i)=>{ if (typeof v === 'number' && !(i in mines)) numericCells.push(i); });
+    if (numericCells.length === 0){ log('\u{1F4A3} '+p.name+': свободных числовых клеток нет. Мина осталась на панели.', 'pen'); return; }
+    if (botPick){
+      invConsume(pi, itemId);
+      const cellIdx = numericCells[Math.floor(Math.random()*numericCells.length)];
+      mines[cellIdx] = pi;
+      log('\u{1F916} '+p.name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
+      renderMines();
+    } else {
+      startInvMineUI(pi);
+    }
+  } else if (itemId === 'return' || itemId === 'freeze'){
+    if (rivals.length === 0){ log('Соперников нет — способность осталась на панели.', 'pen'); return; }
+    if (botPick){
+      invConsume(pi, itemId);
+      invApplyTargetCore(pi, rivals[Math.floor(Math.random()*rivals.length)].i, itemId);
+    } else {
+      showInvTargetModal(pi, itemId);
+    }
+  }
+  updateUI();
+}
+function startInvMineUI(pi){
+  minePlacingMode = true;
+  if (beginnerMode && !shownHints.has('minePlace')) showBeginnerHint('minePlace', '\u{1F4A3} Установка мины', 'Выберите числовую клетку, чтобы установить мину. Соперник, наступивший на мину, выбывает из игры (если у него нет Сапёра).');
+  document.getElementById('mineHint').classList.add('show');
+  document.querySelectorAll('.cell.path').forEach(cell=>{
+    const idx = parseInt(cell.dataset.index);
+    const val = PATH_VALUES[idx];
+    if (typeof val === 'number' && !(idx in mines)){
+      cell.classList.add('mine-target');
+      cell.onclick = function(){ invPlaceMine(pi, idx); };
+    }
+  });
+}
+function invPlaceMine(pi, cellIdx){
+  if (!minePlacingMode) return;
+  minePlacingMode = false;
+  document.getElementById('mineHint').classList.remove('show');
+  document.querySelectorAll('.mine-target').forEach(c=>{ c.classList.remove('mine-target'); c.onclick = null; });
+  invConsume(pi, 'mine');
+  mines[cellIdx] = pi;
+  log(players[pi].name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
+  renderMines();
+  updateUI();
+}
+function showInvTargetModal(pi, kind){
+  const rivals = invRivals(pi);
+  if (rivals.length === 0) return;
+  const modal = document.getElementById('influenceModal');
+  const content = document.getElementById('influenceModalContent');
+  const title = kind === 'return' ? '\u21A9\uFE0F Возврат' : '\u2744\uFE0F Заморозка';
+  const sub = kind === 'return' ? 'Выберите соперника для отправки на Старт:' : 'Выберите соперника для заморозки:';
+  const fn = kind === 'return' ? 'invReturn' : 'invFreeze';
+  let html = '<h2>'+title+'</h2><p style="font-size:13px;color:#6a5d4a;margin-bottom:12px">'+sub+'</p><div class="target-list">';
+  rivals.forEach(({pl,i})=>{
+    html += '<button class="target-btn" onclick="'+fn+'('+pi+', '+i+')"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:'+pl.color+';margin-right:8px;vertical-align:middle"></span>'+pl.name+' ('+pl.sum+' очков, клетка '+pl.pos+')</button>';
+  });
+  html += '</div><button class="back-btn" onclick="closeModal()">\u2190 Назад</button>';
+  content.innerHTML = html;
+  modal.style.display = 'flex';
+}
+function invApplyTargetCore(pi, targetIdx, itemId){
+  const target = players[targetIdx];
+  const label = itemId === 'return' ? 'Возврат' : 'Заморозку';
+  if (abilities[targetIdx] && abilities[targetIdx].protect){
+    abilities[targetIdx].protect = false;
+    log(players[pi].name+' применил '+label+', но '+target.name+' заблокировал Защитой!', 'sapper');
+  } else if (itemId === 'return'){
+    target.pos = 0;
+    pendingStartAbilities[targetIdx] = 'noBonus';
+    log(players[pi].name+' применил Возврат: '+target.name+' отправлен на Старт. Без +100, но с выбором защиты.', 'pen');
+  } else {
+    if (!abilities[targetIdx]) initAbilities(targetIdx);
+    abilities[targetIdx].frozen = true;
+    log('\u2744\uFE0F '+players[pi].name+' применил Заморозку: '+target.name+' пропустит следующий ход!', 'frz');
+  }
+}
+function invApplyTarget(pi, targetIdx, itemId){
+  invConsume(pi, itemId);
+  invApplyTargetCore(pi, targetIdx, itemId);
+  document.getElementById('influenceModal').style.display = 'none';
+  updateUI();
+}
+function invReturn(pi, targetIdx){ invApplyTarget(pi, targetIdx, 'return'); }
+function invFreeze(pi, targetIdx){ invApplyTarget(pi, targetIdx, 'freeze'); }
+function botUseInventory(pi){
+  const inv = (inventory[pi] || []).slice();
+  for (const id of inv){ useInvItem(pi, id, true); }
+  updateUI();
+  doRoll();
+}
 let plus1Bonus = {}; // {pi: amount}
 let onlineBeginnerModes = {};
 let shownHints = new Set();
@@ -849,7 +1010,7 @@ function log(text, cls){
 }
 
 function initAbilities(pi){
-  abilities[pi] = { sapper: false, protect: false, token: false, frozen: false, taxBlockTurns: 0, taxTurns: 0, taxAmount: 0 }; plus1Bonus[pi] = 0;
+  abilities[pi] = { sapper: false, protect: false, token: false, frozen: false, taxBlockTurns: 0, taxTurns: 0, taxAmount: 0, taxLevel: 0 }; plus1Bonus[pi] = 0;
 }
 
 function resetAllAbilities(pi){
@@ -868,8 +1029,12 @@ function resetAllAbilities(pi){
   abilities[pi].taxBlockTurns = 0;
   abilities[pi].taxTurns = 0;
   abilities[pi].taxAmount = 0;
+  abilities[pi].taxLevel = 0;
   renderMines();
   if (had.length > 0) log(players[pi].name+': Полиция сбросила: '+had.join(', '), 'pen');
+
+  if ((inventory[pi]||[]).length > 0) log('\u{1F392} Панель способностей сброшена ('+inventory[pi].length+')', 'pen');
+  inventory[pi] = [];
 }
 
 function makePlayers(){
@@ -886,7 +1051,7 @@ function makePlayers(){
   policeAttempts = {};
   abilities = {};
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; plus1Bonus = {};
+  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {};
 }
 
 function isCurrentBot(){ return players[currentPlayer] && players[currentPlayer].isBot; }
@@ -926,6 +1091,7 @@ function updatePlayers(){
     if (ab.frozen) badges += '<span class="badge badge-freeze">\u2744\uFE0F заморозка</span>';
     if (ab.taxBlockTurns > 0) badges += '<span class="badge badge-taxblock">\u{1F4B0} блок: '+ab.taxBlockTurns+'</span>';
     if (ab.taxTurns > 0) badges += '<span class="badge badge-tax">\u{1F4B5} налог: '+ab.taxTurns+' (-'+ab.taxAmount+')</span>';
+    if ((inventory[i]||[]).length > 0) badges += '<span class="badge badge-inv">\u{1F392} панель: '+(inventory[i].length)+'</span>';
     if (plus1Bonus[i] > 0) badges += '<span class="badge badge-plus1">\u2795 +1 к броску</span>';
     if (beginnerMode && !p.isBot) badges += '<span class="badge badge-beginner">\u{1F393} новичок</span>';
     row.innerHTML = '<div class="dot" style="background:'+p.color+'"></div>'+
@@ -976,14 +1142,6 @@ function updateTurn(){
       shopBtn.style.display = 'none';
     }
   }
-  // Show surrender button for current human player
-  const sb = document.getElementById('surrenderBtn');
-  if (sb){
-    const canSurrender = gameStarted && !gameOver && !rolling && !isCurrentBot() &&
-      !minePlacingMode && !influencePending && !startAbilityPending &&
-      (!onlineMode || currentPlayer === myPlayerId);
-    sb.style.display = canSurrender ? 'block' : 'none';
-  }
   // Show release button if in police and has token
   const rb = document.getElementById('releaseBtn');
   if (inPoliceMode[currentPlayer] && abilities[currentPlayer] && abilities[currentPlayer].token && !gameOver && !isCurrentBot()){
@@ -992,9 +1150,18 @@ function updateTurn(){
   } else {
     rb.style.display = 'none';
   }
+  // Show surrender button: только в свой ход, до броска, не в Полиции
+  const sb = document.getElementById('surrenderBtn');
+  if (sb){
+    const canSurr = gameStarted && !gameOver && !rolling && !inPoliceMode[currentPlayer] &&
+                    !minePlacingMode && !influencePending && !startAbilityPending &&
+                    !isCurrentBot() && players[currentPlayer] && !eliminated.has(currentPlayer) &&
+                    !players[currentPlayer].finished;
+    sb.style.display = canSurr ? 'block' : 'none';
+  }
 }
 
-function updateUI(){ updatePieces(); updatePlayers(); updateTurn(); }
+function updateUI(){ renderInvPanel(); updatePieces(); updatePlayers(); updateTurn(); }
 
 function updateSettingsSummary(){
   const s = document.getElementById('settingsSummary');
@@ -1265,31 +1432,6 @@ function useReleaseToken(){
   // Don't advance turn — player gets to roll now
 }
 
-// ===== SURRENDER =====
-function doSurrender(pi){
-  if (gameOver || rolling || minePlacingMode || influencePending || startAbilityPending) return;
-  if (!players[pi] || players[pi].isBot || eliminated.has(pi) || players[pi].finished) return;
-  eliminated.add(pi);
-  resetAllAbilities(pi);
-  plus1Bonus[pi] = 0;
-  inPoliceMode[pi] = false;
-  doublesInRow[pi] = 0;
-  abilities[pi] = { sapper:false, protect:false, token:false, frozen:false, taxBlockTurns:0, taxTurns:0, taxAmount:0 };
-  log('\u{1F3F3}\uFE0F '+players[pi].name+' сдался и выбывает из игры!', 'pen');
-  checkElimination();
-  if (!gameOver) nextTurn();
-  updateUI();
-  if (onlineMode && isHost) setTimeout(onlineSync, 300);
-  if (!gameOver && isCurrentBot()) setTimeout(doRoll, 1200);
-}
-
-function surrender(){
-  if (gameOver || rolling || isCurrentBot()) return;
-  if (minePlacingMode || influencePending || startAbilityPending) return;
-  if (!confirm('Вы уверены, что хотите сдаться? Игрок «'+players[currentPlayer].name+'» выбывает из игры.')) return;
-  doSurrender(currentPlayer);
-}
-
 function nextTurn(){
   if (gameOver) return;
   let idx = currentPlayer;
@@ -1488,6 +1630,19 @@ function checkElimination(){
   }
 }
 
+// ===== SURRENDER =====
+function surrender(pi){
+  if (gameOver || rolling) return;
+  const p = players[pi];
+  if (!p || eliminated.has(pi) || p.finished) return;
+  if (inPoliceMode[pi]) return; // из Полиции сдаться нельзя
+  resetAllAbilities(pi); // сброс мин, Сапёра, Защиты, Заморозки и панели — как при Полиции
+  eliminated.add(pi);
+  log('\u{1F3F3} ' + p.name + ' сдаётся и выбывает из игры!', 'pen');
+  checkElimination();
+  updateUI();
+}
+
 // ===== INFLUENCE =====
 function showInfluenceModal(pi){
   const p = players[pi];
@@ -1507,46 +1662,14 @@ function showInfluenceModal(pi){
 function pl_finished_check(i){ return players[i].finished; }
 
 function influenceChoose(ability, pi){
-  const modal = document.getElementById('influenceModal');
-  const content = document.getElementById('influenceModalContent');
-  const rivals = players.map((pl,i)=>({pl,i})).filter(({i})=> i!==pi && !eliminated.has(i) && !pl_finished_check(i));
-
-  if (ability === 'return'){
-    if (rivals.length === 0){ closeModal(); afterInfluence(pi); return; }
-    let html = '<h2>\u21A9\uFE0F Возврат</h2><p style="font-size:13px;color:#6a5d4a;margin-bottom:12px">Выберите соперника для отправки на Старт:</p><div class="target-list">';
-    rivals.forEach(({pl,i})=>{
-      html += '<button class="target-btn" onclick="applyReturn('+pi+', '+i+')"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:'+pl.color+';margin-right:8px;vertical-align:middle"></span>'+pl.name+' ('+pl.sum+' очков, клетка '+pl.pos+')</button>';
-    });
-    html += '<button class="back-btn" onclick="showInfluenceModal('+pi+')">\u2190 Назад</button>';
-    content.innerHTML = html;
-  } else if (ability === 'block'){
+  if (ability === 'return' || ability === 'block' || ability === 'tax' || ability === 'mine' || ability === 'freeze'){
     closeModal();
-    applyTaxBlock(pi);
-  } else if (ability === 'tax'){
-    closeModal();
-    applyTax(pi);
-  } else if (ability === 'mine'){
-    closeModal();
-    minePlacingMode = true;
-  if (beginnerMode && !shownHints.has('minePlace')) showBeginnerHint('minePlace', '💣 Установка мины', 'Выберите числовую клетку, чтобы установить мину. Соперник, наступивший на мину, выбывает из игры (если у него нет Сапёра).');
-    document.getElementById('mineHint').classList.add('show');
-    document.querySelectorAll('.cell.path').forEach(cell=>{
-      const idx = parseInt(cell.dataset.index);
-      const val = PATH_VALUES[idx];
-      if (typeof val === 'number' && !(idx in mines)){
-        cell.classList.add('mine-target');
-        cell.onclick = function(){ placeMine(pi, idx); };
-      }
-      
-    });
-  } else if (ability === 'freeze'){
-    if (rivals.length === 0){ closeModal(); afterInfluence(pi); return; }
-    let html = '<h2>\u2744\uFE0F Заморозка</h2><p style="font-size:13px;color:#6a5d4a;margin-bottom:12px">Выберите соперника для заморозки:</p><div class="target-list">';
-    rivals.forEach(({pl,i})=>{
-      html += '<button class="target-btn" onclick="applyFreeze('+pi+', '+i+')"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:'+pl.color+';margin-right:8px;vertical-align:middle"></span>'+pl.name+' ('+pl.sum+' очков, клетка '+pl.pos+')</button>';
-    });
-    html += '<button class="back-btn" onclick="showInfluenceModal('+pi+')">\u2190 Назад</button>';
-    content.innerHTML = html;
+    if (!inventory[pi]) inventory[pi] = [];
+    inventory[pi].push(ability);
+    log('🎒 «'+INV_META[ability].name+'» добавлена на панель способностей — активируйте в свой ход до броска!', 'win');
+    afterInfluence(pi);
+    if (onlineMode && isHost) setTimeout(onlineSync, 300);
+    return;
   }
 }
 
@@ -1588,14 +1711,15 @@ function applyTaxBlock(pi){
 
 function applyTax(pi){
   const p = players[pi];
+  if (!abilities[pi]) initAbilities(pi);
+  abilities[pi].taxLevel = (abilities[pi].taxLevel || 0) + 1;
   players.forEach((pl,i)=>{
     if (i === pi || eliminated.has(i) || pl.finished) return;
     if (!abilities[i]) initAbilities(i);
-    if (abilities[i].taxTurns > 0){
-      abilities[i].taxAmount *= 2;
+    abilities[i].taxAmount = 100 * Math.pow(2, (abilities[pi].taxLevel || 1) - 1);
+    if (abilities[pi].taxLevel > 1){
       log('\u{1F4B5} '+p.name+' усилил Налог на '+pl.name+': теперь -'+abilities[i].taxAmount+' очков/ход (осталось 3 хода)', 'tax');
     } else {
-      abilities[i].taxAmount = 100;
       log('\u{1F4B5} '+p.name+' применил Налог на '+pl.name+': -100 очков каждый ход, 3 хода', 'tax');
     }
     abilities[i].taxTurns = 3;
@@ -1646,7 +1770,13 @@ function afterInfluence(pi){
 }
 
 function botInfluenceOrRoll(){
-  if (!gameOver && isCurrentBot()) doRoll();
+  if (!gameOver && isCurrentBot()){
+    if (inventory[currentPlayer] && inventory[currentPlayer].length > 0){
+      setTimeout(function(){ botUseInventory(currentPlayer); }, 900);
+      return;
+    }
+    doRoll();
+  }
 }
 
 function handleInfluenceCell(pi){
@@ -1664,61 +1794,12 @@ function handleInfluenceCell(pi){
 function botChooseInfluence(pi){
   const rivals = players.map((pl,i)=>({pl,i})).filter(({i})=> i!==pi && !eliminated.has(i) && !pl_finished_check(i));
   if (rivals.length === 0){ afterInfluence(pi); return; }
-  const choice = Math.floor(Math.random()*5); // 0=return, 1=block, 2=tax, 3=mine, 4=freeze
-  const p = players[pi];
-
-  if (choice === 0){
-    const target = rivals[Math.floor(Math.random()*rivals.length)];
-    // Check protection
-    if (abilities[target.i] && abilities[target.i].protect){
-      abilities[target.i].protect = false;
-      log('\u{1F916} '+p.name+' применил Возврат, но '+target.pl.name+' заблокировал Защитой!', 'sapper');
-    } else {
-      target.pl.pos = 0;
-      pendingStartAbilities[target.i] = 'noBonus';
-      log('\u{1F916} '+p.name+' применил Возврат: '+target.pl.name+' отправлен на Старт. Без +100, но с выбором защиты.', 'pen');
-    }
-    afterInfluence(pi);
-  } else if (choice === 1){
-    log('\u{1F916} \u{1F4B0} '+p.name+' применил Блокировку: соперники не получают очки 3 хода!', 'tax');
-    players.forEach((pl,i)=>{
-      if (i===pi || eliminated.has(i) || pl.finished) return;
-      if (!abilities[i]) initAbilities(i);
-      abilities[i].taxBlockTurns = 3;
-    });
-    afterInfluence(pi);
-  } else if (choice === 2){
-    log('\u{1F916} \u{1F4B5} '+p.name+' применил Налог: -100 очков/ход у соперников 3 хода!', 'tax');
-    players.forEach((pl,i)=>{
-      if (i===pi || eliminated.has(i) || pl.finished) return;
-      if (!abilities[i]) initAbilities(i);
-      if (abilities[i].taxTurns > 0){ abilities[i].taxAmount *= 2; } else { abilities[i].taxAmount = 100; }
-      abilities[i].taxTurns = 3;
-    });
-    afterInfluence(pi);
-  } else if (choice === 3){
-    const numericCells = [];
-    PATH_VALUES.forEach((v,i)=>{ if (typeof v === 'number' && !(i in mines)) numericCells.push(i); });
-    if (numericCells.length > 0){
-      const cellIdx = numericCells[Math.floor(Math.random()*numericCells.length)];
-      mines[cellIdx] = pi;
-      log('\u{1F916} '+p.name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
-      renderMines();
-    }
-    afterInfluence(pi);
-  } else {
-    // Freeze (choice === 4)
-    const target = rivals[Math.floor(Math.random()*rivals.length)];
-    if (abilities[target.i] && abilities[target.i].protect){
-      abilities[target.i].protect = false;
-      log('\u{1F916} '+p.name+' применил Заморозку, но '+target.pl.name+' заблокировал Защитой!', 'sapper');
-    } else {
-      if (!abilities[target.i]) initAbilities(target.i);
-      abilities[target.i].frozen = true;
-      log('\u{1F916} \u2744\uFE0F '+p.name+' применил Заморозку: '+target.pl.name+' пропустит следующий ход!', 'frz');
-    }
-    afterInfluence(pi);
-  }
+  const ids = ['return','block','tax','mine','freeze'];
+  const choice = ids[Math.floor(Math.random()*ids.length)];
+  if (!inventory[pi]) inventory[pi] = [];
+  inventory[pi].push(choice);
+  log('🤖 '+players[pi].name+' добавил «'+INV_META[choice].name+'» на панель способностей', 'bot');
+  afterInfluence(pi);
 }
 
 // ===== FULLSCREEN =====
@@ -1863,16 +1944,60 @@ document.getElementById('shopBtn').addEventListener('click', function(e){
   }
 }, true);
 
+// Overrides for inventory panel in online mode
+var useInvItemOrig = useInvItem;
+useInvItem = function(pi, itemId, botPick){
+  if (onlineMode && !isHost && mqttClient){
+    if (pi !== myPlayerId) return;
+    if (itemId === 'mine'){ startInvMineUI(pi); return; }
+    if (itemId === 'return' || itemId === 'freeze'){ showInvTargetModal(pi, itemId); return; }
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'useInv', playerId: myPlayerId, itemId: itemId}));
+    return;
+  }
+  useInvItemOrig(pi, itemId, botPick);
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
+var invPlaceMineOrig = invPlaceMine;
+invPlaceMine = function(pi, cellIdx){
+  if (onlineMode && !isHost && mqttClient){
+    document.getElementById('mineHint').classList.remove('show');
+    document.querySelectorAll('.mine-target').forEach(c=>{ c.classList.remove('mine-target'); c.onclick = null; });
+    minePlacingMode = false;
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'invMine', playerId: myPlayerId, cellIdx: cellIdx}));
+    return;
+  }
+  invPlaceMineOrig(pi, cellIdx);
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
+var invApplyTargetOrig = invApplyTarget;
+invApplyTarget = function(pi, targetIdx, itemId){
+  if (onlineMode && !isHost && mqttClient){
+    document.getElementById('influenceModal').style.display = 'none';
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'invTarget', playerId: myPlayerId, targetIdx: targetIdx, itemId: itemId}));
+    return;
+  }
+  invApplyTargetOrig(pi, targetIdx, itemId);
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
 document.getElementById('releaseBtn').addEventListener('click', useReleaseToken);
 document.getElementById('surrenderBtn').addEventListener('click', function(){
-  if (onlineMode) return; // handled by online override below
-  surrender();
+  if (onlineMode) return; // в онлайне обрабатывает override ниже
+  if (!gameStarted || gameOver || rolling) return;
+  if (isCurrentBot()) return;
+  if (!confirm('Точно сдаться? Вы выбудете из игры.')) return;
+  surrender(currentPlayer);
+  if (gameOver) return;
+  nextTurn();
 });
 document.getElementById('resetBtn').addEventListener('click', reset);
 document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
 
 // Welcome screen
 // Settings/Online modal buttons removed (welcome screen deleted)
+
+
+
+
 
 
 
@@ -1901,7 +2026,8 @@ function showShop(){
   SHOP_ITEMS.forEach(item=>{
     const owned = (item.id === 'sapper' && abilities[pi].sapper) ||
                   (item.id === 'protect' && abilities[pi].protect) ||
-                  (item.id === 'token' && abilities[pi].token);
+                  (item.id === 'token' && abilities[pi].token) ||
+                  false;
     const canAfford = p.sum >= item.price;
     const disabled = owned || !canAfford;
     html += '<div class="shop-item' + (disabled ? ' disabled' : '') + '"' +
@@ -1928,65 +2054,13 @@ function buyAbility(itemId, pi){
   else if (itemId === 'protect'){ abilities[pi].protect = true; }
   else if (itemId === 'token'){ abilities[pi].token = true; }
   else if (itemId === 'plus1'){ plus1Bonus[pi] = (plus1Bonus[pi] || 0) + 1; log('➕ '+p.name+' получит +1 к следующему броску!'); }
-  else if (itemId === 'mine'){
+  else if (itemId === 'mine' || itemId === 'block' || itemId === 'tax' || itemId === 'return' || itemId === 'freeze'){
     document.getElementById('shopModal').style.display = 'none';
-    minePlacingMode = true;
-    document.getElementById('mineHint').classList.add('show');
-    document.querySelectorAll('.cell.path').forEach(cell=>{
-      const idx = parseInt(cell.dataset.index);
-      const val = PATH_VALUES[idx];
-      if (typeof val === 'number' && !(idx in mines)){
-        cell.classList.add('mine-target');
-        cell.onclick = function(){ placeMineShop(pi, idx); };
-      }
-    });
-    return;
-  }
-  else if (itemId === 'block'){
-    players.forEach((pl,i)=>{
-      if (i === pi || eliminated.has(i) || pl.finished) return;
-      if (!abilities[i]) initAbilities(i);
-      abilities[i].taxBlockTurns = 3;
-    });
-    log('💰 '+p.name+' заблокировал соперникам получение очков на 3 хода!', 'tax');
-  }
-  else if (itemId === 'tax'){
-    players.forEach((pl,i)=>{
-      if (i === pi || eliminated.has(i) || pl.finished) return;
-      if (!abilities[i]) initAbilities(i);
-      if (abilities[i].taxTurns > 0){ abilities[i].taxAmount *= 2; } else { abilities[i].taxAmount = 100; }
-      abilities[i].taxTurns = 3;
-    });
-    log('💴 '+p.name+' применил Налог: -100 очков/ход у соперников 3 хода!', 'tax');
-  }
-  else if (itemId === 'return'){
-    document.getElementById('shopModal').style.display = 'none';
-    const rivals = players.map((pl,i)=>({pl,i})).filter(({i})=> i!==pi && !eliminated.has(i) && !pl_finished_check(i));
-    if (rivals.length === 0){ updateUI(); return; }
-    const modal = document.getElementById('influenceModal');
-    const mContent = document.getElementById('influenceModalContent');
-    let html = '<h2>↩️ Возврат из магазина</h2><p style="font-size:13px;color:#6a5d4a;margin-bottom:12px">Выберите соперника:</p><div class="target-list">';
-    rivals.forEach(({pl,i})=>{
-      html += '<button class="target-btn" onclick="applyReturnShop('+pi+', '+i+')"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:'+pl.color+';margin-right:8px;vertical-align:middle"></span>'+pl.name+' ('+pl.sum+' очков, клетка '+pl.pos+')</button>';
-    });
-    html += '</div>';
-    mContent.innerHTML = html;
-    modal.style.display = 'flex';
-    return;
-  }
-  else if (itemId === 'freeze'){
-    document.getElementById('shopModal').style.display = 'none';
-    const rivals = players.map((pl,i)=>({pl,i})).filter(({i})=> i!==pi && !eliminated.has(i) && !pl_finished_check(i));
-    if (rivals.length === 0){ updateUI(); return; }
-    const modal = document.getElementById('influenceModal');
-    const mContent = document.getElementById('influenceModalContent');
-    let html = '<h2>❄️ Заморозка из магазина</h2><p style="font-size:13px;color:#6a5d4a;margin-bottom:12px">Выберите соперника:</p><div class="target-list">';
-    rivals.forEach(({pl,i})=>{
-      html += '<button class="target-btn" onclick="applyFreezeShop('+pi+', '+i+')"><span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:'+pl.color+';margin-right:8px;vertical-align:middle"></span>'+pl.name+' ('+pl.sum+' очков, клетка '+pl.pos+')</button>';
-    });
-    html += '</div>';
-    mContent.innerHTML = html;
-    modal.style.display = 'flex';
+    if (!inventory[pi]) inventory[pi] = [];
+    inventory[pi].push(itemId);
+    log('🎒 «'+item.name+'» добавлена на панель способностей — активируйте в свой ход до броска!', 'win');
+    updateUI();
+    if (onlineMode && isHost) setTimeout(onlineSync, 300);
     return;
   }
   document.getElementById('shopModal').style.display = 'none';
@@ -2145,6 +2219,10 @@ function handleMQTTMessage(topic, data){
       doRoll(); setTimeout(onlineSync, 700);
     } else if (data.type === 'release' && data.playerId === currentPlayer){
       useReleaseToken(); setTimeout(onlineSync, 200);
+    } else if (data.type === 'surrender' && data.playerId === currentPlayer){
+      surrender(data.playerId);
+      if (!gameOver) nextTurn();
+      setTimeout(onlineSync, 300);
     } else if (data.type === 'startChoice' && data.playerId === currentPlayer){
       startChooseOrig(data.ability, data.playerId); setTimeout(onlineSync, 300);
     } else if (data.type === 'influenceChoose' && data.playerId === currentPlayer){
@@ -2157,8 +2235,13 @@ function handleMQTTMessage(topic, data){
       placeMineOrig(data.playerId, data.cellIdx); setTimeout(onlineSync, 300);
     } else if (data.type === 'buyAbility' && data.playerId === currentPlayer){
       buyAbilityOrig(data.itemId, data.playerId); setTimeout(onlineSync, 300);
-    } else if (data.type === 'surrender' && data.playerId === currentPlayer){
-      doSurrender(data.playerId); setTimeout(onlineSync, 300);
+    } else if (data.type === 'useInv' && data.playerId === currentPlayer){
+      if (data.itemId !== 'mine') useInvItemOrig(data.playerId, data.itemId);
+      setTimeout(onlineSync, 300);
+    } else if (data.type === 'invMine' && data.playerId === currentPlayer){
+      invPlaceMineOrig(data.playerId, data.cellIdx); setTimeout(onlineSync, 300);
+    } else if (data.type === 'invTarget' && data.playerId === currentPlayer){
+      invApplyTargetOrig(data.playerId, data.targetIdx, data.itemId); setTimeout(onlineSync, 300);
     }
   } else if (topic.endsWith('/state') && !isHost){
     if (data.type === 'joined' && data.playerId !== undefined){
@@ -2216,7 +2299,7 @@ function startOnlineGame(data){
   currentPlayer = 0;
   doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {};
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; plus1Bonus = {};
+  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {};
   gameStarted = true; gameOver = false;
   lockSettings();
   document.getElementById('settingsOverlay').style.display = 'none';
@@ -2240,7 +2323,7 @@ function hostStartOnlineGame(){
   currentPlayer = 0;
   doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {};
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; plus1Bonus = {};
+  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {};
   gameStarted = true; gameOver = false;
   lockSettings();
   document.getElementById('settingsOverlay').style.display = 'none';
@@ -2266,7 +2349,7 @@ function broadcastGameState(msgType){
     doublesInRow: doublesInRow, inPoliceMode: inPoliceMode, policeAttempts: policeAttempts,
     abilities: abilities, mines: mines, eliminated: Array.from(eliminated),
     beginnerModes: onlineBeginnerModes,
-    pendingStartAbilities: pendingStartAbilities, plus1Bonus: plus1Bonus
+    pendingStartAbilities: pendingStartAbilities, inventory: inventory, plus1Bonus: plus1Bonus
   }));
 }
 
@@ -2285,6 +2368,7 @@ function applyOnlineState(data){
   eliminated = new Set(data.eliminated || []);
   if (data.beginnerModes) onlineBeginnerModes = data.beginnerModes;
   if (data.pendingStartAbilities) pendingStartAbilities = data.pendingStartAbilities;
+  if (data.inventory) inventory = data.inventory;
   if (data.plus1Bonus) plus1Bonus = data.plus1Bonus;
   renderOnlinePlayers();
   if (gameStarted){
@@ -2494,31 +2578,28 @@ document.getElementById('rollBtn').addEventListener('click', function(e){
   }
 }, true);
 
-// Override surrender for online
-document.getElementById('surrenderBtn').addEventListener('click', function(e){
-  if (onlineMode){
-    if (spectatorMode && isHost){ e.preventDefault(); e.stopPropagation(); return; }
-    if (isHost){
-      if (currentPlayer === myPlayerId && !isCurrentBot()){
-        e.preventDefault(); e.stopPropagation();
-        doSurrender(currentPlayer); setTimeout(onlineSync, 700);
-      }
-    } else {
-      e.preventDefault(); e.stopPropagation();
-      if (currentPlayer === myPlayerId && mqttClient){
-        if (confirm('Вы уверены, что хотите сдаться? Игрок «'+players[currentPlayer].name+'» выбывает из игры.'))
-          mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'surrender', playerId: myPlayerId}));
-      }
-    }
-  }
-}, true);
-
 // Override release for online
 document.getElementById('releaseBtn').addEventListener('click', function(e){
   if (onlineMode){
     if (spectatorMode && isHost){ e.preventDefault(); e.stopPropagation(); return; }
     if (isHost){ useReleaseToken(); setTimeout(onlineSync, 200); }
     else if (mqttClient){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'release', playerId: myPlayerId})); }
+  }
+}, true);
+
+// Override surrender for online
+document.getElementById('surrenderBtn').addEventListener('click', function(e){
+  if (onlineMode){
+    if (spectatorMode && isHost){ e.preventDefault(); e.stopPropagation(); return; }
+    if (isHost){
+      if (!gameStarted || gameOver || rolling) return;
+      if (!confirm('Точно сдаться? Вы выбудете из игры.')) return;
+      surrender(currentPlayer);
+      if (gameOver) return;
+      nextTurn(); setTimeout(onlineSync, 300);
+    } else if (currentPlayer === myPlayerId && mqttClient){
+      mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'surrender', playerId: myPlayerId}));
+    }
   }
 }, true);
 
@@ -2611,6 +2692,10 @@ updateTurn = function(){
       if (shopBtn) shopBtn.style.display = 'none';
     } else if (!gameOver && !rolling){
       rollBtn.disabled = false;
+    }
+    const sBtn = document.getElementById('surrenderBtn');
+    if (spectatorMode && isHost || currentPlayer !== myPlayerId){
+      if (sBtn) sBtn.style.display = 'none';
     }
   }
 };
