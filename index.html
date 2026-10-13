@@ -589,7 +589,7 @@
         Из Полиции сдаться нельзя; зрители и боты не сдаются.</p>
 
         <h3>Игра против бота</h3>
-        <p>В окне настроек (значок ⚙️) можно включить режим «Игра против бота». Бот ходит автоматически. Доступны два уровня сложности.</p>
+        <p>В окне настроек (значок ⚙️) можно включить режим «Игра против бота». Бот ходит автоматически. Доступны два уровня сложности. <b>Лёгкий</b> бот играет просто: покупает 🎟 Жетон хода, когда до победы далеко, и экономит очки. <b>Сложный</b> бот пользуется магазином по стратегии: 🧰 Аптечка при ранениях (≤ 75 HP), 🗝 Жетон освобождения в Полиции, ❄️ Заморозка или ↩️ Возврат, если соперник близок к победе (≤ 300 очков до цели), 🛡 Сапёр при чужих минах на поле, 💣 Мина (до двух своих), 🛡 Защита при опасности и 💴 Налог/💰 Блокировка при запасе очков. Бот держит резерв очков и тратит оба действия за ход: покупка + способность или бросок.</p>
 
         <h3>Автопереход на Финиш</h3>
         <p>Если включён — при достижении целевой суммы игрок автоматически переходит на Финиш и побеждает.</p>
@@ -673,6 +673,7 @@
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
         <ul>
+          <li><b>🤖 Бот ходит в магазин — Сложный бот теперь покупает способности в магазине по своей стратегии: лечится Аптечкой при ранениях, покупает Жетон освобождения в Полиции, атакует Заморозкой/Возвратом соперника, близкого к победе, ставит Сапёра против чужих мин, закладывает Мины «на будущее», берёт Защиту при опасности и Налог/Блокировку при запасе очков. Лёгкий бот как раньше просто копит Жетон хода.</li>
           <li><b>⏳ Два очка действия — теперь в свой ход доступно два действия вместо одного: бросок кубиков, способность с панели или покупка в магазине. Можно бросить кубики дважды или, например, купить навык и потом бросить. Дубль по-прежнему даёт бесплатный переброс. Бот тоже тратит оба очка и передаёт ход после их израсходования.</li>
           <li><b>🛡 Защита приносит очки</b><br>Успешный блок «Возврата» или «Заморозки» теперь вознаграждается: владелец Защиты получает +100 очков (если его сумма ещё не достигла цели). Защита по-прежнему расходуется после первого срабатывания.</li>
           <li><b>🚔 Полиция — выход по выбору</b><br>Прямое попадание — только пропуск хода: жетон не расходуется, способности и мины сохраняются, после пропуска игрок выходит свободно. Три дубля подряд — Штраф Полиции (10%) и задержание: игрок сам выбирает — 🗝 жетон освобождения или выбрасывать дубль для выхода (+200 очков). Попытки не ограничены.</li>
@@ -1992,9 +1993,56 @@ function afterInfluence(pi){
   }
 }
 
+function botShopThink(pi){
+  if (botDifficulty !== 'hard') return false;
+  if (!gameStarted || gameOver || rolling || eliminated.has(pi)) return false;
+  if (actionsLeft <= 0) return false;
+  if (minePlacingMode || influencePending || startAbilityPending) return false;
+  const p = players[pi];
+  if (!p) return false;
+  const reserve = 120;
+  const inv = inventory[pi] || [];
+  if (!abilities[pi]) initAbilities(pi);
+  const ab = abilities[pi];
+  let closest = Infinity;
+  players.forEach((pl,i)=>{ if (i!==pi && !eliminated.has(i)) closest = Math.min(closest, winSum - pl.sum); });
+  let rivalMines = 0, ownMines = 0;
+  Object.values(mines).forEach(own=>{ if (own===pi) ownMines++; else if (!eliminated.has(own)) rivalMines++; });
+  const hp = (p.health===undefined || p.health===null) ? 100 : p.health;
+  let want = null;
+  if (inPoliceMode[pi]){
+    // Застрял в Полиции без жетона — купить выход
+    if (!ab.token && p.sum >= 100 + 40) want = 'token';
+  } else if (hp <= 75 && hp < 100 && p.sum >= 130 + reserve){
+    want = 'firstaid';
+  } else if (closest <= 300 && closest > 0 && !inv.includes('freeze') && !inv.includes('return') && p.sum >= 180 + 40){
+    want = (p.sum >= 200 + 40 && Math.random() < 0.5) ? 'return' : 'freeze';
+  } else if (rivalMines > 0 && !ab.sapper && p.sum >= 150 + reserve){
+    want = 'sapper';
+  } else if (ownMines < 2 && !inv.includes('mine') && p.sum >= 100 + reserve){
+    want = 'mine';
+  } else if (!ab.protect && closest <= 400 && p.sum >= 150 + reserve){
+    want = 'protect';
+  } else if (!inv.includes('tax') && !inv.includes('block') && p.sum >= 250 + 200){
+    want = (winSum - p.sum >= 300) ? 'tax' : 'block';
+  }
+  if (!want) return false;
+  const item = SHOP_ITEMS.find(x=>x.id===want);
+  if (!item || p.sum < item.price) return false;
+  buyAbility(want, pi);
+  log('🤖 ' + p.name + ': решение по магазину принято!', 'bot');
+  setTimeout(function(){
+    if (gameOver) return;
+    if (isCurrentBot()) botInfluenceOrRoll();
+    else updateUI();
+  }, 1200);
+  return true;
+}
+
 function botTokensAndRoll(pi){
   const p = players[pi];
   const dist = winSum - p.sum;
+  if (botShopThink(pi)) return;
   if (botDifficulty === 'hard' && actionsLeft > 0 && (plus1Bonus[pi] || 0) === 0 && p.sum >= 300 && dist > 60 && !eliminated.has(pi)){
     p.sum -= 80; plus1Bonus[pi] = 1; spendAction();
     log('🤖 '+p.name+' купил 🎟 Жетон хода (−80 очков).');
