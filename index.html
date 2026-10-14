@@ -363,6 +363,7 @@
 
 </style>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script>window.addEventListener("error",function(e){try{var m="⚠️ Ошибка скрипта: "+(e.message||"")+" (строка "+(e.lineno||"?")+")";var b=document.createElement("div");b.style.cssText="position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;padding:8px 12px;font:13px/1.3 sans-serif";b.textContent=m;document.body.appendChild(b);}catch(x){}});</script>
 </head>
 <body>
 <div class="app">
@@ -553,7 +554,7 @@
         <ul>
           <li><b>💯 +100 очков</b> — добавить 100 к своей сумме.</li>
           <li><b>🛡 Сапёр</b> — при наступлении на мину открывает выбор: <b>обезвредить</b> (мина снимается с поля), <b>оставить на поле</b> или <b>перенастроить</b> её против владельца (урон мины снижается до 25 HP, перенастроить можно один раз). В любом варианте урона вы не получаете. Расходуется после срабатывания. Перенастройка не объявляется в логе — следите за своими минами.</li>
-          <li><b>🛡 Защита</b> — блокирует «Возврат» или «Заморозку» соперника один раз. Расходуется после срабатывания. Успешный блок приносит +100 очков владельцу Защиты.</li>
+          <li><b>🛡 Защита</b> — блокирует «Возврат» или «Заморозку» соперника (до 2 успешных блоков). При активации игрок устанавливает шифр — комбинацию из двух чисел от 1 до 6, видимую только ему. Соперник, применяя Возврат или Заморозку против владельца Защиты, должен угадать шифр с одной попытки; попытка расходует очко действия атакующего, но не саму способность. Угадал — Защита расходуется, способность срабатывает. Не угадал — атака блокируется, способность остаётся на панели, а владелец получает +100 очков; шифр сохраняется. После двух успешных блоков Защита расходуется, и владельцу начисляется ещё +100 очков. В свой ход до броска шифр можно сменить (клик по бейджу «Защита») — смена не видна соперникам. При выбытии или сдаче Защита и шифр сбрасываются.</li>
           <li><b>🗝 Жетон освобождения</b> — мгновенный выход из Полиции (после трёх дублей подряд) без попыток. Используется один раз, после чего израсходуется. Можно получить заново при попадании на Старт.</li>
           <li><b>🧰 Лечение</b> — при попадании на Старт своим ходом здоровье восстанавливается на +25 HP (не выше 100). Действует в дополнение к выбранной способности.</li>
         </ul>
@@ -561,11 +562,11 @@
         <h3>Клетка «Влияние» — отрицательные способности</h3>
         <p>При попадании на «Влияние» игрок выбирает одну из способностей против соперников:</p>
         <ul>
-          <li><b>↩️ Возврат</b> — отправить выбранного соперника на Старт (без +100 очков, но с выбором Сапёр/Защита/Жетон). Блокируется Защитой.</li>
+          <li><b>↩️ Возврат</b> — отправить выбранного соперника на Старт (без +100 очков, но с выбором Сапёр/Защита/Жетон). Против владельца Защиты нужно угадать его шифр с одной попытки: не угадали — способность остаётся на панели, а владелец Защиты получает +100 очков.</li>
           <li><b>💰 Блокировка</b> — временно лишает всех соперников возможности получать очки с числовых клеток на 3 хода.</li>
           <li><b>💴 Налог</b> — временно снимает по 100 очков у всех соперников каждый ход на протяжении 3 ходов. При повторной активации сумма списания удваивается (100 → 200 → 400 и т.д.), таймер обнуляется до 3 ходов.</li>
-          <li><b>💣 Мина</b> — установить мину на числовую клетку. Соперник, наступивший на мину, теряет 50 HP (если у него нет Сапёра). При 0 HP игрок выбывает: его мины снимаются, способности сбрасываются. Здоровье каждого игрока — 100 HP.</li>
-          <li><b>❄️ Заморозка</b> — заморозить выбранного соперника. Он пропускает следующий ход. Блокируется Защитой.<br>🎒 Выбранная способность не срабатывает сразу — она попадает на панель способностей и активируется в любой ваш ход до броска кубиков.</li>
+          <li><b>💣 Мина</b> — установить мину на числовую клетку. Соперник, наступивший на мину, теряет 50 HP (если у него нет Сапёра). При 0 HP игрок выбывает: его мины снимаются, способности и шифр Защиты сбрасываются. Здоровье каждого игрока — 100 HP.</li>
+          <li><b>❄️ Заморозка</b> — заморозить выбранного соперника. Он пропускает следующий ход. Против владельца Защиты нужно угадать его шифр с одной попытки: не угадали — способность остаётся на панели, а владелец Защиты получает +100 очков.<br>🎒 Выбранная способность не срабатывает сразу — она попадает на панель способностей и активируется в любой ваш ход до броска кубиков.</li>
         </ul>
 
         <h3>Полиция — механика задержания</h3>
@@ -584,12 +585,12 @@
 
         <h3>🏳 Сдача</h3>
         <p>В свой ход, до броска кубиков, игрок может нажать кнопку «🏳 Сдаться» и подтвердить решение:
-        игрок выбывает из игры — его мины снимаются с поля, способности (Сапёр, Защита, Заморозка) сбрасываются.
+        игрок выбывает из игры — его мины снимаются с поля, способности (Сапёр, Защита, Заморозка) и шифр Защиты сбрасываются.
         Ход переходит следующему игроку. Вернуться в партию после сдачи нельзя. Если после сдачи остался один игрок — он объявляется победителем.
         Из Полиции сдаться нельзя; зрители и боты не сдаются.</p>
 
         <h3>Игра против бота</h3>
-        <p>В окне настроек (значок ⚙️) можно включить режим «Игра против бота». Бот ходит автоматически. Доступны два уровня сложности.<br><b>Сложный бот</b> играет в магазин по своей стратегии: покупает 🗝 Жетон освобождения при задержании, 🧰 Аптечку при ранениях (75 HP и меньше), ❄️ Заморозку или ↩️ Возврат, когда соперник близок к победе, 🛡 Сапёра, если на поле есть чужие мины, 💣 Мину «на будущее» и 🛡 Защиту в опасной ситуации. При большом запасе очков — 💴 Налог или 💰 Блокировка. Бот всегда сохраняет резерв очков и делает максимум одну покупку за ход.</p>
+        <p>В окне настроек (значок ⚙️) можно включить режим «Игра против бота». Бот ходит автоматически. Доступны два уровня сложности.<br><b>Сложный бот</b> играет в магазин по своей стратегии: покупает 🗝 Жетон освобождения при задержании, 🧰 Аптечку при ранениях (75 HP и меньше), ❄️ Заморозку или ↩️ Возврат, когда соперник близок к победе, 🛡 Сапёра, если на поле есть чужие мины, 💣 Мину «на будущее» и 🛡 Защиту в опасной ситуации. Лёгкий бот ставит шифр и угадывает чужой случайно; сложный бот запоминает свои неудачные попытки и не повторяет их, а свой шифр меняет после первой атаки на него. При большом запасе очков — 💴 Налог или 💰 Блокировка. Бот всегда сохраняет резерв очков и делает максимум одну покупку за ход.</p>
 
         <h3>Автопереход на Финиш</h3>
         <p>Если включён — при достижении целевой суммы игрок автоматически переходит на Финиш и побеждает.</p>
@@ -597,7 +598,7 @@
         <h3>Возврат на Старт</h3>
         <ul>
           <li><b>Недобор на Финиш</b> — если игрок встал на Финиш, но не набрал нужную сумму, он возвращается на Старт <b>без права выбора способностей</b>. Нужно проходить круг заново.</li>
-          <li><b>Возврат от соперника</b> — если соперник применил «Возврат», игрок отправляется на Старт и <b>может выбрать</b> Сапёр, Защиту или Жетон, но <b>не получает +100 очков</b>.</li>
+          <li><b>Возврат от соперника</b> — если соперник применил «Возврат» (шифр Защиты угадан или Защиты нет), игрок отправляется на Старт и <b>может выбрать</b> Сапёр, Защиту или Жетон, но <b>не получает +100 очков</b>.</li>
           <li>Сумма не может опуститься ниже нуля.</li>
         </ul>
 
@@ -610,7 +611,7 @@
           <li><b>🚔 Прошли мимо Полиции</b> — +100 очков. Если при ходе фишка пересекает клетку Полиции, но не останавливается на ней.</li>
           <li><b>🎲 Освобождение из Полиции дублем</b> — +200 очков. Если игрок выбросил дубль, выходя из Полиции.</li>
           <li><b>💣 Прошли мину соперника</b> — +150 очков. Если при ходе фишка пересекла клетку с миной, но не наступила на неё.</li>
-          <li><b>🛡 Защита сработала</b> — +100 очков. Если Защита заблокировала «Возврат» или «Заморозку» соперника, владелец Защиты получает бонус. Если сумма уже достигла цели — очки не начисляются.</li>
+          <li><b>🛡 Защита сработала</b> — +100 очков. Если соперник не угадал шифр Защиты, владелец получает бонус; при исчерпании лимита (2 блока) — разово ещё +100. Если сумма уже достигла цели — очки не начисляются.</li>
           <li><b>💥 Соперник подорвался на вашей мине</b> — +100 очков. Если этот подрыв выбил игрока (0 HP) — ещё +200 очков (итого +300).</li>
         </ul>
 
@@ -619,7 +620,7 @@
         <table style="width:100%;font-size:13px;border-collapse:collapse;margin:8px 0">
           <tr style="font-weight:700;color:#4a3d2e"><td style="padding:4px">Навык</td><td style="padding:4px">Цена</td><td style="padding:4px">Эффект</td></tr>
           <tr><td style="padding:4px">🛡 Сапёр</td><td style="padding:4px">150</td><td style="padding:4px">Защита от мины: обезвредить, оставить на поле или перенастроить (урон 25 HP)</td></tr>
-          <tr><td style="padding:4px">🛡 Защита</td><td style="padding:4px">150</td><td style="padding:4px">Блокирует Возврат/Заморозку 1 раз (+100 очков за блок)</td></tr>
+          <tr><td style="padding:4px">🛡 Защита</td><td style="padding:4px">250</td><td style="padding:4px">Блокирует Возврат/Заморозку до 2 раз. Шифр из двух чисел: угадан — защита снята; не угадан — блок, +100 владельцу, при исчерпании — ещё +100</td></tr>
           <tr><td style="padding:4px">🗝 Жетон</td><td style="padding:4px">100</td><td style="padding:4px">Мгновенный выход из Полиции (после трёх дублей), без попыток</td></tr>
           <tr><td style="padding:4px">🧰 Аптечка</td><td style="padding:4px">130</td><td style="padding:4px">Восстанавливает 25 HP в свой ход до броска (не выше 100)</td></tr>
           <tr><td style="padding:4px">🎟 Жетон хода</td><td style="padding:4px">80</td><td style="padding:4px">Копится: +1 к броску (до 2 за ход) или двойной шаг (2 шт.)</td></tr>
@@ -673,7 +674,8 @@
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
         <ul>
-          <li><b>🚔 Три дубля — фишка в Полиции</b><br>Исправлено: при трёх дублях подряд фишка теперь перемещается на клетку 🚔 Полиции, а не остаётся на прежней клетке. Штраф и задержание работают как раньше.</li>
+          <li><b>📋 Детали партии</b> — в окне результатов появился блок со сводкой партии (ходы, длительность) и раскрывающимися карточками игроков: броски и дубли, жетоны и двойные шаги, покупки, мины и подрывы, Полиция, налоги, Блокировки, Возвраты, Заморозки, Защита (блоки и взломы шифра), попадания на Старт/Влияние/Финиш, лечение.</li>
+          <li><b>🛡 Защита с шифром и лимитом</b> — Защита переработана: при активации владелец устанавливает скрытый шифр из двух чисел от 1 до 6. Соперник, применяя Возврат или Заморозку, угадывает шифр — одна попытка, расходуется очко действия, но не сама способность. Не угадал — атака заблокирована, способность возвращается на панель, владелец получает +100 очков (при исчерпании лимита — разово ещё +100). Угадал — Защита расходуется, способность срабатывает. Лимит — 2 успешных блока. Цена Защиты — 250 очков. Шифр можно сменить в свой ход до броска кубиков (клик по бейджу «Защита»), смена не видна соперникам. При выбытии и сдаче Защита и шифр сбрасываются.</li><li><b>🚔 Три дубля — фишка в Полиции</b><br>Исправлено: при трёх дублях подряд фишка теперь перемещается на клетку 🚔 Полиции, а не остаётся на прежней клетке. Штраф и задержание работают как раньше.</li>
           <li><b>🤖 Бот ходит в магазин</b><br>Сложный бот теперь покупает способности по своей стратегии: 🗝 Жетон освобождения в Полиции, 🧰 Аптечку при ранениях, ❄️ Заморозку/↩️ Возврат против лидера, 🛡 Сапёра при чужих минах, 💣 Мину «на будущее», 🛡 Защиту и 💴 Налог/💰 Блокировку при запасе очков. Максимум одна покупка за ход, резерв очков сохраняется. Лёгкий бот не менялся.</li>
           <li><b>⏳ Два очка действия — теперь в свой ход доступно два действия вместо одного: бросок кубиков, способность с панели или покупка в магазине. Можно бросить кубики дважды или, например, купить навык и потом бросить. Дубль по-прежнему даёт бесплатный переброс. Бот тоже тратит оба очка и передаёт ход после их израсходования.</li>
           <li><b>🛡 Защита приносит очки</b><br>Успешный блок «Возврата» или «Заморозки» теперь вознаграждается: владелец Защиты получает +100 очков (если его сумма ещё не достигла цели). Защита по-прежнему расходуется после первого срабатывания.</li>
@@ -682,13 +684,13 @@
           <li><b>🎟 Жетоны хода</b><br>«+1 к броску» заменён на жетоны: покупайте за 80 очков, копите и тратьте вручную — «+1 к броску» (до двух за ход) или «⏩ Двойной шаг» (2 жетона, второй проход той же дистанции). При дубле и в Полиции жетоны сохраняются, Полиция копилку не забирает.</li>
           <li><b>⚖️ Бонусы за мину пересмотрены</b><br>Проход мимо мины соперника: +300 → +150. Подрыв на вашей мине: +200 → +100; при выбитии — ещё +200 (итого +300). Меньше очков за случайность — больше веса решениям.</li>
           <li><b>⏳ Очко действия</b><br>В свой ход — одно действие: бросок кубиков, способность с панели или покупка в магазине. После действия кнопка «⏭ Завершить ход» передаёт ход дальше. Бот тоже тратит очко: применил способность — ход завершён.</li>
-          <li><b>❤️ Здоровье и мины</b><br>У каждого игрока 100 HP. Мина больше не выбивает мгновенно: подрыв снимает 50 HP (перенастроенная — 25). При 0 HP игрок выбывает как раньше — мины снимаются, способности сбрасываются. Попадание на Старт своим ходом восстанавливает +25 HP.</li>
+          <li><b>❤️ Здоровье и мины</b><br>У каждого игрока 100 HP. Мина больше не выбивает мгновенно: подрыв снимает 50 HP (перенастроенная — 25). При 0 HP игрок выбывает как раньше — мины снимаются, способности и шифр Защиты сбрасываются. Попадание на Старт своим ходом восстанавливает +25 HP.</li>
           <li><b>🛡 Сапёр — выбор действия</b><br>Наступив на мину с Сапёром, выбирайте: обезвредить мину, оставить её на поле или перенастроить против владельца (урон 25 HP). Перенастроить можно только раз. Сапёр расходуется в любом случае. Перенастройка не объявляется в логе — следите за своими минами.</li>
           <li><b>🛒 Магазин перебалансирован</b><br>Сапёр вернулся к 150 (теперь три действия), Мина подешевела до 100 (урон вместо выбытия), +1 к броску подорожал до 100. Добавлена 🧰 Аптечка (130): +25 HP в свой ход до броска, при полном здоровье покупка отменяется.</li>
           <li><b>💥 Бонусы за мину разделены</b><br>Соперник подорвался на вашей мине — +200 очков. Если подрыв выбил игрока (0 HP) — ещё +200 (итого +400).</li>
           <li><b>🚔 Полиция — новая механика</b><br>Прямое попадание в Полицию — пропуск следующего хода (без штрафа). Три дубля подряд — Штраф Полиции (10% от суммы для победы), без пропуска и сброса способностей.</li>
           <li><b>🌐⤢ Кнопки шапки обновлены</b><br>Онлайн, Настройки и Экран стали крупными цветными кнопками с подписями. На узких экранах подписи скрываются, остаются увеличенные иконки.</li>
-          <li><b>🏳 Сдача</b><br>Добавлена кнопка «Сдаться» в блоке «Ход». Доступна в свой ход до броска кубиков: после подтверждения игрок выбывает как при мине — мины снимаются, способности сбрасываются, ход переходит следующему. Если остался один игрок — он побеждает. Из Полиции сдаться нельзя.</li>
+          <li><b>🏳 Сдача</b><br>Добавлена кнопка «Сдаться» в блоке «Ход». Доступна в свой ход до броска кубиков: после подтверждения игрок выбывает как при мине — мины снимаются, способности и шифр Защиты сбрасываются, ход переходит следующему. Если остался один игрок — он побеждает. Из Полиции сдаться нельзя.</li>
           <li><b>🏁 Очки при достигнутой сумме</b><br>Когда игрок набирает нужную сумму для победы, очки больше не начисляются — остаётся добраться до Финиша. Если сумма снова опустится ниже цели (налог, штраф Полиции), очки возобновляются. +200 за дубль заменён на +200 за освобождение из Полиции дублем.</li>
           <li><b>🎲 Очки за случайные действия</b><br>Добавлены бонусы за случайные события: +100 за проход мимо Полиции, +200 за освобождение из Полиции дублем, +300 за проход мимо мины соперника, +400 когда соперник подорвался на вашей мине.</li>
           <li><b>🛒 Магазин навыков</b><br>Добавлен магазин — покупайте способности за очки в свой ход до броска. Сапёр (150), Защита (150), Жетон (100), +1 к броску (80), Мина (150), Блокировка (250), Налог (200), Возврат (200), Заморозка (180). Каждая покупка отдаляет от цели победы.</li>
@@ -761,7 +763,7 @@
 </div>
 
 <div class="modal-overlay" id="resultsModal" style="display:none">
-  <div class="modal" style="max-width:420px;position:relative">
+  <div class="modal" style="max-width:520px;position:relative">
     <button class="close-x" onclick="closeResults()" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
     <h2>🏆 Партия завершена</h2>
     <div id="resultsBody"></div>
@@ -899,7 +901,7 @@ function useInvItem(pi, itemId, botPick){
     if (rivals.length === 0){ log('\u{1F4B0} '+p.name+': Блокировка не применилась — нет соперников. Осталась на панели.', 'tax'); return; }
     invConsume(pi, itemId);
     log('\u{1F4B0} '+p.name+' применил Блокировку: соперники не получают очки 3 хода!', 'tax');
-    rivals.forEach(({i})=>{ if (!abilities[i]) initAbilities(i); abilities[i].taxBlockTurns = 3; });
+    rivals.forEach(({i})=>{ if (!abilities[i]) initAbilities(i); abilities[i].taxBlockTurns = 3; }); pst(pi,'blockUsed');
   } else if (itemId === 'tax'){
     if (rivals.length === 0){ log('\u{1F4B4} '+p.name+': Налог не применился — нет соперников. Остался на панели.', 'tax'); return; }
     invConsume(pi, itemId);
@@ -910,7 +912,7 @@ function useInvItem(pi, itemId, botPick){
       if (!abilities[i]) initAbilities(i);
       abilities[i].taxAmount = taxSum;
       abilities[i].taxTurns = 3;
-    });
+    }); pst(pi,'taxUsed');
     log('\u{1F4B4} '+p.name+' применил Налог: -'+taxSum+' очков/ход у соперников 3 хода (уровень '+abilities[pi].taxLevel+')!', 'tax');
   } else if (itemId === 'mine'){
     const numericCells = [];
@@ -919,7 +921,7 @@ function useInvItem(pi, itemId, botPick){
     if (botPick){
       invConsume(pi, itemId);
       const cellIdx = numericCells[Math.floor(Math.random()*numericCells.length)];
-      mines[cellIdx] = pi;
+      mines[cellIdx] = pi; pst(pi,'mines');
       log('\u{1F916} '+p.name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
       renderMines();
     } else {
@@ -928,7 +930,6 @@ function useInvItem(pi, itemId, botPick){
   } else if (itemId === 'return' || itemId === 'freeze'){
     if (rivals.length === 0){ log('Соперников нет — способность осталась на панели.', 'pen'); return; }
     if (botPick){
-      invConsume(pi, itemId);
       invApplyTargetCore(pi, rivals[Math.floor(Math.random()*rivals.length)].i, itemId);
     } else {
       showInvTargetModal(pi, itemId);
@@ -955,7 +956,7 @@ function invPlaceMine(pi, cellIdx){
   document.getElementById('mineHint').classList.remove('show');
   document.querySelectorAll('.mine-target').forEach(c=>{ c.classList.remove('mine-target'); c.onclick = null; });
   invConsume(pi, 'mine');
-  mines[cellIdx] = pi;
+  mines[cellIdx] = pi; pst(pi,'mines');
   log(players[pi].name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
   renderMines();
   updateUI();
@@ -976,14 +977,107 @@ function showInvTargetModal(pi, kind){
   content.innerHTML = html;
   modal.style.display = 'flex';
 }
-function awardProtectBonus(targetIdx){
-  if (players[targetIdx] && players[targetIdx].sum < winSum){
-    players[targetIdx].sum += 100;
-    log('\u{1F6E1} ' + players[targetIdx].name + ' отразил атаку Защитой: +100 очков!', 'win');
-  }
+/* ===== 🛡 Защита с шифром (новая механика) ===== */
+const SHIELD_LIMIT = 2, SHIELD_BONUS = 100;
+const shieldCiphers = {};
+let shieldPending = null;
+let shieldRolledThisTurn = false;
+const shieldGuessMem = {};
+function shieldRandomCipher(){ return [1+Math.floor(Math.random()*6), 1+Math.floor(Math.random()*6)]; }
+function shieldNumGrid(){ let h=''; for (let n=1;n<=6;n++) h += '<button data-shn="'+n+'" style="width:38px;height:38px;margin:3px;border-radius:8px;border:2px solid #bbb;background:#fff;font-size:17px;cursor:pointer">'+n+'</button>'; return h; }
+function shieldOpenModal(title, sub, cb, cancelCb){
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:99999;display:flex;align-items:center;justify-content:center';
+  const bx = document.createElement('div');
+  bx.style.cssText = 'background:#fff;border-radius:14px;padding:18px;max-width:340px;width:92%;text-align:center;font-family:inherit;box-shadow:0 10px 40px rgba(0,0,0,.3)';
+  bx.innerHTML = '<h3 style="margin:0 0 6px;font-size:17px">'+title+'</h3><p style="font-size:13px;color:#555;margin:0 0 10px">'+sub+'</p><div><b style="font-size:12px">Первое число</b><div id="shg1">'+shieldNumGrid()+'</div></div><div style="margin-top:6px"><b style="font-size:12px">Второе число</b><div id="shg2">'+shieldNumGrid()+'</div></div><div style="margin-top:12px"><button id="shok" style="padding:8px 16px;border-radius:8px;border:0;background:#2e7d32;color:#fff;cursor:pointer" disabled>✔ Подтвердить</button>' + (cancelCb ? ' <button id="shc" style="padding:8px 16px;border-radius:8px;border:0;background:#888;color:#fff;cursor:pointer">Отмена</button>' : '') + '</div>';
+  ov.appendChild(bx); document.body.appendChild(ov);
+  let step = 0; const pick = [null, null];
+  const grids = [bx.querySelector('#shg1'), bx.querySelector('#shg2')];
+  const okB = bx.querySelector('#shok');
+  bx.addEventListener('click', function(e){
+    const btn = e.target.closest ? e.target.closest('[data-shn]') : null;
+    if (!btn || btn.parentElement !== grids[step]) return;
+    pick[step] = +btn.getAttribute('data-shn');
+    Array.prototype.forEach.call(grids[step].children, function(x){ x.style.background = '#fff'; x.style.borderColor = '#bbb'; });
+    btn.style.background = '#2e7d32'; btn.style.borderColor = '#2e7d32';
+    if (step === 0) step = 1; else okB.disabled = false;
+  });
+  okB.onclick = function(){ ov.remove(); cb([pick[0], pick[1]]); };
+  if (cancelCb) bx.querySelector('#shc').onclick = function(){ ov.remove(); cancelCb(); };
 }
+function shieldSpend(){ if (typeof actionsLeft !== 'undefined' && actionsLeft > 0) actionsLeft--; }
+function shieldRefund(){ if (typeof actionsLeft !== 'undefined' && typeof ACTIONS_PER_TURN !== 'undefined' && actionsLeft < ACTIONS_PER_TURN) actionsLeft++; }
+function shieldConsumeOnly(pi, itemId){ const arr = inventory[pi] || []; const k = arr.indexOf(itemId); if (k !== -1) arr.splice(k, 1); }
+function shieldAwardPoints(pi, amt){ if (players[pi] && players[pi].sum < winSum) players[pi].sum += amt; }
+function shieldMyIdx(){ return (typeof onlineMode !== 'undefined' && onlineMode && typeof myPlayerId !== 'undefined' && myPlayerId !== null) ? myPlayerId : 0; }
+function shieldGrant(pi){
+  abilities[pi].protectBlocks = 0;
+  if (players[pi] && players[pi].isBot){ shieldCiphers[pi] = shieldRandomCipher(); updateUI(); return; }
+  if (typeof onlineMode !== 'undefined' && onlineMode && typeof isHost !== 'undefined' && isHost && pi !== shieldMyIdx()){
+    if (mqttClient) mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'shieldCipherReq', forPlayerId: pi}));
+    return;
+  }
+  shieldOpenModal('🛡 Защита активирована — установите шифр', 'Выберите два числа от 1 до 6 — это ваш шифр, его увидите только вы. Соперник при атаке должен угадать его с одной попытки.', function(ab){ shieldCiphers[pi] = ab; log('🛡 ' + players[pi].name + ' активировал Защиту — установлен шифр', 'protect'); updateUI(); if (typeof onlineMode !== 'undefined' && onlineMode && isHost) setTimeout(onlineSync, 300); }, null);
+}
+function shieldBotGuess(pi, t){
+  const key = pi + '_' + t; const mem = shieldGuessMem[key] || [];
+  const cand = [];
+  for (let a=1;a<=6;a++) for (let b=1;b<=6;b++){ const s = a + '-' + b; if (mem.indexOf(s) === -1) cand.push([a,b]); }
+  return cand.length ? cand[Math.floor(Math.random()*cand.length)] : shieldRandomCipher();
+}
+function shieldAttempt(pi, t, core, onCancel, costAction, onBlock){
+  if (!abilities[t] || !abilities[t].protect){ if (costAction) shieldSpend(); core(); return; }
+  if (costAction) shieldSpend();
+  shieldPending = { attacker: pi, target: t, playerId: pi, core: core, onBlock: onBlock };
+  if (players[pi] && players[pi].isBot){ shieldResolve(pi, t, shieldBotGuess(pi, t)); return; }
+  if (typeof onlineMode !== 'undefined' && onlineMode && typeof isHost !== 'undefined' && isHost && pi !== shieldMyIdx() && mqttClient){
+    mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'shieldGuessReq', forPlayerId: pi, targetIdx: t}));
+    const pid = pi;
+    setTimeout(function(){ if (shieldPending && shieldPending.playerId === pid){ log('⏱ Владелец не ответил — атака заблокирована', 'protect'); shieldResolve(pid, shieldPending.target, [0,0]); } }, 10000);
+    return;
+  }
+  shieldOpenModal('🔒 Попытка взлома Защиты', 'Угадайте шифр ' + players[t].name + ' — два числа от 1 до 6, одна попытка. Не угадаете — атака заблокирована, способность останется на панели, а соперник получит +' + SHIELD_BONUS + ' очков.', function(g){ shieldResolve(pi, t, g); }, function(){ shieldPending = null; if (onCancel) onCancel(); else if (onBlock) onBlock(); updateUI(); });
+}
+function shieldResolve(pi, t, g){
+  const pend = shieldPending; shieldPending = null;
+  const c = shieldCiphers[t];
+  if (c && g && g[0] === c[0] && g[1] === c[1]){
+    pst(pi,'shieldCracks');
+    abilities[t].protect = false; abilities[t].protectBlocks = 0; delete shieldCiphers[t];
+    log('🔓 ' + players[pi].name + ' угадал шифр — Защита ' + players[t].name + ' снята, способность сработает', 'protect');
+    updateUI();
+    if (pend && pend.core) pend.core();
+  } else {
+    const key = pi + '_' + t; if (!shieldGuessMem[key]) shieldGuessMem[key] = []; shieldGuessMem[key].push(g[0] + '-' + g[1]); pst(t,'shieldBlocks');
+    abilities[t].protectBlocks = (abilities[t].protectBlocks || 0) + 1;
+    if (players[t] && players[t].isBot) shieldCiphers[t] = shieldRandomCipher();
+    if (abilities[t].protectBlocks >= SHIELD_LIMIT){
+      abilities[t].protect = false; delete shieldCiphers[t];
+      shieldAwardPoints(t, SHIELD_BONUS);
+      log('🛡 Защита ' + players[t].name + ' исчерпана: ' + SHIELD_LIMIT + ' успешных блока — способность снята, ещё +' + SHIELD_BONUS + ' очков', 'protect');
+    } else {
+      shieldAwardPoints(t, SHIELD_BONUS);
+      log('🛡 Защита ' + players[t].name + ' не взломана — атака заблокирована, +' + SHIELD_BONUS + ' очков (блок ' + abilities[t].protectBlocks + '/' + SHIELD_LIMIT + ')', 'protect');
+    }
+    if (pend && pend.onBlock) pend.onBlock();
+    updateUI();
+  }
+  if (typeof onlineMode !== 'undefined' && onlineMode && typeof isHost !== 'undefined' && isHost) setTimeout(onlineSync, 300);
+}
+function shieldChangeOpen(mi){
+  shieldOpenModal('🛡 Смена шифра', 'Выберите новую комбинацию из двух чисел — соперники об этом не узнают.', function(ab){ shieldCiphers[mi] = ab; updateUI(); if (typeof onlineMode !== 'undefined' && onlineMode && isHost) setTimeout(onlineSync, 300); }, null);
+}
+document.addEventListener('click', function(e){
+  const b = e.target && e.target.closest ? e.target.closest('.badge-protect') : null;
+  if (!b) return;
+  const mi = shieldMyIdx();
+  if (abilities[mi] && abilities[mi].protect && typeof currentPlayer !== 'undefined' && currentPlayer === mi && !shieldRolledThisTurn && typeof gameStarted !== 'undefined' && gameStarted && !gameOver) shieldChangeOpen(mi);
+});
+function awardProtectBonus(targetIdx){ shieldAwardPoints(targetIdx, SHIELD_BONUS); }
 
-function invApplyTargetCore(pi, targetIdx, itemId){
+function invApplyTargetGo(pi, targetIdx, itemId){
+  pst(pi, itemId === 'return' ? 'returnUsed' : 'freezeUsed');
   const target = players[targetIdx];
   const label = itemId === 'return' ? 'Возврат' : 'Заморозку';
   if (abilities[targetIdx] && abilities[targetIdx].protect){
@@ -1000,11 +1094,12 @@ function invApplyTargetCore(pi, targetIdx, itemId){
     log('\u2744\uFE0F '+players[pi].name+' применил Заморозку: '+target.name+' пропустит следующий ход!', 'frz');
   }
 }
+
+function invApplyTargetCore(pi, targetIdx, itemId){
+  shieldAttempt(pi, targetIdx, function(){ shieldConsumeOnly(pi, itemId); invApplyTargetGo(pi, targetIdx, itemId); try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); }, function(){ shieldRefund(); try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); }, true, function(){ try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); });
+}
 function invApplyTarget(pi, targetIdx, itemId){
-  invConsume(pi, itemId);
   invApplyTargetCore(pi, targetIdx, itemId);
-  document.getElementById('influenceModal').style.display = 'none';
-  updateUI();
 }
 function invReturn(pi, targetIdx){ invApplyTarget(pi, targetIdx, 'return'); }
 function invFreeze(pi, targetIdx){ invApplyTarget(pi, targetIdx, 'freeze'); }
@@ -1113,11 +1208,12 @@ function log(text, cls){
 }
 
 function initAbilities(pi){
-  abilities[pi] = { sapper: false, protect: false, token: false, frozen: false, taxBlockTurns: 0, taxTurns: 0, taxAmount: 0, taxLevel: 0 }; plus1Bonus[pi] = 0;
+  abilities[pi] = { sapper: false, protect: false, protectBlocks: 0, token: false, frozen: false, taxBlockTurns: 0, taxTurns: 0, taxAmount: 0, taxLevel: 0 }; plus1Bonus[pi] = 0;
 }
 
 function resetAllAbilities(pi){
   if (!abilities[pi]) return;
+  try{ delete shieldCiphers[pi]; abilities[pi].protectBlocks = 0; }catch(err){}
   const had = [];
   if (abilities[pi].sapper) had.push('Сапёр');
   if (abilities[pi].protect) had.push('Защита');
@@ -1144,6 +1240,36 @@ let partyTurns = 0;
 let surrenderCount = 0;
 let resultsShown = false;
 
+/* ===== 📊 Статистика партии ===== */
+function pst(i, k, v){
+  try{
+    if (!window.PSTATS) return;
+    const pp = players[i];
+    const key = (pp && (pp.name || pp.nickname)) || ('Игрок ' + ((i||0)+1));
+    if (!window.PSTATS[key]) window.PSTATS[key] = {};
+    window.PSTATS[key][k] = (window.PSTATS[key][k] || 0) + (v === undefined ? 1 : v);
+  }catch(e){}
+}
+function partyStatsDetails(){
+  try{
+    if (!window.PSTATS) return '';
+    let h = '<div style="margin-top:14px;padding-top:10px;border-top:1px solid #e8dcc8;text-align:left">'
+      + '<div style="font-weight:700;margin-bottom:4px">📋 Детали партии</div>'
+      + '<div style="font-size:12px;color:#6a5d4a;margin-bottom:8px">Ходов: <b>'+partyTurns+'</b> · Длительность: <b>'+Math.max(1, Math.round((Date.now()-(window.PSTIME||Date.now()))/60000))+'</b> мин</div>';
+    const L = {rolls:'🎲 Бросков', doubles:'· дублей', tokensPlus:'🎟 Жетонов «+1» потрачено', doubleSteps:'⏩ Двойных шагов', buys:'🛒 Покупок', spent:'· потрачено очков', mines:'💣 Мин поставлено', mineHits:'💥 Подрывов на минах', mineDmg:'· урона от мин (HP)', mineOwner:'🎉 Бонусов за подрыв (+100)', mineKills:'🏆 Бонусов за выбитого (+200)', passPolice:'🚔 Прошли мимо Полиции', passMines:'💣 Прошли мимо мин', policeHits:'🚔 Попаданий в Полицию', policePenalty:'💸 Штрафов Полиции', policePenSum:'· сумма штрафа', policeEscape:'🔓 Освобождений дублем', skipPolice:'⏸ Пропусков (Полиция)', skipFreeze:'❄️ Пропусков (Заморозка)', taxHits:'💴 Налог выплачен (раз)', taxPaid:'· списано налогом', taxUsed:'💴 Налогов применено', blockUsed:'💰 Блокировок применено', returnUsed:'↩️ Возвратов применено', freezeUsed:'❄️ Заморозок применено', shieldBlocks:'🛡 Блоков Защитой', shieldCracks:'🔓 Взломов шифра', startLand:'🏁 Попаданий на Старт', influenceLand:'⭐ Попаданий на Влияние', finishShort:'↩️ Недоборов на Финише', startHeal:'❤️ Лечений на Стартe', healAmt:'· восстановлено HP'};
+    Object.keys(window.PSTATS).forEach(function(k){
+      const s = window.PSTATS[k];
+      const rows = Object.keys(s).filter(function(x){ return s[x] > 0; });
+      if (!rows.length) return;
+      h += '<details style="margin:4px 0"><summary style="cursor:pointer;font-weight:600;font-size:13px">'+k+'</summary><div style="font-size:12px;color:#5a4f3d;padding:4px 0 0 14px">';
+      rows.forEach(function(r){ h += '<div>'+((L[r]!==undefined)?L[r]:r)+': <b>'+s[r]+'</b></div>'; });
+      h += '</div></details>';
+    });
+    h += '</div>';
+    return h;
+  }catch(e){ return ''; }
+}
+
 function makePlayers(){
   players = [];
   let count = botMode ? 2 : playerCount;
@@ -1159,7 +1285,7 @@ function makePlayers(){
   botShopBought = false;
   abilities = {};
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
+  mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; window.PSTATS = {}; window.PSTIME = Date.now(); surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
 }
 
 function isCurrentBot(){ return players[currentPlayer] && players[currentPlayer].isBot; }
@@ -1194,7 +1320,7 @@ function updatePlayers(){
     if (doublesInRow[i] > 0) badges += '<span class="badge badge-doubles">дубли: '+doublesInRow[i]+'/3</span>';
     const ab = abilities[i] || {};
     if (ab.sapper) badges += '<span class="badge badge-sapper">\u{1F6E1}\uFE0F Сапёр</span>';
-    if (ab.protect) badges += '<span class="badge badge-protect">\u{1F6E1}\uFE0F Защита</span>';
+    if (ab.protect) badges += '<span class="badge badge-protect">\u{1F6E1}\uFE0F Защита'+(ab.protectBlocks?' ×'+ab.protectBlocks:'')+'</span>';
     if (ab.token) badges += '<span class="badge badge-token">\u{1F5DD}\uFE0F Жетон</span>';
     if (ab.frozen) badges += '<span class="badge badge-freeze">\u2744\uFE0F заморозка</span>';
     if (ab.taxBlockTurns > 0) badges += '<span class="badge badge-taxblock">\u{1F4B0} блок: '+ab.taxBlockTurns+'</span>';
@@ -1355,12 +1481,12 @@ function movePlayer(p, pi, steps){
     // Passed Police bonus
     if (passPos === POLICE_INDEX && p.sum < winSum){
       p.sum += 100;
-      log('\u{1F389} '+p.name+' прошёл мимо Полиции: +100 очков (случайный бонус)!', 'win');
+      log('\u{1F389} '+p.name+' прошёл мимо Полиции: +100 очков (случайный бонус)!', 'win'); pst(pi,'passPolice');
     }
     // Passed mine bonus
     if (passPos in mines && mines[passPos] !== pi && p.sum < winSum){
       p.sum += 150;
-      log('\u{1F389} '+p.name+' прошёл мимо мины: +150 очков (случайный бонус)!', 'win');
+      log('\u{1F389} '+p.name+' прошёл мимо мины: +150 очков (случайный бонус)!', 'win'); pst(pi,'passMines');
     }
   }
   p.pos = (oldPos + steps) % 40;
@@ -1387,7 +1513,7 @@ function movePlayer(p, pi, steps){
       }
       if (beginnerMode && !shownHints.has('sapperChoice') && !p.isBot) showBeginnerHint('sapperChoice', '🛡 Выбор Сапёра', 'У вас Сапёр — урона не будет. Выберите: обезвредить мину, оставить её на поле или перенастроить против владельца (урон 25 HP). Сапёр расходуется в любом случае.');
     } else {
-      players[pi].health = Math.max(0, (players[pi].health||100) - dmg);
+      players[pi].health = Math.max(0, (players[pi].health||100) - dmg); pst(pi,'mineHits'); pst(pi,'mineDmg',dmg); pst(mineOwner,'mineOwner');
       log('💥 '+p.name+' наступил на мину (установлена '+players[mineOwner].name+') — −'+dmg+' HP ('+players[pi].health+'/100)!', 'pen');
       if (players[mineOwner] && !eliminated.has(mineOwner) && players[mineOwner].sum < winSum){
         players[mineOwner].sum += 100;
@@ -1396,7 +1522,7 @@ function movePlayer(p, pi, steps){
       if (players[pi].health <= 0){
         log('☠️ '+p.name+' теряет последние силы — ВЫБЫВАЕТ ИЗ ИГРЫ!', 'pen');
         if (players[mineOwner] && !eliminated.has(mineOwner) && players[mineOwner].sum < winSum){
-          players[mineOwner].sum += 200;
+          players[mineOwner].sum += 200; pst(mineOwner,'mineKills');
           log('🏆 '+players[mineOwner].name+' получает ещё +200 очков — подрыв выбил игрока!', 'win');
         }
         resetAllAbilities(pi);
@@ -1411,7 +1537,7 @@ function movePlayer(p, pi, steps){
   }
   const val = PATH_VALUES[p.pos];
   if (val === "Полиция"){
-    p.skip = true;
+    p.skip = true; pst(pi,'policeHits');
     log(p.name+' попал в Полицию: пропуск следующего хода (способности, мины и 🗝 жетон сохранены)', 'pen');
     if (beginnerMode && !p.isBot && !shownHints.has('policeDirect')) showBeginnerHint('policeDirect', '🚔 Полиция', 'Прямое попадание — пропуск следующего хода. Способности, мины и жетон освобождения сохраняются: после пропуска вы ходите свободно, жетон не тратится.');
   } else if (val === "Финиш"){
@@ -1419,15 +1545,15 @@ function movePlayer(p, pi, steps){
       winGame(p);
     } else {
       p.pos = 0;
-      pendingStartAbilities[pi] = 'none';
+      pendingStartAbilities[pi] = 'none'; pst(pi,'finishShort');
       if (beginnerMode && !shownHints.has('finishReturn')) showBeginnerHint('finishReturn', '🏁 Финиш — недобор!', 'Вы дошли до Финиша, но не набрали нужную сумму. Возврат на Старт без права выбора способностей. Проходите круг заново!');
       log(p.name+': Финиш не засчитан ('+p.sum+' из '+winSum+'). Возврат на Старт, способности недоступны!', 'pen');
     }
   } else if (val === "Старт"){
-    log(p.name+' остановился на Старте');
+    log(p.name+' остановился на Старте'); pst(pi,'startLand');
     handleStartCell(pi);
   } else if (val === "Влияние"){
-    log(p.name+' остановился на клетке «Влияние»', 'win');
+    log(p.name+' остановился на клетке «Влияние»', 'win'); pst(pi,'influenceLand');
     handleInfluenceCell(pi);
   } else {
     // Numeric cell - check tax block
@@ -1469,7 +1595,7 @@ function handleStartCell(pi){
   if (!noBonus && !eliminated.has(pi) && (p.health||100) < 100){
     const healed = Math.min(100 - (p.health||100), 25);
     p.health = Math.min(100, (p.health||100) + 25);
-    log('❤️ '+p.name+' восстановил '+healed+' HP на Стартe ('+p.health+'/100)', 'win');
+    log('❤️ '+p.name+' восстановил '+healed+' HP на Стартe ('+p.health+'/100)', 'win'); pst(pi,'startHeal'); pst(pi,'healAmt',healed);
   }
   log(p.name+' попал на Старт' + (noBonus ? ' (после Возврата — без +100)' : '') + ' — выбор способности!', 'win');
   if (p.isBot){
@@ -1528,7 +1654,7 @@ function startChoose(ability, pi){
     abilities[pi].sapper = true;
     log('\u{1F6E1}\uFE0F '+p.name+' получил Сапёра', 'sapper');
   } else if (ability === 'protect'){
-    abilities[pi].protect = true;
+    abilities[pi].protect = true; shieldGrant(pi);
     log('\u{1F6E1}\uFE0F '+p.name+' получил Защиту', 'sapper');
   } else if (ability === 'token'){
     abilities[pi].token = true;
@@ -1609,7 +1735,7 @@ function botChooseStartAbility(pi, noBonus){
     abilities[pi].sapper = true;
     log('\u{1F6E1}\uFE0F \u{1F916} '+p.name+' получил Сапёра', 'sapper');
   } else if (choice === 2){
-    abilities[pi].protect = true;
+    abilities[pi].protect = true; shieldGrant(pi);
     log('\u{1F6E1}\uFE0F \u{1F916} '+p.name+' получил Защиту', 'sapper');
   } else {
     abilities[pi].token = true;
@@ -1631,6 +1757,7 @@ function useReleaseToken(){
 }
 
 function nextTurn(){
+  shieldRolledThisTurn = false;
     actionsLeft = ACTIONS_PER_TURN; freeRollPending = false; botShopBought = false;
   if (gameOver) return;
   partyTurns++;
@@ -1648,7 +1775,7 @@ function nextTurn(){
     // Apply tax - deduct points each turn
     if (abilities[idx] && abilities[idx].taxTurns > 0){
       const deducted = Math.min(abilities[idx].taxAmount, players[idx].sum);
-      players[idx].sum -= deducted;
+      players[idx].sum -= deducted; pst(idx,'taxPaid',deducted); pst(idx,'taxHits');
       log('\u{1F4B5} '+players[idx].name+': Налог -'+deducted+' очков (осталось '+abilities[idx].taxTurns+' ход.)', 'tax');
       abilities[idx].taxTurns--;
       if (abilities[idx].taxTurns === 0){
@@ -1658,13 +1785,13 @@ function nextTurn(){
     }
     if (players[idx].skip){
       players[idx].skip = false;
-      log(players[idx].name+' пропускает ход (Полиция)', 'pen');
+      log(players[idx].name+' пропускает ход (Полиция)', 'pen'); pst(idx,'skipPolice');
       continue;
     }
     // Check frozen
     if (abilities[idx] && abilities[idx].frozen){
       abilities[idx].frozen = false;
-      log('\u2744\uFE0F '+players[idx].name+' заморожен — пропускает ход!', 'frz');
+      log('\u2744\uFE0F '+players[idx].name+' заморожен — пропускает ход!', 'frz'); pst(idx,'skipFreeze');
       continue;
     }
     currentPlayer = idx;
@@ -1692,6 +1819,7 @@ function botRollDice(){
 }
 
 function doRoll(){
+  shieldRolledThisTurn = true;
     if (actionsLeft <= 0 && !freeRollPending && !inPoliceMode[currentPlayer]) return;
   if (beginnerMode && !shownHints.has('firstRoll')){
     showBeginnerHint('firstRoll', '🎲 Бросок кубиков', 'Вы бросаете два кубика. Фишка перемещается по полу на выпавшую сумму. Каждая числовая клетка добавляет очки к вашей сумме.');
@@ -1710,6 +1838,7 @@ function doRoll(){
 
   const isDouble = d1 === d2;
   const pi = currentPlayer;
+  pst(pi,'rolls'); if (isDouble) pst(pi,'doubles');
   const p = players[pi];
   // Move tokens are spent manually (see branches below)
 
@@ -1725,7 +1854,7 @@ function doRoll(){
       plusUsed = Math.min(tokenPlusPending[pi] || 0, 2, plus1Bonus[pi] || 0);
       tokenPlusPending[pi] = 0;
       if (plusUsed > 0){
-        plus1Bonus[pi] = (plus1Bonus[pi] || 0) - plusUsed;
+        plus1Bonus[pi] = (plus1Bonus[pi] || 0) - plusUsed; pst(pi,'tokensPlus',plusUsed);
         log('🎟 '+p.name+' потратил '+plusUsed+' жетон(а) хода: +'+plusUsed+' к броску! Теперь: '+d1+' + '+d2+' + '+plusUsed);
       }
       steps = d1 + d2 + plusUsed;
@@ -1754,7 +1883,7 @@ function doRoll(){
           log('🎟 Дубль — жетоны хода сохранены на следующий бросок.');
         }
         if (p.sum < winSum){
-          p.sum += 200;
+          p.sum += 200; pst(pi,'policeEscape');
           log('\u{1F513} '+p.name+': выход из Полиции дублем! +200 очков!', 'win');
         }
         movePlayer(p, pi, steps);
@@ -1782,7 +1911,7 @@ function doRoll(){
   if (beginnerMode && pi === currentPlayer && doublesInRow[pi] === 1 && !shownHints.has('doubles')) showBeginnerHint('doubles', '🎲 Дубль', 'Вы выбросили дубль — одинаковые значения на обоих кубиках. Три дубля подряд — штраф Полиции!');;
       if (doublesInRow[pi] >= 3){
         log('ТРИ ДУБЛЯ ПОДРЯД! '+p.name+' — Штраф Полиции и задержание!', 'pen');
-        p.sum = Math.max(0, p.sum - policePenalty);
+        p.sum = Math.max(0, p.sum - policePenalty); pst(pi,'policePenalty'); pst(pi,'policePenSum',policePenalty);
         log(p.name+': Штраф Полиции '+policePenalty+', сумма '+p.sum, 'pen');
         inPoliceMode[pi] = true;
         p.pos = POLICE_INDEX;
@@ -1810,6 +1939,7 @@ function doRoll(){
     doublesInRow[pi] = 0;
     movePlayer(p, pi, steps);
     if (doubleStepPending[pi]){
+      pst(pi,'doubleSteps');
       doubleStepPending[pi] = false;
       if (!gameOver && !eliminated.has(pi) && !influencePending && !startAbilityPending && !inPoliceMode[pi] && (plus1Bonus[pi] || 0) >= 2){
         plus1Bonus[pi] -= 2;
@@ -1904,7 +2034,8 @@ function closeModal(){
   influencePending = false;
 }
 
-function applyReturn(pi, targetIdx){
+function applyReturnGo(pi, targetIdx){
+  pst(pi,'returnUsed');
   const target = players[targetIdx];
   // Check protection
   if (abilities[targetIdx] && abilities[targetIdx].protect){
@@ -1923,7 +2054,12 @@ function applyReturn(pi, targetIdx){
   afterInfluence(pi);
 }
 
+function applyReturn(pi, targetIdx){
+  shieldAttempt(pi, targetIdx, function(){ applyReturnGo(pi, targetIdx); }, function(){ try{ closeModal(); }catch(err){} try{ afterInfluence(pi); }catch(err){} updateUI(); }, false, function(){ try{ closeModal(); }catch(err){} try{ afterInfluence(pi); }catch(err){} updateUI(); });
+}
+
 function applyTaxBlock(pi){
+  pst(pi,'blockUsed');
   const p = players[pi];
   log('\u{1F4B0} '+p.name+' применил Блокировку: соперники не получают очки 3 хода!', 'tax');
   players.forEach((pl,i)=>{
@@ -1937,6 +2073,7 @@ function applyTaxBlock(pi){
 }
 
 function applyTax(pi){
+  pst(pi,'taxUsed');
   const p = players[pi];
   if (!abilities[pi]) initAbilities(pi);
   abilities[pi].taxLevel = (abilities[pi].taxLevel || 0) + 1;
@@ -1955,7 +2092,8 @@ function applyTax(pi){
   afterInfluence(pi);
 }
 
-function applyFreeze(pi, targetIdx){
+function applyFreezeGo(pi, targetIdx){
+  pst(pi,'freezeUsed');
   const target = players[targetIdx];
   // Check protection
   if (abilities[targetIdx] && abilities[targetIdx].protect){
@@ -1973,6 +2111,10 @@ function applyFreeze(pi, targetIdx){
   afterInfluence(pi);
 }
 
+function applyFreeze(pi, targetIdx){
+  shieldAttempt(pi, targetIdx, function(){ applyFreezeGo(pi, targetIdx); }, function(){ try{ closeModal(); }catch(err){} try{ afterInfluence(pi); }catch(err){} updateUI(); }, false, function(){ try{ closeModal(); }catch(err){} try{ afterInfluence(pi); }catch(err){} updateUI(); });
+}
+
 function placeMine(pi, cellIdx){
   if (!minePlacingMode) return;
   minePlacingMode = false;
@@ -1981,7 +2123,7 @@ function placeMine(pi, cellIdx){
     c.classList.remove('mine-target');
     c.onclick = null;
   });
-  mines[cellIdx] = pi;
+  mines[cellIdx] = pi; pst(pi,'mines');
   log(players[pi].name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
   renderMines();
   afterInfluence(pi);
@@ -2341,7 +2483,7 @@ document.getElementById('surrenderBtn').addEventListener('click', function(e){
 // ===== SHOP =====
 const SHOP_ITEMS = [
   {id:'sapper', icon:'🛡', name:'Сапёр', desc:'Защита от мины: обезвредить, оставить или перенастроить её', price:150},
-  {id:'protect', icon:'🛡', name:'Защита', desc:'Блокирует Возврат/Заморозку 1 раз (+100 очков за блок)', price:150},
+  {id:'protect', icon:'🛡', name:'Защита', desc:'Блокирует Возврат/Заморозку до 2 раз. Шифр из двух чисел 1–6: угадан — защита снята; не угадан — блок, +100 владельцу, при исчерпании — ещё +100', price:250},
   {id:'token', icon:'🗝', name:'Жетон освобождения', desc:'Мгновенный выход из Полиции (после трёх дублей), без попыток', price:100},
   {id:'firstaid', icon:'🧰', name:'Аптечка', desc:'Восстанавливает 25 HP в свой ход до броска', price:130},
   {id:'moveToken', icon:'🎟', name:'Жетон хода', desc:'Копится: +1 к броску (до 2 за ход) или двойной шаг (2 шт.)', price:80},
@@ -2387,11 +2529,11 @@ function buyAbility(itemId, pi){
   const item = SHOP_ITEMS.find(i => i.id === itemId);
   if (!item) return;
   if (p.sum < item.price) return;
-  p.sum -= item.price;
+  p.sum -= item.price; pst(pi,'buys'); pst(pi,'spent',item.price);
   spendAction();
   log('🛒 '+p.name+' купил «'+item.name+'» за '+item.price+' очков (сумма '+p.sum+')', 'win');
   if (itemId === 'sapper'){ abilities[pi].sapper = true; }
-  else if (itemId === 'protect'){ abilities[pi].protect = true; }
+  else if (itemId === 'protect'){ abilities[pi].protect = true; shieldGrant(pi); }
   else if (itemId === 'token'){ abilities[pi].token = true; }
   else if (itemId === 'firstaid'){
     if ((p.health||100) >= 100){ p.sum += item.price; log('🧰 У '+p.name+' полное здоровье — покупка Аптечки отменена.'); actionsLeft = Math.min(ACTIONS_PER_TURN, actionsLeft + 1); }
@@ -2419,14 +2561,15 @@ function placeMineShop(pi, cellIdx){
   minePlacingMode = false;
   document.getElementById('mineHint').classList.remove('show');
   document.querySelectorAll('.mine-target').forEach(c=>{ c.classList.remove('mine-target'); c.onclick = null; });
-  mines[cellIdx] = pi;
+  mines[cellIdx] = pi; pst(pi,'mines');
   log('💣 '+players[pi].name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
   renderMines();
   updateUI();
   if (onlineMode && isHost) setTimeout(onlineSync, 300);
 }
 
-function applyReturnShop(pi, targetIdx){
+function applyReturnShopGo(pi, targetIdx){
+  pst(pi,'returnUsed');
   const target = players[targetIdx];
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
@@ -2443,7 +2586,12 @@ function applyReturnShop(pi, targetIdx){
   if (onlineMode && isHost) setTimeout(onlineSync, 300);
 }
 
-function applyFreezeShop(pi, targetIdx){
+function applyReturnShop(pi, targetIdx){
+  shieldAttempt(pi, targetIdx, function(){ applyReturnShopGo(pi, targetIdx); }, function(){ try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); }, false, function(){ try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); });
+}
+
+function applyFreezeShopGo(pi, targetIdx){
+  pst(pi,'freezeUsed');
   const target = players[targetIdx];
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
@@ -2457,6 +2605,10 @@ function applyFreezeShop(pi, targetIdx){
   document.getElementById('influenceModal').style.display = 'none';
   updateUI();
   if (onlineMode && isHost) setTimeout(onlineSync, 300);
+}
+
+function applyFreezeShop(pi, targetIdx){
+  shieldAttempt(pi, targetIdx, function(){ applyFreezeShopGo(pi, targetIdx); }, function(){ try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); }, false, function(){ try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); });
 }
 
 function closeResults(){
@@ -2488,7 +2640,7 @@ function showResults(winnerIdx){
     + '<th style="text-align:left;padding:4px 6px;border-bottom:2px solid #e8dcc8">Итог</th></tr></thead>'
     + '<tbody>'+rows+'</tbody></table>';
   const summary = '<div style="margin-top:10px;font-size:13px;color:#6a5d4a">Ходов: <b>'+partyTurns+'</b> · Выбыло: <b>'+eliminated.size+'</b> · Сдались: <b>'+surrenderCount+'</b> · Цель: <b>'+winSum+'</b></div>';
-  document.getElementById('resultsBody').innerHTML = tbl + summary;
+  document.getElementById('resultsBody').innerHTML = tbl + summary + (typeof partyStatsDetails === 'function' ? partyStatsDetails() : '');
   document.getElementById('resultsAgainBtn').style.display = (onlineMode && !isHost) ? 'none' : '';
   resultsShown = true;
   document.getElementById('resultsModal').style.display = 'flex';
@@ -2605,7 +2757,7 @@ function handleMQTTMessage(topic, data){
         document.getElementById('onlineConnectBtn').textContent = '\u25B6 Начать онлайн-игру (' + onlinePlayers.length + ' игр.)';
         document.getElementById('onlineConnectBtn').disabled = false;
       }
-    } else if (data.type === 'chat'){
+    } else if (data.type === 'shieldCipherSet' && isHost){ shieldCiphers[data.playerId] = data.cipher; } else if (data.type === 'shieldGuess' && isHost){ if (shieldPending && shieldPending.playerId === data.playerId){ if (data.cancelled || !data.guess){ shieldPending = null; log('🔓 Попытка взлома отменена — способность осталась на панели', 'protect'); updateUI(); } else { shieldResolve(shieldPending.attacker, shieldPending.target, data.guess); } } } else if (data.type === 'chat'){
       mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'chat', nickname: data.nickname, text: data.text}));
       addChatMessage(data.nickname, data.text, false);
     } else if (data.type === 'roll' && data.playerId === currentPlayer && !rolling){
@@ -2651,7 +2803,7 @@ function handleMQTTMessage(topic, data){
       startOnlineGame(data);
     } else if (data.type === 'gameState'){
       applyOnlineState(data);
-    } else if (data.type === 'chat'){
+    } else if (data.type === 'shieldCipherReq' && !isHost && data.forPlayerId === myPlayerId){ shieldOpenModal('🛡 Защита активирована — установите шифр', 'Выберите два числа от 1 до 6 — это ваш шифр, его увидите только вы.', function(ab){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldCipherSet', playerId: myPlayerId, cipher: ab})); }, null); } else if (data.type === 'shieldGuessReq' && !isHost && data.forPlayerId === myPlayerId){ shieldOpenModal('🔒 Попытка взлома Защиты', 'Угадайте шифр — два числа от 1 до 6, одна попытка. Не угадаете — атака заблокирована, способность останется на панели, а соперник получит +' + SHIELD_BONUS + ' очков.', function(g){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldGuess', playerId: myPlayerId, guess: g})); }, function(){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldGuess', playerId: myPlayerId, guess: null, cancelled: true})); }); } else if (data.type === 'chat'){
       addChatMessage(data.nickname, data.text, data.nickname === myNickname);
     }
   }
@@ -2696,7 +2848,7 @@ function startOnlineGame(data){
   currentPlayer = 0;
   doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {}; botShopBought = false;
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
+  mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; window.PSTATS = {}; window.PSTIME = Date.now(); surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
   gameStarted = true; gameOver = false;
   lockSettings();
   document.getElementById('settingsOverlay').style.display = 'none';
@@ -3096,12 +3248,14 @@ setInterval(()=>{
   if (isHost && mqttClient && onlineMode && gameStarted && !gameOver) broadcastGameState('gameState');
 }, 2000);
 
+try{
 buildBoard();
 makePlayers();
 renderDice(1,1);
 log('Новая игра. '+(botMode?'Режим: против бота':'Игроков: '+playerCount)+', цель: '+winSum);
 updateUI();
 updateSettingsSummary();
+}catch(e){try{var _eb=document.createElement('div');_eb.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;padding:8px 12px;font:13px sans-serif';_eb.textContent='⚠️ Ошибка инициализации: '+e.message;document.body.appendChild(_eb);}catch(x){}}
 
 // ===== REVIEWS =====
 let reviewRating = 0;
