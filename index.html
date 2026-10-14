@@ -361,9 +361,14 @@
   .inv-chip .inv-use { padding:4px 10px; border-radius:8px; border:none; cursor:pointer; background:linear-gradient(135deg,#8b5cf6,#7c3aed); color:#fff; font-size:11px; font-weight:700; }
   .badge-plus1 { background:rgba(34,197,94,.18); color:#15803d; }
 
+  /* 🧭 Панели «Ход» и «Игроки» в центре поля — без границ, текст прямо на поле */
+  .card.board-wrap { position: relative; }
+  #boardCenterPanels { position: absolute; display: none; gap: 10px; align-items: stretch; z-index: 40; pointer-events: none; }
+  #boardCenterPanels .card { pointer-events: auto; background: transparent; border: none; box-shadow: none; backdrop-filter: none; max-height: 100%; overflow-y: auto; flex: 1 1 0; min-width: 0; text-shadow: 0 1px 0 rgba(255,250,240,.95), 0 0 7px rgba(255,250,240,.9); }
+  #boardCenterPanels .card .btn, #boardCenterPanels .card input, #boardCenterPanels .card select, #boardCenterPanels .card textarea, #boardCenterPanels .card .seg { text-shadow: none; }
+  #boardCenterPanels #turnCard { flex: 0 0 47%; }
 </style>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-<script>window.addEventListener("error",function(e){try{var m="⚠️ Ошибка скрипта: "+(e.message||"")+" (строка "+(e.lineno||"?")+")";var b=document.createElement("div");b.style.cssText="position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;padding:8px 12px;font:13px/1.3 sans-serif";b.textContent=m;document.body.appendChild(b);}catch(x){}});</script>
 </head>
 <body>
 <div class="app">
@@ -469,6 +474,7 @@
         <div class="card board-wrap">
           <div class="board" id="board"></div>
           <div class="center-log" id="centerLog"></div>
+          <div id="boardCenterPanels"></div>
           <div class="legend">
             <span><i style="background:#22c55e"></i>Старт</span>
             <span><i style="background:#fcd34d"></i>Финиш</span>
@@ -478,7 +484,7 @@
         </div>
       </div>
       <div>
-        <div class="card">
+        <div class="card" id="turnCard">
           <h2>Ход</h2>
           <div id="startScreen">
             <div class="hint">Нажмите «Начать игру», чтобы бросить кубики</div>
@@ -499,7 +505,7 @@
           </div>
           <button class="btn ghost" id="resetBtn">Сброс</button>
         </div>
-        <div class="card">
+        <div class="card" id="playersCard">
           <h2>Игроки</h2>
           <div class="players" id="players"></div>
           <div id="log" style="display:none"></div>
@@ -674,7 +680,8 @@
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
         <ul>
-          <li><b>📋 Детали партии</b> — в окне результатов появился блок со сводкой партии (ходы, длительность) и раскрывающимися карточками игроков: броски и дубли, жетоны и двойные шаги, покупки, мины и подрывы, Полиция, налоги, Блокировки, Возвраты, Заморозки, Защита (блоки и взломы шифра), попадания на Старт/Влияние/Финиш, лечение.</li>
+          <li><b>🧭 Центр поля без границ</b><br>Панели «Ход» и «Игроки» объединены в единый блок в центре поля без подложки, рамок и теней — текст лежит прямо на поле. Блок занимает всю свободную зону в центре и не перекрывает клетки пути: Старт, Финиш, Полиция и Влияние остаются на своих местах.</li>
+          <li><b>📋 Детали партии и панели в центре</b><br>В окне результатов появилась подробная статистика: броски и дубли, жетоны, покупки и траты, мины и подрывы, Полиция со штрафами, налоги, Блокировки, Возвраты/Заморозки, блоки Защитой и взломы шифра, лечения. Панели «Ход» и «Игроки» перенесены в центр игрового поля, журнал хода — внутри панели «Игроки».</li>
           <li><b>🛡 Защита с шифром и лимитом</b> — Защита переработана: при активации владелец устанавливает скрытый шифр из двух чисел от 1 до 6. Соперник, применяя Возврат или Заморозку, угадывает шифр — одна попытка, расходуется очко действия, но не сама способность. Не угадал — атака заблокирована, способность возвращается на панель, владелец получает +100 очков (при исчерпании лимита — разово ещё +100). Угадал — Защита расходуется, способность срабатывает. Лимит — 2 успешных блока. Цена Защиты — 250 очков. Шифр можно сменить в свой ход до броска кубиков (клик по бейджу «Защита»), смена не видна соперникам. При выбытии и сдаче Защита и шифр сбрасываются.</li><li><b>🚔 Три дубля — фишка в Полиции</b><br>Исправлено: при трёх дублях подряд фишка теперь перемещается на клетку 🚔 Полиции, а не остаётся на прежней клетке. Штраф и задержание работают как раньше.</li>
           <li><b>🤖 Бот ходит в магазин</b><br>Сложный бот теперь покупает способности по своей стратегии: 🗝 Жетон освобождения в Полиции, 🧰 Аптечку при ранениях, ❄️ Заморозку/↩️ Возврат против лидера, 🛡 Сапёра при чужих минах, 💣 Мину «на будущее», 🛡 Защиту и 💴 Налог/💰 Блокировку при запасе очков. Максимум одна покупка за ход, резерв очков сохраняется. Лёгкий бот не менялся.</li>
           <li><b>⏳ Два очка действия — теперь в свой ход доступно два действия вместо одного: бросок кубиков, способность с панели или покупка в магазине. Можно бросить кубики дважды или, например, купить навык и потом бросить. Дубль по-прежнему даёт бесплатный переброс. Бот тоже тратит оба очка и передаёт ход после их израсходования.</li>
@@ -763,7 +770,7 @@
 </div>
 
 <div class="modal-overlay" id="resultsModal" style="display:none">
-  <div class="modal" style="max-width:520px;position:relative">
+  <div class="modal" style="max-width:560px;position:relative">
     <button class="close-x" onclick="closeResults()" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
     <h2>🏆 Партия завершена</h2>
     <div id="resultsBody"></div>
@@ -821,6 +828,22 @@
 </div>
 
 <script>
+function showErr(msg){ try{ var d = document.getElementById('errBanner'); if(!d){ d = document.createElement('div'); d.id = 'errBanner'; d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#b3261e;color:#fff;padding:10px 14px;font:14px/1.45 sans-serif;z-index:99999;white-space:pre-wrap;display:none'; (document.body||document.documentElement).appendChild(d); } d.style.display = 'block'; d.textContent = String(msg).slice(0,400); }catch(e){} }
+window.addEventListener('error', function(ev){ showErr('Ошибка скрипта: ' + ((ev && ev.message) || (ev && ev.error && ev.error.message) || 'неизвестная') + ' (строка ' + ((ev && ev.lineno) || 0) + ')'); });
+</script>
+<script>
+/* ===== 📊 Статистика партии (модуль — объявлен первым, до всего игрового кода) ===== */
+var partyStats = {
+  start: 0,
+  turns: 0,
+  players: {},
+  reset: function(){ this.start = Date.now(); this.turns = 0; this.players = {}; },
+  tick: function(){ this.turns++; },
+  add: function(i, k, v){ var q = this.players[i] || (this.players[i] = {}); q[k] = (q[k] || 0) + (v === undefined ? 1 : v); },
+  get: function(i, k){ var q = this.players[i]; return q ? (q[k] || 0) : 0; }
+};
+function pst(i, k, v){ try{ partyStats.add(i, k, v); }catch(e){} }
+function partyStatsReset(){ try{ partyStats.reset(); }catch(e){} }
 const PATH_VALUES = ["Старт",1,2,3,4,5,6,7,8,9,"Полиция",10,11,12,13,14,15,16,17,18,"Влияние",19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,"Финиш"];
 const PLAYER_COLORS = ['#f43f5e','#3b82f6','#22c55e','#a855f7'];
 const PLAYER_NAMES = ['Игрок 1','Игрок 2','Игрок 3','Игрок 4'];
@@ -901,18 +924,20 @@ function useInvItem(pi, itemId, botPick){
     if (rivals.length === 0){ log('\u{1F4B0} '+p.name+': Блокировка не применилась — нет соперников. Осталась на панели.', 'tax'); return; }
     invConsume(pi, itemId);
     log('\u{1F4B0} '+p.name+' применил Блокировку: соперники не получают очки 3 хода!', 'tax');
-    rivals.forEach(({i})=>{ if (!abilities[i]) initAbilities(i); abilities[i].taxBlockTurns = 3; }); pst(pi,'blockUsed');
+    rivals.forEach(({i})=>{ if (!abilities[i]) initAbilities(i); abilities[i].taxBlockTurns = 3; });
+    pst(pi,'blkon',1);
   } else if (itemId === 'tax'){
     if (rivals.length === 0){ log('\u{1F4B4} '+p.name+': Налог не применился — нет соперников. Остался на панели.', 'tax'); return; }
     invConsume(pi, itemId);
     if (!abilities[pi]) initAbilities(pi);
     abilities[pi].taxLevel = (abilities[pi].taxLevel || 0) + 1;
+    pst(pi,'taxon',1);
     const taxSum = 100 * Math.pow(2, abilities[pi].taxLevel - 1);
     rivals.forEach(({i})=>{
       if (!abilities[i]) initAbilities(i);
       abilities[i].taxAmount = taxSum;
       abilities[i].taxTurns = 3;
-    }); pst(pi,'taxUsed');
+    });
     log('\u{1F4B4} '+p.name+' применил Налог: -'+taxSum+' очков/ход у соперников 3 хода (уровень '+abilities[pi].taxLevel+')!', 'tax');
   } else if (itemId === 'mine'){
     const numericCells = [];
@@ -921,7 +946,8 @@ function useInvItem(pi, itemId, botPick){
     if (botPick){
       invConsume(pi, itemId);
       const cellIdx = numericCells[Math.floor(Math.random()*numericCells.length)];
-      mines[cellIdx] = pi; pst(pi,'mines');
+      mines[cellIdx] = pi;
+      pst(pi,'mineset',1);
       log('\u{1F916} '+p.name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
       renderMines();
     } else {
@@ -956,7 +982,8 @@ function invPlaceMine(pi, cellIdx){
   document.getElementById('mineHint').classList.remove('show');
   document.querySelectorAll('.mine-target').forEach(c=>{ c.classList.remove('mine-target'); c.onclick = null; });
   invConsume(pi, 'mine');
-  mines[cellIdx] = pi; pst(pi,'mines');
+  mines[cellIdx] = pi;
+  pst(pi,'mineset',1);
   log(players[pi].name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
   renderMines();
   updateUI();
@@ -1043,14 +1070,15 @@ function shieldResolve(pi, t, g){
   const pend = shieldPending; shieldPending = null;
   const c = shieldCiphers[t];
   if (c && g && g[0] === c[0] && g[1] === c[1]){
-    pst(pi,'shieldCracks');
+    pst(pi,'scrk',1);
     abilities[t].protect = false; abilities[t].protectBlocks = 0; delete shieldCiphers[t];
     log('🔓 ' + players[pi].name + ' угадал шифр — Защита ' + players[t].name + ' снята, способность сработает', 'protect');
     updateUI();
     if (pend && pend.core) pend.core();
   } else {
-    const key = pi + '_' + t; if (!shieldGuessMem[key]) shieldGuessMem[key] = []; shieldGuessMem[key].push(g[0] + '-' + g[1]); pst(t,'shieldBlocks');
+    const key = pi + '_' + t; if (!shieldGuessMem[key]) shieldGuessMem[key] = []; shieldGuessMem[key].push(g[0] + '-' + g[1]);
     abilities[t].protectBlocks = (abilities[t].protectBlocks || 0) + 1;
+    pst(t,'sblk',1);
     if (players[t] && players[t].isBot) shieldCiphers[t] = shieldRandomCipher();
     if (abilities[t].protectBlocks >= SHIELD_LIMIT){
       abilities[t].protect = false; delete shieldCiphers[t];
@@ -1077,20 +1105,22 @@ document.addEventListener('click', function(e){
 function awardProtectBonus(targetIdx){ shieldAwardPoints(targetIdx, SHIELD_BONUS); }
 
 function invApplyTargetGo(pi, targetIdx, itemId){
-  pst(pi, itemId === 'return' ? 'returnUsed' : 'freezeUsed');
   const target = players[targetIdx];
   const label = itemId === 'return' ? 'Возврат' : 'Заморозку';
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
     awardProtectBonus(targetIdx);
+    pst(targetIdx,'sblk',1);
     log(players[pi].name+' применил '+label+', но '+target.name+' заблокировал Защитой!', 'sapper');
   } else if (itemId === 'return'){
     target.pos = 0;
     pendingStartAbilities[targetIdx] = 'noBonus';
+    pst(pi,'ret',1);
     log(players[pi].name+' применил Возврат: '+target.name+' отправлен на Старт. Без +100, но с выбором защиты.', 'pen');
   } else {
     if (!abilities[targetIdx]) initAbilities(targetIdx);
     abilities[targetIdx].frozen = true;
+    pst(pi,'frz',1);
     log('\u2744\uFE0F '+players[pi].name+' применил Заморозку: '+target.name+' пропустит следующий ход!', 'frz');
   }
 }
@@ -1181,6 +1211,7 @@ function buildBoard(){
       board.appendChild(d);
     }
   }
+  if(window.relayoutCenter) setTimeout(window.relayoutCenter, 0);
 }
 
 function dieFace(n){
@@ -1240,36 +1271,6 @@ let partyTurns = 0;
 let surrenderCount = 0;
 let resultsShown = false;
 
-/* ===== 📊 Статистика партии ===== */
-function pst(i, k, v){
-  try{
-    if (!window.PSTATS) return;
-    const pp = players[i];
-    const key = (pp && (pp.name || pp.nickname)) || ('Игрок ' + ((i||0)+1));
-    if (!window.PSTATS[key]) window.PSTATS[key] = {};
-    window.PSTATS[key][k] = (window.PSTATS[key][k] || 0) + (v === undefined ? 1 : v);
-  }catch(e){}
-}
-function partyStatsDetails(){
-  try{
-    if (!window.PSTATS) return '';
-    let h = '<div style="margin-top:14px;padding-top:10px;border-top:1px solid #e8dcc8;text-align:left">'
-      + '<div style="font-weight:700;margin-bottom:4px">📋 Детали партии</div>'
-      + '<div style="font-size:12px;color:#6a5d4a;margin-bottom:8px">Ходов: <b>'+partyTurns+'</b> · Длительность: <b>'+Math.max(1, Math.round((Date.now()-(window.PSTIME||Date.now()))/60000))+'</b> мин</div>';
-    const L = {rolls:'🎲 Бросков', doubles:'· дублей', tokensPlus:'🎟 Жетонов «+1» потрачено', doubleSteps:'⏩ Двойных шагов', buys:'🛒 Покупок', spent:'· потрачено очков', mines:'💣 Мин поставлено', mineHits:'💥 Подрывов на минах', mineDmg:'· урона от мин (HP)', mineOwner:'🎉 Бонусов за подрыв (+100)', mineKills:'🏆 Бонусов за выбитого (+200)', passPolice:'🚔 Прошли мимо Полиции', passMines:'💣 Прошли мимо мин', policeHits:'🚔 Попаданий в Полицию', policePenalty:'💸 Штрафов Полиции', policePenSum:'· сумма штрафа', policeEscape:'🔓 Освобождений дублем', skipPolice:'⏸ Пропусков (Полиция)', skipFreeze:'❄️ Пропусков (Заморозка)', taxHits:'💴 Налог выплачен (раз)', taxPaid:'· списано налогом', taxUsed:'💴 Налогов применено', blockUsed:'💰 Блокировок применено', returnUsed:'↩️ Возвратов применено', freezeUsed:'❄️ Заморозок применено', shieldBlocks:'🛡 Блоков Защитой', shieldCracks:'🔓 Взломов шифра', startLand:'🏁 Попаданий на Старт', influenceLand:'⭐ Попаданий на Влияние', finishShort:'↩️ Недоборов на Финише', startHeal:'❤️ Лечений на Стартe', healAmt:'· восстановлено HP'};
-    Object.keys(window.PSTATS).forEach(function(k){
-      const s = window.PSTATS[k];
-      const rows = Object.keys(s).filter(function(x){ return s[x] > 0; });
-      if (!rows.length) return;
-      h += '<details style="margin:4px 0"><summary style="cursor:pointer;font-weight:600;font-size:13px">'+k+'</summary><div style="font-size:12px;color:#5a4f3d;padding:4px 0 0 14px">';
-      rows.forEach(function(r){ h += '<div>'+((L[r]!==undefined)?L[r]:r)+': <b>'+s[r]+'</b></div>'; });
-      h += '</div></details>';
-    });
-    h += '</div>';
-    return h;
-  }catch(e){ return ''; }
-}
-
 function makePlayers(){
   players = [];
   let count = botMode ? 2 : playerCount;
@@ -1285,7 +1286,7 @@ function makePlayers(){
   botShopBought = false;
   abilities = {};
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; window.PSTATS = {}; window.PSTIME = Date.now(); surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
+  mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; partyStatsReset(); surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
 }
 
 function isCurrentBot(){ return players[currentPlayer] && players[currentPlayer].isBot; }
@@ -1481,12 +1482,14 @@ function movePlayer(p, pi, steps){
     // Passed Police bonus
     if (passPos === POLICE_INDEX && p.sum < winSum){
       p.sum += 100;
-      log('\u{1F389} '+p.name+' прошёл мимо Полиции: +100 очков (случайный бонус)!', 'win'); pst(pi,'passPolice');
+      pst(pi,'passpol',1);
+      log('\u{1F389} '+p.name+' прошёл мимо Полиции: +100 очков (случайный бонус)!', 'win');
     }
     // Passed mine bonus
     if (passPos in mines && mines[passPos] !== pi && p.sum < winSum){
       p.sum += 150;
-      log('\u{1F389} '+p.name+' прошёл мимо мины: +150 очков (случайный бонус)!', 'win'); pst(pi,'passMines');
+      pst(pi,'passmine',1);
+      log('\u{1F389} '+p.name+' прошёл мимо мины: +150 очков (случайный бонус)!', 'win');
     }
   }
   p.pos = (oldPos + steps) % 40;
@@ -1513,16 +1516,19 @@ function movePlayer(p, pi, steps){
       }
       if (beginnerMode && !shownHints.has('sapperChoice') && !p.isBot) showBeginnerHint('sapperChoice', '🛡 Выбор Сапёра', 'У вас Сапёр — урона не будет. Выберите: обезвредить мину, оставить её на поле или перенастроить против владельца (урон 25 HP). Сапёр расходуется в любом случае.');
     } else {
-      players[pi].health = Math.max(0, (players[pi].health||100) - dmg); pst(pi,'mineHits'); pst(pi,'mineDmg',dmg); pst(mineOwner,'mineOwner');
+      players[pi].health = Math.max(0, (players[pi].health||100) - dmg);
+      pst(pi,'expl',1); pst(pi,'exdmg',dmg);
       log('💥 '+p.name+' наступил на мину (установлена '+players[mineOwner].name+') — −'+dmg+' HP ('+players[pi].health+'/100)!', 'pen');
       if (players[mineOwner] && !eliminated.has(mineOwner) && players[mineOwner].sum < winSum){
         players[mineOwner].sum += 100;
+        pst(mineOwner,'expl',1); pst(mineOwner,'exdmg',dmg);
         log('🎉 '+players[mineOwner].name+' получает +100 очков — соперник подорвался на мине!', 'win');
       }
       if (players[pi].health <= 0){
         log('☠️ '+p.name+' теряет последние силы — ВЫБЫВАЕТ ИЗ ИГРЫ!', 'pen');
         if (players[mineOwner] && !eliminated.has(mineOwner) && players[mineOwner].sum < winSum){
-          players[mineOwner].sum += 200; pst(mineOwner,'mineKills');
+          players[mineOwner].sum += 200;
+          pst(mineOwner,'kobonus',1);
           log('🏆 '+players[mineOwner].name+' получает ещё +200 очков — подрыв выбил игрока!', 'win');
         }
         resetAllAbilities(pi);
@@ -1537,7 +1543,8 @@ function movePlayer(p, pi, steps){
   }
   const val = PATH_VALUES[p.pos];
   if (val === "Полиция"){
-    p.skip = true; pst(pi,'policeHits');
+    p.skip = true;
+    pst(pi,'polhit',1);
     log(p.name+' попал в Полицию: пропуск следующего хода (способности, мины и 🗝 жетон сохранены)', 'pen');
     if (beginnerMode && !p.isBot && !shownHints.has('policeDirect')) showBeginnerHint('policeDirect', '🚔 Полиция', 'Прямое попадание — пропуск следующего хода. Способности, мины и жетон освобождения сохраняются: после пропуска вы ходите свободно, жетон не тратится.');
   } else if (val === "Финиш"){
@@ -1545,15 +1552,18 @@ function movePlayer(p, pi, steps){
       winGame(p);
     } else {
       p.pos = 0;
-      pendingStartAbilities[pi] = 'none'; pst(pi,'finishShort');
+      pendingStartAbilities[pi] = 'none';
+      pst(pi,'fshort',1);
       if (beginnerMode && !shownHints.has('finishReturn')) showBeginnerHint('finishReturn', '🏁 Финиш — недобор!', 'Вы дошли до Финиша, но не набрали нужную сумму. Возврат на Старт без права выбора способностей. Проходите круг заново!');
       log(p.name+': Финиш не засчитан ('+p.sum+' из '+winSum+'). Возврат на Старт, способности недоступны!', 'pen');
     }
   } else if (val === "Старт"){
-    log(p.name+' остановился на Старте'); pst(pi,'startLand');
+    log(p.name+' остановился на Старте');
+    pst(pi,'start',1);
     handleStartCell(pi);
   } else if (val === "Влияние"){
-    log(p.name+' остановился на клетке «Влияние»', 'win'); pst(pi,'influenceLand');
+    log(p.name+' остановился на клетке «Влияние»', 'win');
+    pst(pi,'infl',1);
     handleInfluenceCell(pi);
   } else {
     // Numeric cell - check tax block
@@ -1595,7 +1605,8 @@ function handleStartCell(pi){
   if (!noBonus && !eliminated.has(pi) && (p.health||100) < 100){
     const healed = Math.min(100 - (p.health||100), 25);
     p.health = Math.min(100, (p.health||100) + 25);
-    log('❤️ '+p.name+' восстановил '+healed+' HP на Стартe ('+p.health+'/100)', 'win'); pst(pi,'startHeal'); pst(pi,'healAmt',healed);
+    log('❤️ '+p.name+' восстановил '+healed+' HP на Стартe ('+p.health+'/100)', 'win');
+    pst(pi,'heal',healed);
   }
   log(p.name+' попал на Старт' + (noBonus ? ' (после Возврата — без +100)' : '') + ' — выбор способности!', 'win');
   if (p.isBot){
@@ -1761,6 +1772,7 @@ function nextTurn(){
     actionsLeft = ACTIONS_PER_TURN; freeRollPending = false; botShopBought = false;
   if (gameOver) return;
   partyTurns++;
+  try{ partyStats.tick(); }catch(e){}
   let idx = currentPlayer;
   for (let k=0;k<players.length;k++){
     idx = (idx+1) % players.length;
@@ -1775,7 +1787,8 @@ function nextTurn(){
     // Apply tax - deduct points each turn
     if (abilities[idx] && abilities[idx].taxTurns > 0){
       const deducted = Math.min(abilities[idx].taxAmount, players[idx].sum);
-      players[idx].sum -= deducted; pst(idx,'taxPaid',deducted); pst(idx,'taxHits');
+      players[idx].sum -= deducted;
+      pst(idx,'taxpaid',1); pst(idx,'taxsum',deducted);
       log('\u{1F4B5} '+players[idx].name+': Налог -'+deducted+' очков (осталось '+abilities[idx].taxTurns+' ход.)', 'tax');
       abilities[idx].taxTurns--;
       if (abilities[idx].taxTurns === 0){
@@ -1785,13 +1798,15 @@ function nextTurn(){
     }
     if (players[idx].skip){
       players[idx].skip = false;
-      log(players[idx].name+' пропускает ход (Полиция)', 'pen'); pst(idx,'skipPolice');
+      log(players[idx].name+' пропускает ход (Полиция)', 'pen');
+      pst(idx,'skippol',1);
       continue;
     }
     // Check frozen
     if (abilities[idx] && abilities[idx].frozen){
       abilities[idx].frozen = false;
-      log('\u2744\uFE0F '+players[idx].name+' заморожен — пропускает ход!', 'frz'); pst(idx,'skipFreeze');
+      log('\u2744\uFE0F '+players[idx].name+' заморожен — пропускает ход!', 'frz');
+      pst(idx,'skipfrz',1);
       continue;
     }
     currentPlayer = idx;
@@ -1838,8 +1853,8 @@ function doRoll(){
 
   const isDouble = d1 === d2;
   const pi = currentPlayer;
-  pst(pi,'rolls'); if (isDouble) pst(pi,'doubles');
   const p = players[pi];
+  pst(pi,'rolls',1); if(isDouble) pst(pi,'doubles',1);
   // Move tokens are spent manually (see branches below)
 
   renderDice(1+Math.floor(Math.random()*6), 1+Math.floor(Math.random()*6));
@@ -1854,7 +1869,8 @@ function doRoll(){
       plusUsed = Math.min(tokenPlusPending[pi] || 0, 2, plus1Bonus[pi] || 0);
       tokenPlusPending[pi] = 0;
       if (plusUsed > 0){
-        plus1Bonus[pi] = (plus1Bonus[pi] || 0) - plusUsed; pst(pi,'tokensPlus',plusUsed);
+        plus1Bonus[pi] = (plus1Bonus[pi] || 0) - plusUsed;
+        pst(pi,'tokens',plusUsed);
         log('🎟 '+p.name+' потратил '+plusUsed+' жетон(а) хода: +'+plusUsed+' к броску! Теперь: '+d1+' + '+d2+' + '+plusUsed);
       }
       steps = d1 + d2 + plusUsed;
@@ -1883,7 +1899,8 @@ function doRoll(){
           log('🎟 Дубль — жетоны хода сохранены на следующий бросок.');
         }
         if (p.sum < winSum){
-          p.sum += 200; pst(pi,'policeEscape');
+          p.sum += 200;
+          pst(pi,'freed',1);
           log('\u{1F513} '+p.name+': выход из Полиции дублем! +200 очков!', 'win');
         }
         movePlayer(p, pi, steps);
@@ -1911,7 +1928,8 @@ function doRoll(){
   if (beginnerMode && pi === currentPlayer && doublesInRow[pi] === 1 && !shownHints.has('doubles')) showBeginnerHint('doubles', '🎲 Дубль', 'Вы выбросили дубль — одинаковые значения на обоих кубиках. Три дубля подряд — штраф Полиции!');;
       if (doublesInRow[pi] >= 3){
         log('ТРИ ДУБЛЯ ПОДРЯД! '+p.name+' — Штраф Полиции и задержание!', 'pen');
-        p.sum = Math.max(0, p.sum - policePenalty); pst(pi,'policePenalty'); pst(pi,'policePenSum',policePenalty);
+        p.sum = Math.max(0, p.sum - policePenalty);
+        pst(pi,'pen',1); pst(pi,'pensum',policePenalty);
         log(p.name+': Штраф Полиции '+policePenalty+', сумма '+p.sum, 'pen');
         inPoliceMode[pi] = true;
         p.pos = POLICE_INDEX;
@@ -1939,8 +1957,8 @@ function doRoll(){
     doublesInRow[pi] = 0;
     movePlayer(p, pi, steps);
     if (doubleStepPending[pi]){
-      pst(pi,'doubleSteps');
       doubleStepPending[pi] = false;
+      pst(pi,'dsteps',1);
       if (!gameOver && !eliminated.has(pi) && !influencePending && !startAbilityPending && !inPoliceMode[pi] && (plus1Bonus[pi] || 0) >= 2){
         plus1Bonus[pi] -= 2;
         log('⏩ '+p.name+' делает Двойной шаг — ещё '+steps+' клеток (2 жетона)!');
@@ -2035,12 +2053,12 @@ function closeModal(){
 }
 
 function applyReturnGo(pi, targetIdx){
-  pst(pi,'returnUsed');
   const target = players[targetIdx];
   // Check protection
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
     awardProtectBonus(targetIdx);
+    pst(targetIdx,'sblk',1);
     log(players[pi].name+' применил Возврат, но '+target.name+' заблокировал Защитой! Защита расходована.', 'sapper');
     closeModal();
     afterInfluence(pi);
@@ -2049,6 +2067,7 @@ function applyReturnGo(pi, targetIdx){
   const oldPos = target.pos;
   target.pos = 0;
   pendingStartAbilities[targetIdx] = 'noBonus';
+    pst(pi,'ret',1);
   log(players[pi].name+' применил Возврат: '+target.name+' отправлен на Старт (был на '+oldPos+'). Без +100, но с выбором Сапёр/Защита/Жетон.', 'pen');
   closeModal();
   afterInfluence(pi);
@@ -2059,7 +2078,6 @@ function applyReturn(pi, targetIdx){
 }
 
 function applyTaxBlock(pi){
-  pst(pi,'blockUsed');
   const p = players[pi];
   log('\u{1F4B0} '+p.name+' применил Блокировку: соперники не получают очки 3 хода!', 'tax');
   players.forEach((pl,i)=>{
@@ -2073,7 +2091,6 @@ function applyTaxBlock(pi){
 }
 
 function applyTax(pi){
-  pst(pi,'taxUsed');
   const p = players[pi];
   if (!abilities[pi]) initAbilities(pi);
   abilities[pi].taxLevel = (abilities[pi].taxLevel || 0) + 1;
@@ -2093,12 +2110,12 @@ function applyTax(pi){
 }
 
 function applyFreezeGo(pi, targetIdx){
-  pst(pi,'freezeUsed');
   const target = players[targetIdx];
   // Check protection
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
     awardProtectBonus(targetIdx);
+    pst(targetIdx,'sblk',1);
     log(players[pi].name+' применил Заморозку, но '+target.name+' заблокировал Защитой! Защита расходована.', 'sapper');
     closeModal();
     afterInfluence(pi);
@@ -2106,6 +2123,7 @@ function applyFreezeGo(pi, targetIdx){
   }
   if (!abilities[targetIdx]) initAbilities(targetIdx);
   abilities[targetIdx].frozen = true;
+    pst(pi,'frz',1);
   log('\u2744\uFE0F '+players[pi].name+' применил Заморозку: '+target.name+' пропустит следующий ход!', 'frz');
   closeModal();
   afterInfluence(pi);
@@ -2123,7 +2141,8 @@ function placeMine(pi, cellIdx){
     c.classList.remove('mine-target');
     c.onclick = null;
   });
-  mines[cellIdx] = pi; pst(pi,'mines');
+  mines[cellIdx] = pi;
+  pst(pi,'mineset',1);
   log(players[pi].name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
   renderMines();
   afterInfluence(pi);
@@ -2529,15 +2548,16 @@ function buyAbility(itemId, pi){
   const item = SHOP_ITEMS.find(i => i.id === itemId);
   if (!item) return;
   if (p.sum < item.price) return;
-  p.sum -= item.price; pst(pi,'buys'); pst(pi,'spent',item.price);
+  p.sum -= item.price;
+  pst(pi,'buys',1); pst(pi,'spent',item.price);
   spendAction();
   log('🛒 '+p.name+' купил «'+item.name+'» за '+item.price+' очков (сумма '+p.sum+')', 'win');
   if (itemId === 'sapper'){ abilities[pi].sapper = true; }
   else if (itemId === 'protect'){ abilities[pi].protect = true; shieldGrant(pi); }
   else if (itemId === 'token'){ abilities[pi].token = true; }
   else if (itemId === 'firstaid'){
-    if ((p.health||100) >= 100){ p.sum += item.price; log('🧰 У '+p.name+' полное здоровье — покупка Аптечки отменена.'); actionsLeft = Math.min(ACTIONS_PER_TURN, actionsLeft + 1); }
-    else { p.health = Math.min(100, (p.health||100) + 25); log('🧰 '+p.name+' восстановил 25 HP ('+p.health+'/100)!', 'win'); }
+    if ((p.health||100) >= 100){ p.sum += item.price; log('🧰 У '+p.name+' полное здоровье — покупка Аптечки отменена.'); pst(pi,'buys',-1); pst(pi,'spent',-item.price); actionsLeft = Math.min(ACTIONS_PER_TURN, actionsLeft + 1); }
+    else { p.health = Math.min(100, (p.health||100) + 25); log('🧰 '+p.name+' восстановил 25 HP ('+p.health+'/100)!', 'win'); pst(pi,'heal',25); }
   }
   else if (itemId === 'moveToken'){ plus1Bonus[pi] = (plus1Bonus[pi] || 0) + 1; log('🎟 '+p.name+' пополнил копилку: жетонов хода — '+plus1Bonus[pi]+'!'); }
   else if (itemId === 'mine' || itemId === 'block' || itemId === 'tax' || itemId === 'return' || itemId === 'freeze'){
@@ -2561,7 +2581,8 @@ function placeMineShop(pi, cellIdx){
   minePlacingMode = false;
   document.getElementById('mineHint').classList.remove('show');
   document.querySelectorAll('.mine-target').forEach(c=>{ c.classList.remove('mine-target'); c.onclick = null; });
-  mines[cellIdx] = pi; pst(pi,'mines');
+  mines[cellIdx] = pi;
+  pst(pi,'mineset',1);
   log('💣 '+players[pi].name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
   renderMines();
   updateUI();
@@ -2569,16 +2590,17 @@ function placeMineShop(pi, cellIdx){
 }
 
 function applyReturnShopGo(pi, targetIdx){
-  pst(pi,'returnUsed');
   const target = players[targetIdx];
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
     awardProtectBonus(targetIdx);
+    pst(targetIdx,'sblk',1);
     log(players[pi].name+' применил Возврат из магазина, но '+target.name+' заблокировал Защитой!', 'sapper');
   } else {
     const oldPos = target.pos;
     target.pos = 0;
     pendingStartAbilities[targetIdx] = 'noBonus';
+    pst(pi,'ret',1);
     log(players[pi].name+' применил Возврат из магазина: '+target.name+' отправлен на Старт. Без +100, но с выбором защиты.', 'pen');
   }
   document.getElementById('influenceModal').style.display = 'none';
@@ -2591,15 +2613,16 @@ function applyReturnShop(pi, targetIdx){
 }
 
 function applyFreezeShopGo(pi, targetIdx){
-  pst(pi,'freezeUsed');
   const target = players[targetIdx];
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
     awardProtectBonus(targetIdx);
+    pst(targetIdx,'sblk',1);
     log(players[pi].name+' применил Заморозку из магазина, но '+target.name+' заблокировал Защитой!', 'sapper');
   } else {
     if (!abilities[targetIdx]) initAbilities(targetIdx);
     abilities[targetIdx].frozen = true;
+    pst(pi,'frz',1);
     log('❄️ '+players[pi].name+' заморозил '+target.name+' (из магазина) — пропуск хода!', 'frz');
   }
   document.getElementById('influenceModal').style.display = 'none';
@@ -2639,8 +2662,21 @@ function showResults(winnerIdx){
     + '<th style="text-align:right;padding:4px 6px;border-bottom:2px solid #e8dcc8">HP</th>'
     + '<th style="text-align:left;padding:4px 6px;border-bottom:2px solid #e8dcc8">Итог</th></tr></thead>'
     + '<tbody>'+rows+'</tbody></table>';
-  const summary = '<div style="margin-top:10px;font-size:13px;color:#6a5d4a">Ходов: <b>'+partyTurns+'</b> · Выбыло: <b>'+eliminated.size+'</b> · Сдались: <b>'+surrenderCount+'</b> · Цель: <b>'+winSum+'</b></div>';
-  document.getElementById('resultsBody').innerHTML = tbl + summary + (typeof partyStatsDetails === 'function' ? partyStatsDetails() : '');
+  const statsBlock = (function(){ try{
+   const dur = partyStats.start ? Math.max(1, Math.round((Date.now()-partyStats.start)/60000))+' мин' : '—';
+   const L = [['rolls','🎲 Бросков'],['doubles','🎲 Дублей'],['tokens','🎟 Жетонов потрачено'],['dsteps','⏩ Двойных шагов'],['buys','🛒 Покупок'],['spent','💸 Потрачено очков'],['mineset','💣 Мин поставлено'],['expl','💥 Подрывов на моих минах'],['exdmg','💔 Нанесено урона минами'],['kobonus','🏆 Выбитий миной'],['passpol','🚔 Прошёл мимо Полиции'],['passmine','💣 Прошёл мимо мин'],['polhit','🚔 Попаданий в Полицию'],['pen','⚖️ Штрафов Полиции'],['pensum','⚖️ Выплачено штрафов'],['freed','🎲 Выходов дублем'],['skippol','⏸ Пропусков (Полиция)'],['skipfrz','❄️ Пропусков (Заморозка)'],['taxon','💴 Налогов активировано'],['taxpaid','💴 Налогов выплачено'],['taxsum','💴 Очков уплачено налогами'],['blkon','💰 Блокировок'],['ret','↩️ Возвратов'],['frz','❄️ Заморозок'],['sblk','🛡 Блоков Защитой'],['scrk','🔓 Взломов шифра'],['start','🏁 Попаданий на Старт'],['infl','🎯 Попаданий на «Влияние»'],['fshort','🏁 Недоборов на Финише']];
+   const cards = players.map(function(pl,i){
+     const st = partyStats.players[i] || {};
+     let rows = '';
+     for (const l of L){ if(st[l[0]]) rows += '<div style="display:flex;justify-content:space-between;gap:12px"><span>'+l[1]+'</span><b>'+st[l[0]]+'</b></div>'; }
+     if (st.heal) rows += '<div style="display:flex;justify-content:space-between;gap:12px"><span>❤️ Вылечено HP</span><b>'+st.heal+'</b></div>';
+     if(!rows) return '';
+     return '<details style="margin:6px 0;border:1px solid #e5dccb;border-radius:10px;padding:8px 12px;background:#fffdf8"><summary style="cursor:pointer;font-weight:700">'+pl.name+' — '+pl.sum+' очков</summary><div style="margin-top:5px;font-size:12.5px;line-height:1.6">'+rows+'</div></details>';
+   }).join('');
+   return '<div style="margin-top:14px"><div style="font-weight:700;margin-bottom:4px">📋 Детали партии</div><div style="font-size:13px;color:#6a5d4a;margin-bottom:6px">Длительность: <b>'+dur+'</b> · Ходов: <b>'+(partyStats.turns||0)+'</b></div>'+(cards||'<div style="font-size:13px;color:#6a5d4a">Показатели за партию не накопились</div>')+'</div>';
+ }catch(err){ return ''; } })();
+ const summary = '<div style="margin-top:10px;font-size:13px;color:#6a5d4a">Ходов: <b>'+partyTurns+'</b> · Выбыло: <b>'+eliminated.size+'</b> · Сдались: <b>'+surrenderCount+'</b> · Цель: <b>'+winSum+'</b></div>'; + statsBlock;
+  document.getElementById('resultsBody').innerHTML = tbl + summary;
   document.getElementById('resultsAgainBtn').style.display = (onlineMode && !isHost) ? 'none' : '';
   resultsShown = true;
   document.getElementById('resultsModal').style.display = 'flex';
@@ -2848,7 +2884,7 @@ function startOnlineGame(data){
   currentPlayer = 0;
   doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {}; botShopBought = false;
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; window.PSTATS = {}; window.PSTIME = Date.now(); surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
+  mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; partyStatsReset(); surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
   gameStarted = true; gameOver = false;
   lockSettings();
   document.getElementById('settingsOverlay').style.display = 'none';
@@ -2872,7 +2908,7 @@ function hostStartOnlineGame(){
   currentPlayer = 0;
   doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {}; botShopBought = false;
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
-  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {}; partyTurns = 0; surrenderCount = 0; resultsShown = false;
+  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {}; partyTurns = 0; partyStatsReset(); surrenderCount = 0; resultsShown = false;
   gameStarted = true; gameOver = false;
   lockSettings();
   document.getElementById('settingsOverlay').style.display = 'none';
@@ -3248,14 +3284,12 @@ setInterval(()=>{
   if (isHost && mqttClient && onlineMode && gameStarted && !gameOver) broadcastGameState('gameState');
 }, 2000);
 
-try{
 buildBoard();
 makePlayers();
 renderDice(1,1);
 log('Новая игра. '+(botMode?'Режим: против бота':'Игроков: '+playerCount)+', цель: '+winSum);
 updateUI();
 updateSettingsSummary();
-}catch(e){try{var _eb=document.createElement('div');_eb.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;padding:8px 12px;font:13px sans-serif';_eb.textContent='⚠️ Ошибка инициализации: '+e.message;document.body.appendChild(_eb);}catch(x){}}
 
 // ===== REVIEWS =====
 let reviewRating = 0;
@@ -3524,7 +3558,7 @@ function hookReviewSubmit(){
   });
 }
 
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function(){ try{
   // Admin panel events
   const codeBtn = document.getElementById('adminCodeBtn');
   const verifyBtn = document.getElementById('adminVerifyBtn');
@@ -3548,6 +3582,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   
   hookReviewSubmit();
+  }catch(e){ try{ showErr('Ошибка инициализации: ' + ((e && e.message) || e)); }catch(_){} }
 });
 
 // Close admin overlay on background click
@@ -3568,5 +3603,53 @@ document.addEventListener('DOMContentLoaded', function(){
     <div id="beginnerHintBody"></div>
     <button class="hint-btn" onclick="closeBeginnerHint()">Понятно</button>
   </div>
+<script>
+(function(){
+  function q(id){ return document.getElementById(id); }
+  var tc = q('turnCard'), pc = q('playersCard'), bc = q('boardCenterPanels');
+  if(!tc || !pc || !bc) return;
+  var origParent = tc.parentNode;
+  var cl = q('centerLog'), lg = q('log');
+  function inset(){
+    var b = q('board');
+    if(!b) return 0;
+    var wpx = b.getBoundingClientRect().width;
+    if(wpx <= 0) return 0;
+    var cell = (wpx - 10*5) / 11; // сетка 11x11, зазор 5px
+    return Math.max(0, cell + 5); // свободная зона 9x9: клетка + зазор с каждой стороны
+  }
+  function layout(){
+    var w = (window.innerWidth || document.documentElement.clientWidth || 921);
+    if(w >= 921){
+      if(tc.parentNode !== bc){ bc.appendChild(tc); bc.appendChild(pc); }
+      bc.style.display = 'flex';
+      var b = q('board'), wrap = document.querySelector('.board-wrap');
+      if(b && wrap){
+        var br = b.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+        if(br.width > 0){
+          var pad = inset();
+          bc.style.top = (br.top - wr.top + pad) + 'px';
+          bc.style.left = (br.left - wr.left + pad) + 'px';
+          bc.style.width = (br.width - 2*pad) + 'px';
+          bc.style.height = (br.height - 2*pad) + 'px';
+        }
+      }
+      if(cl) cl.style.display = 'none';
+      if(lg) lg.style.display = 'block';
+    } else {
+      if(tc.parentNode !== origParent){ origParent.insertBefore(tc, origParent.firstChild); origParent.insertBefore(pc, tc.nextSibling); }
+      bc.style.display = 'none';
+      if(cl) cl.style.display = '';
+      if(lg) lg.style.display = 'none';
+    }
+  }
+  window.addEventListener('resize', layout);
+  window.addEventListener('orientationchange', layout);
+  layout();
+  setTimeout(layout, 60);
+  setTimeout(layout, 400);
+  window.relayoutCenter = layout;
+})();
+</script>
 </body>
 </html>
