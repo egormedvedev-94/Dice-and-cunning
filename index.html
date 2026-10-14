@@ -577,7 +577,7 @@
         </ul>
 
         <h3>Три дубля подряд</h3>
-        <p>Если игрок выбрасывает три дубля подряд, с него взыскивается Штраф Полиции — 10% от суммы для победы, и он задерживается в Полиции. Фишка остаётся на месте, способности не сбрасываются. Выход: 🗝 жетон освобождения или дубль при броске (попытки не ограничены). Счётчик дублей обнуляется.</p>
+        <p>Если игрок выбрасывает три дубля подряд, с него взыскивается Штраф Полиции — 10% от суммы для победы, и он задерживается в Полиции. Фишка перемещается на клетку Полиции, способности не сбрасываются. Выход: 🗝 жетон освобождения или дубль при броске (попытки не ограничены). Счётчик дублей обнуляется.</p>
 
         <h3>Попадание в Полицию</h3>
         <p>При прямом попадании на клетку Полиции игрок пропускает следующий ход. Способности и мины сохраняются, 🗝 жетон освобождения не расходуется — после пропуска игрок выходит свободно.</p>
@@ -589,7 +589,7 @@
         Из Полиции сдаться нельзя; зрители и боты не сдаются.</p>
 
         <h3>Игра против бота</h3>
-        <p>В окне настроек (значок ⚙️) можно включить режим «Игра против бота». Бот ходит автоматически. Доступны два уровня сложности. <b>Лёгкий</b> бот играет просто: покупает 🎟 Жетон хода, когда до победы далеко, и экономит очки. <b>Сложный</b> бот пользуется магазином по стратегии: 🧰 Аптечка при ранениях (≤ 75 HP), 🗝 Жетон освобождения в Полиции, ❄️ Заморозка или ↩️ Возврат, если соперник близок к победе (≤ 300 очков до цели), 🛡 Сапёр при чужих минах на поле, 💣 Мина (до двух своих), 🛡 Защита при опасности и 💴 Налог/💰 Блокировка при запасе очков. Бот держит резерв очков и тратит оба действия за ход: покупка + способность или бросок.</p>
+        <p>В окне настроек (значок ⚙️) можно включить режим «Игра против бота». Бот ходит автоматически. Доступны два уровня сложности.<br><b>Сложный бот</b> играет в магазин по своей стратегии: покупает 🗝 Жетон освобождения при задержании, 🧰 Аптечку при ранениях (75 HP и меньше), ❄️ Заморозку или ↩️ Возврат, когда соперник близок к победе, 🛡 Сапёра, если на поле есть чужие мины, 💣 Мину «на будущее» и 🛡 Защиту в опасной ситуации. При большом запасе очков — 💴 Налог или 💰 Блокировка. Бот всегда сохраняет резерв очков и делает максимум одну покупку за ход.</p>
 
         <h3>Автопереход на Финиш</h3>
         <p>Если включён — при достижении целевой суммы игрок автоматически переходит на Финиш и побеждает.</p>
@@ -673,7 +673,8 @@
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
         <ul>
-          <li><b>🤖 Бот ходит в магазин — Сложный бот теперь покупает способности в магазине по своей стратегии: лечится Аптечкой при ранениях, покупает Жетон освобождения в Полиции, атакует Заморозкой/Возвратом соперника, близкого к победе, ставит Сапёра против чужих мин, закладывает Мины «на будущее», берёт Защиту при опасности и Налог/Блокировку при запасе очков. Лёгкий бот как раньше просто копит Жетон хода.</li>
+          <li><b>🚔 Три дубля — фишка в Полиции</b><br>Исправлено: при трёх дублях подряд фишка теперь перемещается на клетку 🚔 Полиции, а не остаётся на прежней клетке. Штраф и задержание работают как раньше.</li>
+          <li><b>🤖 Бот ходит в магазин</b><br>Сложный бот теперь покупает способности по своей стратегии: 🗝 Жетон освобождения в Полиции, 🧰 Аптечку при ранениях, ❄️ Заморозку/↩️ Возврат против лидера, 🛡 Сапёра при чужих минах, 💣 Мину «на будущее», 🛡 Защиту и 💴 Налог/💰 Блокировку при запасе очков. Максимум одна покупка за ход, резерв очков сохраняется. Лёгкий бот не менялся.</li>
           <li><b>⏳ Два очка действия — теперь в свой ход доступно два действия вместо одного: бросок кубиков, способность с панели или покупка в магазине. Можно бросить кубики дважды или, например, купить навык и потом бросить. Дубль по-прежнему даёт бесплатный переброс. Бот тоже тратит оба очка и передаёт ход после их израсходования.</li>
           <li><b>🛡 Защита приносит очки</b><br>Успешный блок «Возврата» или «Заморозки» теперь вознаграждается: владелец Защиты получает +100 очков (если его сумма ещё не достигла цели). Защита по-прежнему расходуется после первого срабатывания.</li>
           <li><b>🚔 Полиция — выход по выбору</b><br>Прямое попадание — только пропуск хода: жетон не расходуется, способности и мины сохраняются, после пропуска игрок выходит свободно. Три дубля подряд — Штраф Полиции (10%) и задержание: игрок сам выбирает — 🗝 жетон освобождения или выбрасывать дубль для выхода (+200 очков). Попытки не ограничены.</li>
@@ -834,6 +835,7 @@ let playerCount = 2;
 let botMode = true;
 let botDifficulty = 'easy';
 let doublesInRow = {};
+let botShopBought = false;
 let inPoliceMode = {};
 let policeAttempts = {};
 let mines = {};
@@ -1008,7 +1010,7 @@ function invReturn(pi, targetIdx){ invApplyTarget(pi, targetIdx, 'return'); }
 function invFreeze(pi, targetIdx){ invApplyTarget(pi, targetIdx, 'freeze'); }
 function botUseInventory(pi){
   const inv = (inventory[pi] || []).slice();
-  for (const id of inv){ useInvItem(pi, id, true); }
+  for (const id of inv){ if (actionsLeft <= 0 && !freeRollPending) break; useInvItem(pi, id, true); }
   updateUI();
   if (actionsLeft <= 0 && !freeRollPending) { nextTurn(); updateUI(); if (!gameOver && isCurrentBot()) setTimeout(botInfluenceOrRoll, 1200); if (onlineMode) setTimeout(onlineSync, 300); }
   else botTokensAndRoll(pi);
@@ -1154,6 +1156,7 @@ function makePlayers(){
   doublesInRow = {};
   inPoliceMode = {};
   policeAttempts = {};
+  botShopBought = false;
   abilities = {};
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
   mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
@@ -1628,7 +1631,7 @@ function useReleaseToken(){
 }
 
 function nextTurn(){
-    actionsLeft = ACTIONS_PER_TURN; freeRollPending = false;
+    actionsLeft = ACTIONS_PER_TURN; freeRollPending = false; botShopBought = false;
   if (gameOver) return;
   partyTurns++;
   let idx = currentPlayer;
@@ -1782,6 +1785,7 @@ function doRoll(){
         p.sum = Math.max(0, p.sum - policePenalty);
         log(p.name+': Штраф Полиции '+policePenalty+', сумма '+p.sum, 'pen');
         inPoliceMode[pi] = true;
+        p.pos = POLICE_INDEX;
         policeAttempts[pi] = 0;
         doublesInRow[pi] = 0;
         log(p.name+' задержан в Полиции! Выход — 🗝 жетон освобождения или выбросить дубль (+200 очков).', 'pen');
@@ -1993,56 +1997,49 @@ function afterInfluence(pi){
   }
 }
 
-function botShopThink(pi){
-  if (botDifficulty !== 'hard') return false;
-  if (!gameStarted || gameOver || rolling || eliminated.has(pi)) return false;
-  if (actionsLeft <= 0) return false;
-  if (minePlacingMode || influencePending || startAbilityPending) return false;
-  const p = players[pi];
-  if (!p) return false;
-  const reserve = 120;
-  const inv = inventory[pi] || [];
-  if (!abilities[pi]) initAbilities(pi);
-  const ab = abilities[pi];
-  let closest = Infinity;
-  players.forEach((pl,i)=>{ if (i!==pi && !eliminated.has(i)) closest = Math.min(closest, winSum - pl.sum); });
-  let rivalMines = 0, ownMines = 0;
-  Object.values(mines).forEach(own=>{ if (own===pi) ownMines++; else if (!eliminated.has(own)) rivalMines++; });
-  const hp = (p.health===undefined || p.health===null) ? 100 : p.health;
-  let want = null;
-  if (inPoliceMode[pi]){
-    // Застрял в Полиции без жетона — купить выход
-    if (!ab.token && p.sum >= 100 + 40) want = 'token';
-  } else if (hp <= 75 && hp < 100 && p.sum >= 130 + reserve){
-    want = 'firstaid';
-  } else if (closest <= 300 && closest > 0 && !inv.includes('freeze') && !inv.includes('return') && p.sum >= 180 + 40){
-    want = (p.sum >= 200 + 40 && Math.random() < 0.5) ? 'return' : 'freeze';
-  } else if (rivalMines > 0 && !ab.sapper && p.sum >= 150 + reserve){
-    want = 'sapper';
-  } else if (ownMines < 2 && !inv.includes('mine') && p.sum >= 100 + reserve){
-    want = 'mine';
-  } else if (!ab.protect && closest <= 400 && p.sum >= 150 + reserve){
-    want = 'protect';
-  } else if (!inv.includes('tax') && !inv.includes('block') && p.sum >= 250 + 200){
-    want = (winSum - p.sum >= 300) ? 'tax' : 'block';
+function botEndOrRoll(pi){
+  if (!gameOver && isCurrentBot()){
+    if (actionsLeft <= 0 && !freeRollPending && !inPoliceMode[pi]){
+      nextTurn();
+      updateUI();
+      if (!gameOver && isCurrentBot()) setTimeout(botInfluenceOrRoll, 1200);
+      if (onlineMode) setTimeout(onlineSync, 300);
+      return;
+    }
+    botTokensAndRoll(pi);
   }
-  if (!want) return false;
-  const item = SHOP_ITEMS.find(x=>x.id===want);
-  if (!item || p.sum < item.price) return false;
-  buyAbility(want, pi);
-  log('🤖 ' + p.name + ': решение по магазину принято!', 'bot');
-  setTimeout(function(){
-    if (gameOver) return;
-    if (isCurrentBot()) botInfluenceOrRoll();
-    else updateUI();
-  }, 1200);
-  return true;
+}
+
+function botShopThink(pi){
+  const p = players[pi];
+  const ab = abilities[pi] || {};
+  const dist = winSum - p.sum;
+  const ok = (cost) => p.sum - cost >= 120;
+  if (inPoliceMode[pi] && !ab.token && ok(100)) return 'token';
+  if ((p.health || 100) <= 75 && ok(130)) return 'firstaid';
+  let leaderDist = Infinity;
+  players.forEach((r, i) => { if (i !== pi && !eliminated.has(i)) leaderDist = Math.min(leaderDist, winSum - r.sum); });
+  if (leaderDist <= 300 && ok(180)) return Math.random() < 0.5 ? 'freeze' : 'return';
+  let foreignMines = 0, myMines = 0;
+  Object.values(mines).forEach(o => { if (o === pi) myMines++; else foreignMines++; });
+  if (foreignMines > 0 && !ab.sapper && ok(150)) return 'sapper';
+  if (myMines < 2 && ok(100)) return 'mine';
+  if (leaderDist <= 400 && !ab.protect && ok(150)) return 'protect';
+  if (p.sum >= 450 && ok(200)) return dist > 400 ? 'tax' : 'block';
+  if (!inPoliceMode[pi] && (plus1Bonus[pi] || 0) === 0 && p.sum >= 300 && dist > 60 && ok(80)) return 'moveToken';
+  return null;
 }
 
 function botTokensAndRoll(pi){
   const p = players[pi];
   const dist = winSum - p.sum;
-  if (botShopThink(pi)) return;
+  if (!botShopBought && botDifficulty === 'hard' && !eliminated.has(pi) && !gameOver){
+    botShopBought = true;
+    try {
+      const sid = botShopThink(pi);
+      if (sid){ buyAbility(sid, pi); return; }
+    } catch(e){ log('🤖 решение о покупке не принято — ход продолжается'); }
+  }
   if (botDifficulty === 'hard' && actionsLeft > 0 && (plus1Bonus[pi] || 0) === 0 && p.sum >= 300 && dist > 60 && !eliminated.has(pi)){
     p.sum -= 80; plus1Bonus[pi] = 1; spendAction();
     log('🤖 '+p.name+' купил 🎟 Жетон хода (−80 очков).');
@@ -2408,11 +2405,13 @@ function buyAbility(itemId, pi){
     log('🎒 «'+item.name+'» добавлена на панель способностей — активируйте в свой ход до броска!', 'win');
     updateUI();
     if (onlineMode && isHost) setTimeout(onlineSync, 300);
+    if (p.isBot) setTimeout(function(){ if (actionsLeft > 0 && inventory[pi] && inventory[pi].length) botUseInventory(pi); else botEndOrRoll(pi); }, 900);
     return;
   }
   document.getElementById('shopModal').style.display = 'none';
   updateUI();
   if (onlineMode && isHost) setTimeout(onlineSync, 300);
+  if (p.isBot) setTimeout(function(){ botEndOrRoll(pi); }, 900);
 }
 
 function placeMineShop(pi, cellIdx){
@@ -2695,7 +2694,7 @@ function startOnlineGame(data){
     players.push({name: data.players[i].nickname, color: PLAYER_COLORS[i], pos: 0, sum: 0, skip: false, finished: false, isBot: false});
   }
   currentPlayer = 0;
-  doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {};
+  doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {}; botShopBought = false;
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
   mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
   gameStarted = true; gameOver = false;
@@ -2719,7 +2718,7 @@ function hostStartOnlineGame(){
     players.push({name: onlinePlayers[i].nickname, color: PLAYER_COLORS[i], pos: 0, sum: 0, skip: false, finished: false, isBot: false, health: 100});
   }
   currentPlayer = 0;
-  doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {};
+  doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {}; botShopBought = false;
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; initAbilities(i); });
   mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {}; partyTurns = 0; surrenderCount = 0; resultsShown = false;
   gameStarted = true; gameOver = false;
