@@ -211,7 +211,6 @@
   .pl.eliminated .nm { text-decoration: line-through; }
   .pl.eliminated .nm::after { content: " выбыл"; font-size: 10px; color: #dc2626; }
 
-  #logCard .log { max-height: 380px; }
   .log { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; }
   .log div { padding: 7px 10px; border-radius: 9px; background: rgba(255,252,245,.4); color: #6a5d4a; line-height: 1.35; }
   .log div.win { background: rgba(243,156,18,.2); color: #b7791f; font-weight: 700; }
@@ -242,13 +241,16 @@
   .rules .neg { color: #c0392b; font-weight: 700; }
 
   .cell.influence { background: linear-gradient(150deg, #dc2626, #ef4444); color: #fff; border: none; box-shadow: 0 0 16px rgba(220,38,38,.45); font-size: clamp(13px, 1.7vw, 22px); }
-  .cell .mine-icon { position: absolute; top: 2px; right: 2px; font-size: 14px; z-index: 3; pointer-events: none; }
+  .cell .mine-icon { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%; background: #6b7280; border: 1.5px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; font-size: 9px; z-index: 3; pointer-events: none; }
+  .mine-reconfig { position: absolute; top: 15px; right: 2px; font-size: 10px; color: #f59e0b; font-weight: 700; z-index: 3; pointer-events: none; text-shadow: 0 0 3px #fff; }
+  #mineLegend { display: flex; flex-wrap: wrap; gap: 4px 10px; width: 100%; font-size: 11px; color: #7a6b55; margin-top: 2px; }
+  #mineLegend .ml-item i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; border: 1px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.12); }
   .cell.mine-target { cursor: crosshair; animation: minePulse 0.6s infinite alternate; }
   @keyframes minePulse { from { box-shadow: 0 0 8px rgba(239,68,68,.5); border-color: #ef4444; } to { box-shadow: 0 0 20px rgba(239,68,68,.9); border-color: #dc2626; } }
 
   /* Modal */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-  .modal { background: #fffdf8; border-radius: 16px; padding: 18px 16px; max-width: 380px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
+  .modal { background: #fffdf8; border-radius: 14px; padding: 12px 12px; max-width: 380px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
   .modal h2 { font-size: 17px; color: #4a3d2e; margin-bottom: 10px; text-align: center; }
   .modal .abilities { display: flex; flex-direction: column; gap: 10px; }
   .modal .ability-btn { padding: 14px 16px; border-radius: 12px; border: 2px solid rgba(180,160,130,.3); background: rgba(255,252,245,.7); cursor: pointer; font-size: 14px; font-weight: 700; color: #4a3d2e; transition: .15s; text-align: left; }
@@ -351,36 +353,46 @@
 
   .shop-btn { margin-top:8px; }
   .shop-item {
-    display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px;
+    display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:10px;
     background:rgba(139,92,246,.08); border:1px solid rgba(139,92,246,.2);
-    margin-bottom:8px; cursor:pointer; transition:.15s;
+    margin-bottom:5px; cursor:pointer; transition:.15s;
   }
   .shop-item:hover { background:rgba(139,92,246,.15); }
   .shop-item.disabled { opacity:.45; cursor:not-allowed; }
-  .shop-item .shop-ico { font-size:24px; flex:none; }
+  .shop-item .shop-ico { font-size:18px; flex:none; }
   .shop-item .shop-info { flex:1; }
-  .shop-item .shop-name { font-weight:700; font-size:14px; color:#4a3d2e; }
-  .shop-item .shop-desc { font-size:12px; color:#7a6b55; margin-top:2px; }
-  .shop-item .shop-price { font-weight:800; font-size:15px; color:#8b5cf6; flex:none; }
-  .shop-item .shop-owned { font-size:12px; color:#22c55e; font-weight:700; flex:none; }
+  .shop-item .shop-name { font-weight:700; font-size:13px; color:#4a3d2e; }
+  .shop-item .shop-desc { font-size:11px; color:#7a6b55; margin-top:1px; }
+  .shop-item .shop-price { font-weight:800; font-size:13px; color:#8b5cf6; flex:none; }
+  .shop-item .shop-owned { font-size:11px; color:#22c55e; font-weight:700; flex:none; }
 
 
   .badge-inv { background:rgba(139,92,246,.18); color:#6d28d9; }
   .inv-panel { display:none; flex-direction:column; gap:6px; margin-top:8px; }
   .inv-title { font-size:11px; color:#8a7a60; font-weight:700; text-transform:uppercase; letter-spacing:.8px; }
   .inv-chip { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:10px; background:rgba(139,92,246,.1); border:1px solid rgba(139,92,246,.3); }
-  .inv-chip .inv-ico { font-size:16px; }
+  .inv-chip .inv-ico { position:relative; flex:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; cursor:pointer; border:1px solid rgba(139,92,246,.55); background:linear-gradient(135deg,#8b5cf6,#7c3aed); color:#fff; transition:.15s; padding:0; }
+  .inv-chip .inv-ico:hover { transform:scale(1.12); box-shadow:0 0 0 4px rgba(139,92,246,.22); }
+  .inv-chip .inv-ico:active { transform:scale(.94); }
+  .inv-tip { position:absolute; bottom:calc(100% + 9px); left:50%; transform:translateX(-50%) translateY(3px); width:max-content; max-width:200px; background:rgba(43,33,20,.93); color:#fff7ea; font-size:11px; font-weight:500; line-height:1.35; padding:7px 10px; border-radius:9px; text-align:left; opacity:0; visibility:hidden; transition:.15s; pointer-events:none; z-index:60; box-shadow:0 5px 16px rgba(60,45,20,.35); text-shadow:none; }
+  .inv-tip::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:rgba(43,33,20,.93); }
+  .inv-chip .inv-ico:hover .inv-tip { opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
   .inv-chip .inv-name { font-size:12px; font-weight:700; color:#4a3d2e; flex:1; }
-  .inv-chip .inv-use { padding:4px 10px; border-radius:8px; border:none; cursor:pointer; background:linear-gradient(135deg,#8b5cf6,#7c3aed); color:#fff; font-size:11px; font-weight:700; }
+  #shopCard .btn { width:100%; }
   .badge-plus1 { background:rgba(34,197,94,.18); color:#15803d; }
 
   /* 🧭 Панели «Ход» и «Игроки» в центре поля — без границ, текст прямо на поле */
   .card.board-wrap { position: relative; }
-  #boardCenterPanels { position: absolute; display: none; gap: 10px; flex-direction: column; align-items: stretch; z-index: 40; pointer-events: none; overflow: hidden; }
-  #boardCenterPanels .card { pointer-events: auto; background: transparent; border: none; box-shadow: none; backdrop-filter: none; max-height: 100%; overflow-y: auto; flex: 1 1 0; min-width: 0; text-shadow: 0 1px 0 rgba(255,250,240,.95), 0 0 7px rgba(255,250,240,.9); }
+  #boardCenterPanels { position: absolute; display: none; flex-direction: column; gap: 8px; align-items: stretch; z-index: 40; pointer-events: none; }
+  #boardCenterPanels .card { pointer-events: auto; background: transparent; border: none; box-shadow: none; backdrop-filter: none; overflow-y: auto; min-height: 0; min-width: 0; text-shadow: 0 1px 0 rgba(255,250,240,.95), 0 0 7px rgba(255,250,240,.9); }
   #boardCenterPanels .card .btn, #boardCenterPanels .card input, #boardCenterPanels .card select, #boardCenterPanels .card textarea, #boardCenterPanels .card .seg { text-shadow: none; }
-  #boardCenterPanels #turnCard { flex: 0 0 auto; }
-  #boardCenterPanels #playersCard { flex: 1 1 0; min-height: 0; border-top: 1px solid rgba(120,100,70,.35); padding-top: 10px; }
+  #boardCenterPanels #turnCard { flex: 0 1 auto; max-height: 62%; }
+  #boardCenterPanels #playersCard { flex: 1 1 0; }
+  /* 📜 Журнал — отдельная карточка справа от игрового поля */
+  #journalCard { padding: 12px 14px; }
+  #journalCard h2 { font-size: 12px; margin-bottom: 8px; }
+  #journalCard .log { max-height: clamp(160px, 30vh, 300px); gap: 4px; font-size: 12px; line-height: 1.35; }
+  @media (max-width: 920px) { #invCard { display: none; } }
 </style>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
@@ -494,10 +506,23 @@
             <span><i style="background:#fcd34d"></i>Финиш</span>
             <span><i style="background:#3b82f6"></i>Полиция</span>
             <span><i style="background:#dc2626"></i>Влияние</span>
+            <div id="mineLegend"></div>
           </div>
         </div>
       </div>
       <div>
+        <div class="card" id="journalCard">
+          <h2>Журнал</h2>
+          <div class="log" id="log" style="display:none"></div>
+        </div>
+        <div class="card" id="invCard" style="display:none">
+          <h2>Способности</h2>
+          <div id="invCardSlot"></div>
+        </div>
+        <div class="card" id="shopCard" style="display:none">
+          <h2 style="font-size:16px;margin:2px 0 4px">🛒 Магазин способностей</h2>
+          <button class="btn shop-btn" id="shopBtn" style="display:none;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;font-weight:700">Открыть магазин</button>
+        </div>
         <div class="card" id="turnCard">
           <h2>Ход</h2>
           <div id="startScreen">
@@ -511,7 +536,6 @@
             <button class="btn primary" id="rollBtn">Бросить кубики</button>
             <button class="btn" id="tokenPlusBtn" style="display:none;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;font-weight:700">🎟 +1 к броску</button>
             <button class="btn" id="doubleStepBtn" style="display:none;background:linear-gradient(135deg,#f59e0b,#b45309);color:#fff;font-weight:700">⏩ Двойной шаг</button>
-            <button class="btn shop-btn" id="shopBtn" style="display:none;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;font-weight:700">🛒 Магазин навыков</button>
             <div class="inv-panel" id="invPanel"></div>
             <button class="btn release-btn" id="releaseBtn" style="display:none">&#128274; Использовать жетон освобождения</button>
             <button class="btn" id="endTurnBtn" style="display:none;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;font-weight:700">&#9193; Завершить ход</button>
@@ -522,12 +546,6 @@
         <div class="card" id="playersCard">
           <h2>Игроки</h2>
           <div class="players" id="players"></div>
-
-        </div>
-
-        <div class="card" id="logCard">
-          <h2>Журнал</h2>
-          <div class="log" id="log"></div>
         </div>
 
         <div class="card chat-panel" id="chatPanel">
@@ -639,7 +657,7 @@
           <li><b>💥 Соперник подорвался на вашей мине</b> — +100 очков. Если этот подрыв выбил игрока (0 HP) — ещё +200 очков (итого +300).</li>
         </ul>
 
-        <h3>🛒 Магазин навыков</h3>
+        <h3>🛒 Магазин способностей</h3>
         <p>В свой ход, до броска кубиков, игрок может открыть магазин и купить способности за очки. Каждая покупка — это компромисс: очки идут в зачёт победы или тратятся на тактику.</p>
         <table style="width:100%;font-size:13px;border-collapse:collapse;margin:8px 0">
           <tr style="font-weight:700;color:#4a3d2e"><td style="padding:4px">Навык</td><td style="padding:4px">Цена</td><td style="padding:4px">Эффект</td></tr>
@@ -697,7 +715,8 @@
       <div class="rules">
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
-        <ul>
+        <ul><li><b>🛒 Магазин — в колонке</b><br>Кнопка «Магазин способностей» перенесена из блока «Ход» в правую колонку — под карточку «Способности». Магазин открывается в свой ход до броска кубиков, логика покупок не изменилась. Панель способностей тоже переехала: карточка «Способности» появилась под журналом, а активация происходит кликом по значку способности — при наведении на значок всплывает описание эффекта.</li>
+        
           <li><b>🧭 Центр поля без границ</b><br>Панели «Ход» и «Игроки» объединены в единый блок в центре поля без подложки, рамок и теней — текст лежит прямо на поле. Блок занимает всю свободную зону в центре и не перекрывает клетки пути: Старт, Финиш, Полиция и Влияние остаются на своих местах.</li>
           <li><b>📋 Детали партии и панели в центре</b><br>В окне результатов появилась подробная статистика: броски и дубли, жетоны, покупки и траты, мины и подрывы, Полиция со штрафами, налоги, Блокировки, Возвраты/Заморозки, блоки Защитой и взломы шифра, лечения. Панели «Ход» и «Игроки» перенесены в центр игрового поля, журнал хода — внутри панели «Игроки».</li>
           <li><b>🛡 Защита с шифром и лимитом</b> — Защита переработана: при активации владелец устанавливает скрытый шифр из двух чисел от 1 до 6. Соперник, применяя Возврат или Заморозку, угадывает шифр — одна попытка, расходуется очко действия, но не сама способность. Не угадал — атака заблокирована, способность возвращается на панель, владелец получает +100 очков (при исчерпании лимита — разово ещё +100). Угадал — Защита расходуется, способность срабатывает. Лимит — 2 успешных блока. Цена Защиты — 250 очков. Шифр можно сменить в свой ход до броска кубиков (клик по бейджу «Защита»), смена не видна соперникам. При выбытии и сдаче Защита и шифр сбрасываются.</li><li><b>🚔 Три дубля — фишка в Полиции</b><br>Исправлено: при трёх дублях подряд фишка теперь перемещается на клетку 🚔 Полиции, а не остаётся на прежней клетке. Штраф и задержание работают как раньше.</li>
@@ -718,7 +737,7 @@
           <li><b>🏳 Сдача</b><br>Добавлена кнопка «Сдаться» в блоке «Ход». Доступна в свой ход до броска кубиков: после подтверждения игрок выбывает как при мине — мины снимаются, способности и шифр Защиты сбрасываются, ход переходит следующему. Если остался один игрок — он побеждает. Из Полиции сдаться нельзя.</li>
           <li><b>🏁 Очки при достигнутой сумме</b><br>Когда игрок набирает нужную сумму для победы, очки больше не начисляются — остаётся добраться до Финиша. Если сумма снова опустится ниже цели (налог, штраф Полиции), очки возобновляются. +200 за дубль заменён на +200 за освобождение из Полиции дублем.</li>
           <li><b>🎲 Очки за случайные действия</b><br>Добавлены бонусы за случайные события: +100 за проход мимо Полиции, +200 за освобождение из Полиции дублем, +300 за проход мимо мины соперника, +400 когда соперник подорвался на вашей мине.</li>
-          <li><b>🛒 Магазин навыков</b><br>Добавлен магазин — покупайте способности за очки в свой ход до броска. Сапёр (150), Защита (150), Жетон (100), +1 к броску (80), Мина (150), Блокировка (250), Налог (200), Возврат (200), Заморозка (180). Каждая покупка отдаляет от цели победы.</li>
+          <li><b>🛒 Магазин способностей</b><br>Добавлен магазин — покупайте способности за очки в свой ход до броска. Сапёр (150), Защита (150), Жетон (100), +1 к броску (80), Мина (150), Блокировка (250), Налог (200), Возврат (200), Заморозка (180). Каждая покупка отдаляет от цели победы.</li>
           <li><b>🏁 Финиш без штрафа</b><br>Штраф за Финиш удалён. Теперь при недоборе очков игрок возвращается на Старт без права выбора способностей. При Возврате от соперника — на Старт без +100, но с выбором защиты.</li>
           <li><b>💰 Сумма для победы — 2000</b><br>Минимальная сумма увеличена с 500 до 2000 очков, чтобы магазин навыков был осмысленным выбором, а не жертвой трети пути.</li>
           <li><b>🎒 Панель способностей</b><br>Активные способности (Мина, Блокировка, Налог, Возврат, Заморозка) из магазина и с клетки «Влияние» попадают на панель в блоке «Ход». Активируйте в любой свой ход до броска кубиков.</li>
@@ -802,10 +821,10 @@
 
 
 <div class="modal-overlay" id="shopModal" style="display:none">
-  <div class="modal" style="max-width:420px;position:relative">
+  <div class="modal" style="max-width:330px;max-height:82vh;overflow-y:auto;position:relative">
     <button class="close-x" onclick="document.getElementById('shopModal').style.display='none'" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
-    <h2>🛒 Магазин навыков</h2>
-    <p style="font-size:13px;color:#6a5d4a;margin-bottom:12px">Покупайте способности за очки. Каждая покупка отдаляет вас от цели победы — выбирайте с умом!</p>
+    <h2>🛒 Магазин способностей</h2>
+    <p style="font-size:12px;color:#6a5d4a;margin-bottom:8px">Покупайте способности за очки. Каждая покупка отдаляет вас от цели победы — выбирайте с умом!</p>
     <div id="shopContent"></div>
   </div>
 </div>
@@ -922,17 +941,27 @@ function invCanAct(){
 function renderInvPanel(){
   const panel = document.getElementById('invPanel');
   if (!panel) return;
+  const invCardEl = document.getElementById('invCard');
+  const slot = document.getElementById('invCardSlot');
   const canAct = invCanAct();
   const inv = canAct ? (inventory[currentPlayer] || []) : [];
-  if (!canAct || inv.length === 0){ panel.style.display = 'none'; panel.innerHTML = ''; return; }
-  let html = '<div class="inv-title">\u{1F392} Панель способностей — активируйте до броска</div>';
+  if (!canAct || inv.length === 0){ panel.style.display = 'none'; panel.innerHTML = ''; if (invCardEl) invCardEl.style.display = 'none'; return; }
+  const TIPS = {
+    mine: 'Урон 50 HP наступившему. Сапёр спасает; перенастроенная мина — 25 HP.',
+    block: 'Соперники 3 хода не получают очки с числовых клеток.',
+    tax: 'Списание 100 очков/ход у соперников 3 хода. Повторная активация удваивает.',
+    return: 'Отправить соперника на Старт (без +100 очков). Против Защиты — угадать шифр.',
+    freeze: 'Соперник пропускает следующий ход. Против Защиты — угадать шифр.'
+  };
+  let html = '<div class="inv-title">🎒 Панель способностей — нажмите значок, чтобы активировать</div>';
   inv.forEach(itemId=>{
     const meta = INV_META[itemId];
     if (!meta) return;
-    html += '<div class="inv-chip"><span class="inv-ico">'+meta.icon+'</span><span class="inv-name">'+meta.name+'</span><button class="inv-use" onclick="useInvItem('+currentPlayer+', \''+itemId+'\')">Активировать</button></div>';
+    html += '<div class="inv-chip"><button class="inv-ico" onclick="useInvItem('+currentPlayer+', \''+itemId+'\')" title="Активировать: '+meta.name+'"><span class="inv-tip">'+(TIPS[itemId]||'Активировать способность')+'</span>'+meta.icon+'</button><span class="inv-name">'+meta.name+'</span></div>';
   });
   panel.innerHTML = html;
   panel.style.display = 'flex';
+  if (invCardEl) invCardEl.style.display = (slot && panel.parentNode === slot) ? '' : 'none';
 }
 function useInvItem(pi, itemId, botPick){
   const p = players[pi];
@@ -1997,15 +2026,28 @@ function doRoll(){
 }
 
 function renderMines(){
-  document.querySelectorAll('.mine-icon').forEach(el=> el.remove());
+  document.querySelectorAll('.mine-icon, .mine-reconfig').forEach(el=> el.remove());
   for (const cellIdx in mines){
     const cell = document.querySelector('.cell.path[data-index="'+cellIdx+'"]');
     if (cell){
+      const o = mines[cellIdx];
+      const p = players[o];
       const ic = document.createElement('span');
       ic.className = 'mine-icon';
-      ic.textContent = '\u{1F4A5}';
+      ic.style.background = (p && p.color) ? p.color : '#6b7280';
+      ic.textContent = '\u{1F4A3}';
+      if (reconfiguredMines[cellIdx]){
+        const badge = document.createElement('span');
+        badge.className = 'mine-reconfig';
+        badge.textContent = '\u21BA';
+        cell.appendChild(badge);
+      }
       cell.appendChild(ic);
     }
+  }
+  const ml = document.getElementById('mineLegend');
+  if (ml){
+    ml.innerHTML = players.map(function(p){ return '<span class="ml-item"><i style="background:'+p.color+'"></i>\u{1F4A3} '+p.name+'</span>'; }).join('');
   }
 }
 
@@ -2543,7 +2585,7 @@ function showShop(){
   if (!abilities[pi]) initAbilities(pi);
   const modal = document.getElementById('shopModal');
   const content = document.getElementById('shopContent');
-  let html = '<div style="margin-bottom:10px;font-size:14px;font-weight:700;color:#4a3d2e">Ваши очки: <span style="color:#8b5cf6">'+p.sum+'</span> / '+winSum+'</div>';
+  let html = '<div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#4a3d2e">Ваши очки: <span style="color:#8b5cf6">'+p.sum+'</span> / '+winSum+'</div>';
   SHOP_ITEMS.forEach(item=>{
     const owned = (item.id === 'sapper' && abilities[pi].sapper) ||
                   (item.id === 'protect' && abilities[pi].protect) ||
@@ -3559,116 +3601,4 @@ function testTelegram(){
     }
   })
   .catch(() => {
-    document.getElementById('adminPanelStatus').innerHTML = '<span style="color:#dc2626">\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0442\u0438</span>';
-  });
-}
-
-// Hook into review submission to send Telegram notification
-function hookReviewSubmit(){
-  const btn = document.getElementById('reviewSubmit');
-  if (!btn || btn.dataset.hooked) return;
-  btn.dataset.hooked = '1';
-  btn.addEventListener('click', function(){
-    setTimeout(() => {
-      const reviews = loadReviews();
-      if (reviews.length > 0){
-        const r = reviews[0];
-        sendTelegramNotification('\u2B50 \u041d\u043e\u0432\u044b\u0439 \u043e\u0442\u0437\u044b\u0432\n\u0418\u043c\u044f: '+r.name+'\n\u041e\u0446\u0435\u043d\u043a\u0430: '+r.rating+'\n'+r.text);
-      }
-    }, 200);
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function(){ try{
-  // Admin panel events
-  const codeBtn = document.getElementById('adminCodeBtn');
-  const verifyBtn = document.getElementById('adminVerifyBtn');
-  const saveBtn = document.getElementById('adminSaveBtn');
-  const testBtn = document.getElementById('tgTestBtn');
-  
-  if (codeBtn) codeBtn.addEventListener('click', sendAdminCode);
-  if (verifyBtn) verifyBtn.addEventListener('click', verifyAdminCode);
-  if (saveBtn) saveBtn.addEventListener('click', saveAdminSettings);
-  if (testBtn) testBtn.addEventListener('click', testTelegram);
-  
-  // Check admin URL
-  if (isAdminUrl()){
-    const url = new URL(window.location.href);
-    const isSetup = url.searchParams.get('setup') === 'true';
-    if (isSetup || sessionStorage.getItem('adminAuth') === '1'){
-      openAdminPanel();
-    } else {
-      openAdminLogin();
-    }
-  }
-  
-  hookReviewSubmit();
-  }catch(e){ try{ showErr('Ошибка инициализации: ' + ((e && e.message) || e)); }catch(_){} }
-});
-
-// Close admin overlay on background click
-document.addEventListener('DOMContentLoaded', function(){
-  const overlay = document.getElementById('adminOverlay');
-  if (overlay){
-    overlay.addEventListener('click', function(e){
-      if (e.target === overlay) overlay.style.display = 'none';
-    });
-  }
-});
-
-
-</script>
-<div class="beginner-hint" id="beginnerHint">
-    <span class="hint-close" onclick="closeBeginnerHint()">&times;</span>
-    <div class="hint-title" id="beginnerHintTitle"></div>
-    <div id="beginnerHintBody"></div>
-    <button class="hint-btn" onclick="closeBeginnerHint()">Понятно</button>
-  </div>
-<script>
-(function(){
-  function q(id){ return document.getElementById(id); }
-  var tc = q('turnCard'), pc = q('playersCard'), bc = q('boardCenterPanels');
-  if(!tc || !pc || !bc) return;
-  var origParent = tc.parentNode;
-  var cl = q('centerLog'), lg = q('log');
-  function inset(){
-    var b = q('board');
-    if(!b) return 0;
-    var wpx = b.getBoundingClientRect().width;
-    if(wpx <= 0) return 0;
-    var cell = (wpx - 10*5) / 11; // сетка 11x11, зазор 5px
-    return Math.max(0, cell + 5); // свободная зона 9x9: клетка + зазор с каждой стороны
-  }
-  function layout(){
-    var w = (window.innerWidth || document.documentElement.clientWidth || 921);
-    if(w >= 921){
-      if(tc.parentNode !== bc){ bc.appendChild(tc); bc.appendChild(pc); }
-      bc.style.display = 'flex';
-      var b = q('board'), wrap = document.querySelector('.board-wrap');
-      if(b && wrap){
-        var br = b.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
-        if(br.width > 0){
-          var pad = inset();
-          bc.style.top = (br.top - wr.top + pad) + 'px';
-          bc.style.left = (br.left - wr.left + pad) + 'px';
-          bc.style.width = (br.width - 2*pad) + 'px';
-          bc.style.height = (br.height - 2*pad) + 'px';
-        }
-      }
-      if(cl) cl.style.display = 'none';
-    } else {
-      if(tc.parentNode !== origParent){ origParent.insertBefore(tc, origParent.firstChild); origParent.insertBefore(pc, tc.nextSibling); }
-      bc.style.display = 'none';
-      if(cl) cl.style.display = 'none';
-    }
-  }
-  window.addEventListener('resize', layout);
-  window.addEventListener('orientationchange', layout);
-  layout();
-  setTimeout(layout, 60);
-  setTimeout(layout, 400);
-  window.relayoutCenter = layout;
-})();
-</script>
-</body>
-</html>
+    document.getElementById('adminPanelStatus').innerHTML = '<span style="color:#dc2626">\u041e\u0448\u0438
