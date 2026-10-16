@@ -394,7 +394,22 @@
   #journalCard .log { max-height: clamp(160px, 30vh, 300px); gap: 4px; font-size: 12px; line-height: 1.35; }
   @media (max-width: 920px) { #invCard { display: none; } }
 </style>
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script>
+  // Загрузка MQTT: цепочка CDN — jsDelivr, затем unpkg (резерв на случай блокировок)
+  (function(){
+    var urls = ['https://cdn.jsdelivr.net/npm/mqtt/dist/mqtt.min.js',
+                'https://unpkg.com/mqtt/dist/mqtt.min.js'];
+    var i = 0;
+    function next(){
+      if (i >= urls.length) return;
+      var s = document.createElement('script');
+      s.src = urls[i++];
+      s.onerror = next;
+      document.head.appendChild(s);
+    }
+    next();
+  })();
+</script>
 </head>
 <body>
 <div class="app">
@@ -2785,6 +2800,7 @@ function setOnlineStatus(text, isErr, isOk){
 }
 
 function connectMQTT(){
+  if (mqttClient){ try{ mqttClient.end(true); }catch(e){} mqttClient = null; }
   const clientId = 'dice_' + Math.random().toString(16).substr(2,8);
   try {
     mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', {
@@ -2849,9 +2865,7 @@ function handleMQTTMessage(topic, data){
       }));
       setOnlineStatus('Игрок "' + data.nickname + '" подключился! Всего: ' + onlinePlayers.length, false, true);
       renderOnlinePlayers();
-      if (spectatorMode){
-        renderSpectatorStatus();
-      }
+      renderSpectatorStatus();
       if (onlinePlayers.length >= 2 && !spectatorMode){
         document.getElementById('onlineConnectBtn').textContent = '\u25B6 Начать онлайн-игру (' + onlinePlayers.length + ' игр.)';
         document.getElementById('onlineConnectBtn').disabled = false;
@@ -2926,7 +2940,7 @@ function renderOnlinePlayers(){
 function renderSpectatorStatus(){
   const startBtn = document.getElementById('onlineStartBtn');
   if (!startBtn) return;
-  if (spectatorMode && isHost){
+  if (isHost){
     startBtn.style.display = 'inline-block';
     startBtn.textContent = onlinePlayers.length >= 2 ? '\u25B6 \u041D\u0430\u0447\u0430\u0442\u044C \u0438\u0433\u0440\u0443 (' + onlinePlayers.length + ' \u0438\u0433\u0440.)' : '\u041E\u0436\u0438\u0434\u0430\u043D\u0438\u0435 \u0438\u0433\u0440\u043E\u043A\u043E\u0432...';
     startBtn.disabled = onlinePlayers.length < 2;
@@ -3195,7 +3209,16 @@ document.getElementById('onlineConnectBtn').addEventListener('click', function()
   const nick = document.getElementById('nicknameInput').value.trim();
   if (nick.length < 2){ setOnlineStatus('Введите никнейм (минимум 2 символа)', true, false); return; }
   myNickname = nick;
-  if (isHost){ roomCode = genRoomCode(); connectMQTT(); }
+  if (typeof mqtt === 'undefined'){ setOnlineStatus('Библиотека MQTT не загрузилась. Проверьте интернет, обновите страницу (F5) или попробуйте другую сеть.', true, false); return; }
+  if (isHost){
+    if (roomCode){
+      if (mqttClient && mqttClient.connected && onlinePlayers.length >= 2){ hostStartOnlineGame(); }
+      else if (mqttClient && mqttClient.connected){ setOnlineStatus('Комната ждёт игроков: подключено ' + onlinePlayers.length + ' из 2+. Код: ' + roomCode, true, false); }
+      else { setOnlineStatus('Подключение к брокеру ещё не установлено — подождите несколько секунд.', true, false); }
+      return;
+    }
+    roomCode = genRoomCode(); connectMQTT();
+  }
   else {
     roomCode = document.getElementById('roomCodeInput').value.trim().toUpperCase();
     if (roomCode.length !== 5){ setOnlineStatus('Введите 5-символьный код комнаты', true, false); return; }
@@ -3204,9 +3227,9 @@ document.getElementById('onlineConnectBtn').addEventListener('click', function()
 });
 
 document.getElementById('onlineStartBtn').addEventListener('click', function(){
-  if (spectatorMode && isHost){
+  if (isHost){
     if (onlinePlayers.length >= 2) hostStartOnlineGame();
-    else setOnlineStatus('Нужно минимум 2 игрока', true, false);
+    else setOnlineStatus('Нужно минимум 2 игрока — ждите подключений по коду ' + roomCode, true, false);
   }
 });
 
