@@ -1669,7 +1669,7 @@ function movePlayer(p, pi, steps){
     } else {
       if (p.sum < winSum){
         p.sum += Number(val);
-        if (beginnerMode && i === currentPlayer && !shownHints.has('numericCell')) showBeginnerHint('numericCell', '🔢 Числовая клетка', 'Вы попали на числовую клетку (+' + val + ' очков). Каждая числовая клетка добавляет своё значение к вашей сумме. Наберите сумму ≥ цели и дойдите до Финиша.');
+        if (beginnerMode && pi === currentPlayer && !p.isBot && !shownHints.has('numericCell')) showBeginnerHint('numericCell', '🔢 Числовая клетка', 'Вы попали на числовую клетку (+' + val + ' очков). Каждая числовая клетка добавляет своё значение к вашей сумме. Наберите сумму ≥ цели и дойдите до Финиша.');
         log(p.name+' остановился на '+val+': +'+val+' (сумма '+p.sum+')');
       } else {
         log(p.name+' остановился на '+val+' — сумма уже достигнута, очки не начисляются. Доберитесь до Финиша!');
