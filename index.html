@@ -3761,4 +3761,82 @@ document.addEventListener('DOMContentLoaded', function(){
   const overlay = document.getElementById('adminOverlay');
   if (overlay){
     overlay.addEventListener('click', function(e){
-      if (e.target === overlay) overlay.st
+      if (e.target === overlay) overlay.style.display = 'none';
+    });
+  }
+});
+
+
+</script>
+<div class="beginner-hint" id="beginnerHint">
+    <span class="hint-close" onclick="closeBeginnerHint()">&times;</span>
+    <div class="hint-title" id="beginnerHintTitle"></div>
+    <div id="beginnerHintBody"></div>
+    <button class="hint-btn" onclick="closeBeginnerHint()">Понятно</button>
+  </div>
+<script>
+(function(){
+  var btn = document.getElementById('shopBtn'), card = document.getElementById('shopCard');
+  if(!btn || !card) return;
+  function sync(){ card.style.display = (getComputedStyle(btn).display === 'none') ? 'none' : ''; }
+  if (window.MutationObserver) new MutationObserver(sync).observe(btn, {attributes:true, attributeFilter:['style']});
+  sync();
+})();
+</script>
+<script>
+(function(){
+  function q(id){ return document.getElementById(id); }
+  var tc = q('turnCard'), pc = q('playersCard'), bc = q('boardCenterPanels');
+  if(!tc || !pc || !bc) return;
+  var origParent = tc.parentNode;
+  var ip = q('invPanel'), ic = q('invCard'), slot = q('invCardSlot');
+  var origInvParent = ip ? ip.parentNode : null;
+  var origInvNext = ip && ip.nextSibling ? ip.nextSibling : null;
+  var cl = q('centerLog'), lg = q('log');
+  function inset(){
+    var b = q('board');
+    if(!b) return 0;
+    var wpx = b.getBoundingClientRect().width;
+    if(wpx <= 0) return 0;
+    var cell = (wpx - 10*5) / 11; // сетка 11x11, зазор 5px
+    return Math.max(0, cell + 5); // свободная зона 9x9: клетка + зазор с каждой стороны
+  }
+  function layout(){
+    var w = (window.innerWidth || document.documentElement.clientWidth || 921);
+    if(w >= 921){
+      if(tc.parentNode !== bc){ bc.appendChild(tc); bc.appendChild(pc); }
+      bc.style.display = 'flex';
+      var b = q('board'), wrap = document.querySelector('.board-wrap');
+      if(b && wrap){
+        var br = b.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+        if(br.width > 0){
+          var pad = inset();
+          bc.style.top = (br.top - wr.top + pad) + 'px';
+          bc.style.left = (br.left - wr.left + pad) + 'px';
+          bc.style.width = (br.width - 2*pad) + 'px';
+          bc.style.height = (br.height - 2*pad) + 'px';
+        }
+      }
+      if(ip && slot && ip.parentNode !== slot){ slot.appendChild(ip); }
+      if(ic){ ic.style.display = (ip && ip.style.display && ip.style.display !== 'none') ? '' : 'none'; }
+      if(cl) cl.style.display = 'none';
+      if(lg) lg.style.display = 'block';
+    } else {
+      if(tc.parentNode !== origParent){ origParent.insertBefore(tc, origParent.firstChild); origParent.insertBefore(pc, tc.nextSibling); }
+      bc.style.display = 'none';
+      if(ip && origInvParent && ip.parentNode !== origInvParent){ if(origInvNext) origInvParent.insertBefore(ip, origInvNext); else origInvParent.appendChild(ip); }
+      if(ic) ic.style.display = 'none';
+      if(cl) cl.style.display = 'none';
+      if(lg) lg.style.display = 'block';
+    }
+  }
+  window.addEventListener('resize', layout);
+  window.addEventListener('orientationchange', layout);
+  layout();
+  setTimeout(layout, 60);
+  setTimeout(layout, 400);
+  window.relayoutCenter = layout;
+})();
+</script>
+</body>
+</html>
