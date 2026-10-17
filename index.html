@@ -691,6 +691,7 @@
           <tr><td style="padding:4px">💴 Налог</td><td style="padding:4px">200</td><td style="padding:4px">Снимать по 100 очков у соперников 3 хода</td></tr>
           <tr><td style="padding:4px">↩️ Возврат</td><td style="padding:4px">200</td><td style="padding:4px">Отправить соперника на Старт (без +100)</td></tr>
           <tr><td style="padding:4px">❄️ Заморозка</td><td style="padding:4px">180</td><td style="padding:4px">Заморозить соперника — пропуск хода</td></tr>
+          <tr><td style="padding:4px">💳 Фин. Ловкость 2.0</td><td style="padding:4px">350</td><td style="padding:4px">Активация: 3 хода иммунитета к Налогу + регенерация +200 по истечении. Пока на панели перехватывает Налог: не действует и даёт +150</td></tr>
         </table>
         <p style="font-size:13px;color:#6b5d4e">🎒 <b>Панель способностей</b>: активные способности (Мина, Блокировка, Налог, Возврат, Заморозка) из магазина и с клетки «Влияние» не срабатывают сразу — они попадают на панель в блоке «Ход». Активировать можно в любой свой ход до броска кубиков. Если применить способность нельзя, она остаётся на панели. Полиция больше не сбрасывает панель — она очищается только при выбытии игрока или сдаче.</p>
         <h3>🎟 Жетоны хода</h3>
@@ -735,7 +736,7 @@
       <div class="rules">
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
-        <ul><li><b>🤖 Боты в игре</b><br>Вместо тумблера «Игра против бота» — выбор количества ботов: 0, 1, 2 или 3. Ботов не больше «игроков − 1», сложность общая для всех, боты ходят по очереди автоматически.</li><li><b>⚡ Телепорт-наказание на Финише</b><br>При недоборе на Финише фишка телепортируется на случайную числовую клетку (вместо возврата на Старт). Очки клетки начисляются, мины на клетке телепорта срабатывают, Сапёр работает как обычно. При включённом «Автопереходе» телепорт может сразу привести к победе.</li><li><b>🛒 Магазин — в колонке</b><br>Кнопка «Магазин способностей» перенесена из блока «Ход» в правую колонку — под карточку «Способности». Магазин открывается в свой ход до броска кубиков, логика покупок не изменилась. Панель способностей тоже переехала: карточка «Способности» появилась под журналом, а активация происходит кликом по значку способности — при наведении на значок всплывает описание эффекта.</li>
+        <ul><li><b>💳 Финансовая Ловкость 2.0</b><br>Новая способность магазина (350 очков). Активация в свой ход до броска: 3 хода полного иммунитета к Налогу (с клетки «Влияние» и из магазина), Налог на владельце не удваивается, списания на паузе. По истечении действия — регенерация +200 очков. Пока способность на панели и не активирована, она перехватывает Налог, нацеленный на владельца: налог не действует, владелец получает +150 очков, способность расходуется. Один раз за игру. Не защищает от Полиции и других способностей.</li><li><b>🤖 Боты в игре</b><br>Вместо тумблера «Игра против бота» — выбор количества ботов: 0, 1, 2 или 3. Ботов не больше «игроков − 1», сложность общая для всех, боты ходят по очереди автоматически.</li><li><b>⚡ Телепорт-наказание на Финише</b><br>При недоборе на Финише фишка телепортируется на случайную числовую клетку (вместо возврата на Старт). Очки клетки начисляются, мины на клетке телепорта срабатывают, Сапёр работает как обычно. При включённом «Автопереходе» телепорт может сразу привести к победе.</li><li><b>🛒 Магазин — в колонке</b><br>Кнопка «Магазин способностей» перенесена из блока «Ход» в правую колонку — под карточку «Способности». Магазин открывается в свой ход до броска кубиков, логика покупок не изменилась. Панель способностей тоже переехала: карточка «Способности» появилась под журналом, а активация происходит кликом по значку способности — при наведении на значок всплывает описание эффекта.</li>
         
           <li><b>🧭 Центр поля без границ</b><br>Панели «Ход» и «Игроки» объединены в единый блок в центре поля без подложки, рамок и теней — текст лежит прямо на поле. Блок занимает всю свободную зону в центре и не перекрывает клетки пути: Старт, Финиш, Полиция и Влияние остаются на своих местах.</li>
           <li><b>📋 Детали партии и панели в центре</b><br>В окне результатов появилась подробная статистика: броски и дубли, жетоны, покупки и траты, мины и подрывы, Полиция со штрафами, налоги, Блокировки, Возвраты/Заморозки, блоки Защитой и взломы шифра, лечения. Панели «Ход» и «Игроки» перенесены в центр игрового поля, журнал хода — внутри панели «Игроки».</li>
@@ -943,7 +944,8 @@ let inventory = {}; // {pi: [itemId,...]} — панель способност�
 const INV_META = {
   mine:{icon:'\u{1F4A3}', name:'Мина'}, block:{icon:'\u{1F4B0}', name:'Блокировка'},
   tax:{icon:'\u{1F4B4}', name:'Налог'}, return:{icon:'\u21A9\uFE0F', name:'Возврат'},
-  freeze:{icon:'\u2744\uFE0F', name:'Заморозка'}
+  freeze:{icon:'\u2744\uFE0F', name:'Заморозка'},
+  finance:{icon:'\u{1F4B3}', name:'Фин. Ловкость'}
 };
 function invRivals(pi){ return players.map((pl,i)=>({pl,i})).filter(({i})=> i!==pi && !eliminated.has(i) && !pl_finished_check(i)); }
 function invConsume(pi, itemId){ const k = (inventory[pi]||[]).indexOf(itemId); if (k !== -1) inventory[pi].splice(k, 1);  if (pi === currentPlayer) spendAction(); }
@@ -972,7 +974,8 @@ function renderInvPanel(){
     block: 'Соперники 3 хода не получают очки с числовых клеток.',
     tax: 'Списание 100 очков/ход у соперников 3 хода. Повторная активация удваивает.',
     return: 'Отправить соперника на Старт (без +100 очков). Против Защиты — угадать шифр.',
-    freeze: 'Соперник пропускает следующий ход. Против Защиты — угадать шифр.'
+    freeze: 'Соперник пропускает следующий ход. Против Защиты — угадать шифр.',
+    finance: 'Активация: 3 хода иммунитета к Налогу, по истечении +200 очков. Пока на панели перехватывает Налог: не действует и даёт +150. Один раз за игру.'
   };
   let html = '<div class="inv-title">🎒 Панель способностей — нажмите значок, чтобы активировать</div>';
   inv.forEach(itemId=>{
@@ -1003,6 +1006,14 @@ function useInvItem(pi, itemId, botPick){
     const taxSum = 100 * Math.pow(2, abilities[pi].taxLevel - 1);
     rivals.forEach(({i})=>{
       if (!abilities[i]) initAbilities(i);
+      if (abilities[i].finActive > 0){ log('💳 '+players[i].name+': иммунитет Фин. Ловкости — Налог не действует!', 'win'); return; }
+      if ((inventory[i]||[]).includes('finance')){
+        invConsume(i,'finance');
+        players[i].sum += 150;
+        pst(i,'fintake',1);
+        log('💳 '+players[i].name+' перехватил Налог с помощью Фин. Ловкости: +150 очков, налог не действует!', 'win');
+        return;
+      }
       abilities[i].taxAmount = taxSum;
       abilities[i].taxTurns = 3;
     });
@@ -1021,6 +1032,12 @@ function useInvItem(pi, itemId, botPick){
     } else {
       startInvMineUI(pi);
     }
+  } else if (itemId === 'finance'){
+    invConsume(pi, itemId);
+    if (!abilities[pi]) initAbilities(pi);
+    abilities[pi].finActive = 3;
+    pst(pi,'finon',1);
+    log('💳 '+p.name+' активировал Финансовую Ловкость: 3 хода иммунитета к Налогу, по истечении +200 очков!', 'win');
   } else if (itemId === 'return' || itemId === 'freeze'){
     if (rivals.length === 0){ log('Соперников нет — способность осталась на панели.', 'pen'); return; }
     if (botPick){
@@ -1203,7 +1220,7 @@ function invReturn(pi, targetIdx){ invApplyTarget(pi, targetIdx, 'return'); }
 function invFreeze(pi, targetIdx){ invApplyTarget(pi, targetIdx, 'freeze'); }
 function botUseInventory(pi){
   const inv = (inventory[pi] || []).slice();
-  for (const id of inv){ if (actionsLeft <= 0 && !freeRollPending) break; useInvItem(pi, id, true); }
+  for (const id of inv){ if (actionsLeft <= 0 && !freeRollPending) break; if (id === 'finance' && !(abilities[pi] && abilities[pi].taxTurns > 0)) continue; useInvItem(pi, id, true); }
   updateUI();
   if (actionsLeft <= 0 && !freeRollPending) { nextTurn(); updateUI(); if (!gameOver && isCurrentBot()) setTimeout(botInfluenceOrRoll, 1200); if (onlineMode) setTimeout(onlineSync, 300); }
   else botTokensAndRoll(pi);
@@ -1310,7 +1327,7 @@ function log(text, cls){
 }
 
 function initAbilities(pi){
-  abilities[pi] = { sapper: false, protect: false, protectBlocks: 0, token: false, frozen: false, taxBlockTurns: 0, taxTurns: 0, taxAmount: 0, taxLevel: 0 }; plus1Bonus[pi] = 0;
+  abilities[pi] = { sapper: false, protect: false, protectBlocks: 0, token: false, frozen: false, taxBlockTurns: 0, taxTurns: 0, taxAmount: 0, taxLevel: 0, finActive: 0 }; plus1Bonus[pi] = 0;
 }
 
 function resetAllAbilities(pi){
@@ -1329,6 +1346,7 @@ function resetAllAbilities(pi){
   abilities[pi].frozen = false;
   abilities[pi].taxBlockTurns = 0;
   abilities[pi].taxTurns = 0;
+  abilities[pi].finActive = 0;
   abilities[pi].taxAmount = 0;
   abilities[pi].taxLevel = 0;
   renderMines();
@@ -1397,6 +1415,7 @@ function updatePlayers(){
     if (ab.frozen) badges += '<span class="badge badge-freeze">\u2744\uFE0F заморозка</span>';
     if (ab.taxBlockTurns > 0) badges += '<span class="badge badge-taxblock">\u{1F4B0} блок: '+ab.taxBlockTurns+'</span>';
     if (ab.taxTurns > 0) badges += '<span class="badge badge-tax">\u{1F4B5} налог: '+ab.taxTurns+' (-'+ab.taxAmount+')</span>';
+    if (ab.finActive > 0) badges += '<span class="badge badge-taxblock">💳 защ: '+ab.finActive+'</span>';
     if ((inventory[i]||[]).length > 0) badges += '<span class="badge badge-inv">\u{1F392} панель: '+(inventory[i].length)+'</span>';
     if (plus1Bonus[i] > 0) badges += '<span class="badge badge-plus1">🎟 жетоны: '+plus1Bonus[i]+'</span>';
     if (tokenPlusPending[i] > 0) badges += '<span class="badge badge-plus1">🎟 +'+tokenPlusPending[i]+' к броску</span>';
@@ -1881,16 +1900,28 @@ function nextTurn(){
         log(players[idx].name+': блокировка снята', 'tax');
       }
     }
+    if (abilities[idx] && abilities[idx].finActive > 0){
+      abilities[idx].finActive--;
+      if (abilities[idx].finActive === 0){
+        players[idx].sum += 200;
+        pst(idx,'finreg',1);
+        log('💳 '+players[idx].name+': действие Фин. Ловкости закончилось — регенерация +200 очков!', 'win');
+      }
+    }
     // Apply tax - deduct points each turn
     if (abilities[idx] && abilities[idx].taxTurns > 0){
-      const deducted = Math.min(abilities[idx].taxAmount, players[idx].sum);
-      players[idx].sum -= deducted;
-      pst(idx,'taxpaid',1); pst(idx,'taxsum',deducted);
-      log('\u{1F4B5} '+players[idx].name+': Налог -'+deducted+' очков (осталось '+abilities[idx].taxTurns+' ход.)', 'tax');
-      abilities[idx].taxTurns--;
-      if (abilities[idx].taxTurns === 0){
-        abilities[idx].taxAmount = 0;
-        log(players[idx].name+': Налог снят', 'tax');
+      if (abilities[idx].finActive > 0){
+        log('💳 '+players[idx].name+': иммунитет Фин. Ловкости — Налог на паузе', 'win');
+      } else {
+        const deducted = Math.min(abilities[idx].taxAmount, players[idx].sum);
+        players[idx].sum -= deducted;
+        pst(idx,'taxpaid',1); pst(idx,'taxsum',deducted);
+        log('\u{1F4B5} '+players[idx].name+': Налог -'+deducted+' очков (осталось '+abilities[idx].taxTurns+' ход.)', 'tax');
+        abilities[idx].taxTurns--;
+        if (abilities[idx].taxTurns === 0){
+          abilities[idx].taxAmount = 0;
+          log(players[idx].name+': Налог снят', 'tax');
+        }
       }
     }
     if (players[idx].skip){
@@ -2207,6 +2238,14 @@ function applyTax(pi){
   players.forEach((pl,i)=>{
     if (i === pi || eliminated.has(i) || pl.finished) return;
     if (!abilities[i]) initAbilities(i);
+    if (abilities[i].finActive > 0){ log('💳 '+pl.name+': иммунитет Фин. Ловкости — Налог не действует!', 'win'); return; }
+    if ((inventory[i]||[]).includes('finance')){
+      invConsume(i,'finance');
+      players[i].sum += 150;
+      pst(i,'fintake',1);
+      log('💳 '+pl.name+' перехватил Налог с помощью Фин. Ловкости: +150 очков, налог не действует!', 'win');
+      return;
+    }
     abilities[i].taxAmount = 100 * Math.pow(2, (abilities[pi].taxLevel || 1) - 1);
     if (abilities[pi].taxLevel > 1){
       log('\u{1F4B5} '+p.name+' усилил Налог на '+pl.name+': теперь -'+abilities[i].taxAmount+' очков/ход (осталось 3 хода)', 'tax');
@@ -2633,7 +2672,8 @@ const SHOP_ITEMS = [
   {id:'block', icon:'💰', name:'Блокировка', desc:'Лишить соперников очков на 3 хода', price:250},
   {id:'tax', icon:'💴', name:'Налог', desc:'Снимать по 100 очков у соперников 3 хода', price:200},
   {id:'return', icon:'↩️', name:'Возврат', desc:'Отправить соперника на Старт', price:200},
-  {id:'freeze', icon:'❄️', name:'Заморозка', desc:'Заморозить соперника — пропуск хода', price:180}
+  {id:'freeze', icon:'❄️', name:'Заморозка', desc:'Заморозить соперника — пропуск хода', price:180},
+  {id:'finance', icon:'💳', name:'Финансовая Ловкость 2.0', desc:'Активация: 3 хода иммунитета к Налогу + регенерация +200 по истечении. Пока на панели перехватывает Налог: не действует и даёт +150', price:350}
 ];
 
 function showShop(){
@@ -2683,7 +2723,7 @@ function buyAbility(itemId, pi){
     else { p.health = Math.min(100, (p.health||100) + 25); log('🧰 '+p.name+' восстановил 25 HP ('+p.health+'/100)!', 'win'); pst(pi,'heal',25); }
   }
   else if (itemId === 'moveToken'){ plus1Bonus[pi] = (plus1Bonus[pi] || 0) + 1; log('🎟 '+p.name+' пополнил копилку: жетонов хода — '+plus1Bonus[pi]+'!'); }
-  else if (itemId === 'mine' || itemId === 'block' || itemId === 'tax' || itemId === 'return' || itemId === 'freeze'){
+  else if (itemId === 'mine' || itemId === 'block' || itemId === 'tax' || itemId === 'return' || itemId === 'freeze' || itemId === 'finance'){
     document.getElementById('shopModal').style.display = 'none';
     if (!inventory[pi]) inventory[pi] = [];
     inventory[pi].push(itemId);
@@ -2787,7 +2827,7 @@ function showResults(winnerIdx){
     + '<tbody>'+rows+'</tbody></table>';
   const statsBlock = (function(){ try{
    const dur = partyStats.start ? Math.max(1, Math.round((Date.now()-partyStats.start)/60000))+' мин' : '—';
-   const L = [['rolls','🎲 Бросков'],['doubles','🎲 Дублей'],['tokens','🎟 Жетонов потрачено'],['dsteps','⏩ Двойных шагов'],['buys','🛒 Покупок'],['spent','💸 Потрачено очков'],['mineset','💣 Мин поставлено'],['expl','💥 Подрывов на моих минах'],['exdmg','💔 Нанесено урона минами'],['kobonus','🏆 Выбитий миной'],['passpol','🚔 Прошёл мимо Полиции'],['passmine','💣 Прошёл мимо мин'],['polhit','🚔 Попаданий в Полицию'],['pen','⚖️ Штрафов Полиции'],['pensum','⚖️ Выплачено штрафов'],['freed','🎲 Выходов дублем'],['skippol','⏸ Пропусков (Полиция)'],['skipfrz','❄️ Пропусков (Заморозка)'],['taxon','💴 Налогов активировано'],['taxpaid','💴 Налогов выплачено'],['taxsum','💴 Очков уплачено налогами'],['blkon','💰 Блокировок'],['ret','↩️ Возвратов'],['frz','❄️ Заморозок'],['sblk','🛡 Блоков Защитой'],['scrk','🔓 Взломов шифра'],['start','🏁 Попаданий на Старт'],['infl','🎯 Попаданий на «Влияние»'],['fshort','🏁 Недоборов на Финише']];
+   const L = [['rolls','🎲 Бросков'],['doubles','🎲 Дублей'],['tokens','🎟 Жетонов потрачено'],['dsteps','⏩ Двойных шагов'],['buys','🛒 Покупок'],['spent','💸 Потрачено очков'],['mineset','💣 Мин поставлено'],['expl','💥 Подрывов на моих минах'],['exdmg','💔 Нанесено урона минами'],['kobonus','🏆 Выбитий миной'],['passpol','🚔 Прошёл мимо Полиции'],['passmine','💣 Прошёл мимо мин'],['polhit','🚔 Попаданий в Полицию'],['pen','⚖️ Штрафов Полиции'],['pensum','⚖️ Выплачено штрафов'],['freed','🎲 Выходов дублем'],['skippol','⏸ Пропусков (Полиция)'],['skipfrz','❄️ Пропусков (Заморозка)'],['taxon','💴 Налогов активировано'],['taxpaid','💴 Налогов выплачено'],['taxsum','💴 Очков уплачено налогами'],['blkon','💰 Блокировок'],['ret','↩️ Возвратов'],['frz','❄️ Заморозок'],['sblk','🛡 Блоков Защитой'],['scrk','🔓 Взломов шифра'],['start','🏁 Попаданий на Старт'],['infl','🎯 Попаданий на «Влияние»'],['fshort','🏁 Недоборов на Финише'],['finon','💳 Активаций Ловкости'],['fintake','💳 Перехватов налога'],['finreg','💳 Регенераций']];
    const cards = players.map(function(pl,i){
      const st = partyStats.players[i] || {};
      let rows = '';
@@ -3721,82 +3761,4 @@ document.addEventListener('DOMContentLoaded', function(){
   const overlay = document.getElementById('adminOverlay');
   if (overlay){
     overlay.addEventListener('click', function(e){
-      if (e.target === overlay) overlay.style.display = 'none';
-    });
-  }
-});
-
-
-</script>
-<div class="beginner-hint" id="beginnerHint">
-    <span class="hint-close" onclick="closeBeginnerHint()">&times;</span>
-    <div class="hint-title" id="beginnerHintTitle"></div>
-    <div id="beginnerHintBody"></div>
-    <button class="hint-btn" onclick="closeBeginnerHint()">Понятно</button>
-  </div>
-<script>
-(function(){
-  var btn = document.getElementById('shopBtn'), card = document.getElementById('shopCard');
-  if(!btn || !card) return;
-  function sync(){ card.style.display = (getComputedStyle(btn).display === 'none') ? 'none' : ''; }
-  if (window.MutationObserver) new MutationObserver(sync).observe(btn, {attributes:true, attributeFilter:['style']});
-  sync();
-})();
-</script>
-<script>
-(function(){
-  function q(id){ return document.getElementById(id); }
-  var tc = q('turnCard'), pc = q('playersCard'), bc = q('boardCenterPanels');
-  if(!tc || !pc || !bc) return;
-  var origParent = tc.parentNode;
-  var ip = q('invPanel'), ic = q('invCard'), slot = q('invCardSlot');
-  var origInvParent = ip ? ip.parentNode : null;
-  var origInvNext = ip && ip.nextSibling ? ip.nextSibling : null;
-  var cl = q('centerLog'), lg = q('log');
-  function inset(){
-    var b = q('board');
-    if(!b) return 0;
-    var wpx = b.getBoundingClientRect().width;
-    if(wpx <= 0) return 0;
-    var cell = (wpx - 10*5) / 11; // сетка 11x11, зазор 5px
-    return Math.max(0, cell + 5); // свободная зона 9x9: клетка + зазор с каждой стороны
-  }
-  function layout(){
-    var w = (window.innerWidth || document.documentElement.clientWidth || 921);
-    if(w >= 921){
-      if(tc.parentNode !== bc){ bc.appendChild(tc); bc.appendChild(pc); }
-      bc.style.display = 'flex';
-      var b = q('board'), wrap = document.querySelector('.board-wrap');
-      if(b && wrap){
-        var br = b.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
-        if(br.width > 0){
-          var pad = inset();
-          bc.style.top = (br.top - wr.top + pad) + 'px';
-          bc.style.left = (br.left - wr.left + pad) + 'px';
-          bc.style.width = (br.width - 2*pad) + 'px';
-          bc.style.height = (br.height - 2*pad) + 'px';
-        }
-      }
-      if(ip && slot && ip.parentNode !== slot){ slot.appendChild(ip); }
-      if(ic){ ic.style.display = (ip && ip.style.display && ip.style.display !== 'none') ? '' : 'none'; }
-      if(cl) cl.style.display = 'none';
-      if(lg) lg.style.display = 'block';
-    } else {
-      if(tc.parentNode !== origParent){ origParent.insertBefore(tc, origParent.firstChild); origParent.insertBefore(pc, tc.nextSibling); }
-      bc.style.display = 'none';
-      if(ip && origInvParent && ip.parentNode !== origInvParent){ if(origInvNext) origInvParent.insertBefore(ip, origInvNext); else origInvParent.appendChild(ip); }
-      if(ic) ic.style.display = 'none';
-      if(cl) cl.style.display = 'none';
-      if(lg) lg.style.display = 'block';
-    }
-  }
-  window.addEventListener('resize', layout);
-  window.addEventListener('orientationchange', layout);
-  layout();
-  setTimeout(layout, 60);
-  setTimeout(layout, 400);
-  window.relayoutCenter = layout;
-})();
-</script>
-</body>
-</html>
+      if (e.target === overlay) overlay.st
