@@ -436,9 +436,14 @@
           <button data-n="4">4</button>
         </div>
       </div>
-      <div class="field switch">
-        <span>Игра против бота (1 человек + 1 бот)</span>
-        <div class="tgl on" id="botTgl"></div>
+      <div class="field">
+        <label>Ботов в игре</label>
+        <div class="seg" id="botCountSeg">
+          <button data-b="0">0</button>
+          <button data-b="1" class="active">1</button>
+          <button data-b="2">2</button>
+          <button data-b="3">3</button>
+        </div>
       </div>
       <div class="field" id="botDifficultyField" style="display:block">
         <label>Сложность бота</label>
@@ -602,7 +607,7 @@
           <li><span class="tag s">Старт</span> — начало пути. При попадании своим ходом открывает <span class="pos">положительные способности</span>.</li>
           <li><span class="tag n">Числовые клетки</span> — добавляют своё значение к сумме игрока.</li>
           <li><span class="tag p">Полиция</span> — <b>прямое попадание</b>: пропуск следующего хода (способности, мины и 🗝 жетон сохраняются). <b>Три дубля подряд</b>: Штраф Полиции (10%) и задержание — выход 🗝 жетоном или дублем.</li>
-          <li><span class="tag f">Финиш</span> — победа, если сумма ≥ цели. Иначе — возврат на Старт без способностей.</li>
+          <li><span class="tag f">Финиш</span> — победа, если сумма ≥ цели. Иначе — <b>телепорт-наказание</b>: фишка переносится на случайную числовую клетку поля (мины на ней срабатывают), очки клетки начисляются, если сумма ещё не достигнута.</li>
           <li><span class="tag i">Влияние</span> — открывает <span class="neg">отрицательные способности</span> против соперников.</li>
         </ul>
 
@@ -646,15 +651,15 @@
         Ход переходит следующему игроку. Вернуться в партию после сдачи нельзя. Если после сдачи остался один игрок — он объявляется победителем.
         Из Полиции сдаться нельзя; зрители и боты не сдаются.</p>
 
-        <h3>Игра против бота</h3>
-        <p>В окне настроек (значок ⚙️) можно включить режим «Игра против бота». Бот ходит автоматически. Доступны два уровня сложности.<br><b>Сложный бот</b> играет в магазин по своей стратегии: покупает 🗝 Жетон освобождения при задержании, 🧰 Аптечку при ранениях (75 HP и меньше), ❄️ Заморозку или ↩️ Возврат, когда соперник близок к победе, 🛡 Сапёра, если на поле есть чужие мины, 💣 Мину «на будущее» и 🛡 Защиту в опасной ситуации. Лёгкий бот ставит шифр и угадывает чужой случайно; сложный бот запоминает свои неудачные попытки и не повторяет их, а свой шифр меняет после первой атаки на него. При большом запасе очков — 💴 Налог или 💰 Блокировка. Бот всегда сохраняет резерв очков и делает максимум одну покупку за ход.</p>
+        <h3>Боты в игре</h3>
+        <p>В окне настроек (значок ⚙️) выберите, сколько ботов добавить — 0, 1, 2 или 3. Ботов не может быть больше, чем «число игроков − 1»: минимум один живой игрок. Боты занимают последние места в списке и ходят по очереди автоматически; ноль ботов — обычная партия по кругу. Доступны два уровня сложности, общие для всех ботов.<br><b>Сложный бот</b> играет в магазин по своей стратегии: покупает 🗝 Жетон освобождения при задержании, 🧰 Аптечку при ранениях (75 HP и меньше), ❄️ Заморозку или ↩️ Возврат, когда соперник близок к победе, 🛡 Сапёра, если на поле есть чужие мины, 💣 Мину «на будущее» и 🛡 Защиту в опасной ситуации. Лёгкий бот ставит шифр и угадывает чужой случайно; сложный бот запоминает свои неудачные попытки и не повторяет их, а свой шифр меняет после первой атаки на него. При большом запасе очков — 💴 Налог или 💰 Блокировка. Бот всегда сохраняет резерв очков и делает максимум одну покупку за ход.</p>
 
         <h3>Автопереход на Финиш</h3>
         <p>Если включён — при достижении целевой суммы игрок автоматически переходит на Финиш и побеждает.</p>
 
         <h3>Возврат на Старт</h3>
         <ul>
-          <li><b>Недобор на Финиш</b> — если игрок встал на Финиш, но не набрал нужную сумму, он возвращается на Старт <b>без права выбора способностей</b>. Нужно проходить круг заново.</li>
+          <li><b>Недобор на Финиш</b> — если игрок встал на Финиш, но не набрал нужную сумму, его фишка <b>телепортируется на случайную числовую клетку</b> поля (от 1 до 36). Очки этой клетки начисляются сразу, если сумма ещё не достигнута. Мины на клетке телепорта <b>срабатывают</b> как при обычном ходе: с Сапёром можно обезвредить, оставить или перенастроить мину. Способности со Старта не выдаются. Если после телепорта сумма достигла цели и включён «Автопереход на Финиш» — победа засчитывается.</li>
           <li><b>Возврат от соперника</b> — если соперник применил «Возврат» (шифр Защиты угадан или Защиты нет), игрок отправляется на Старт и <b>может выбрать</b> Сапёр, Защиту или Жетон, но <b>не получает +100 очков</b>.</li>
           <li>Сумма не может опуститься ниже нуля.</li>
         </ul>
@@ -730,7 +735,7 @@
       <div class="rules">
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
-        <ul><li><b>🛒 Магазин — в колонке</b><br>Кнопка «Магазин способностей» перенесена из блока «Ход» в правую колонку — под карточку «Способности». Магазин открывается в свой ход до броска кубиков, логика покупок не изменилась. Панель способностей тоже переехала: карточка «Способности» появилась под журналом, а активация происходит кликом по значку способности — при наведении на значок всплывает описание эффекта.</li>
+        <ul><li><b>🤖 Боты в игре</b><br>Вместо тумблера «Игра против бота» — выбор количества ботов: 0, 1, 2 или 3. Ботов не больше «игроков − 1», сложность общая для всех, боты ходят по очереди автоматически.</li><li><b>⚡ Телепорт-наказание на Финише</b><br>При недоборе на Финише фишка телепортируется на случайную числовую клетку (вместо возврата на Старт). Очки клетки начисляются, мины на клетке телепорта срабатывают, Сапёр работает как обычно. При включённом «Автопереходе» телепорт может сразу привести к победе.</li><li><b>🛒 Магазин — в колонке</b><br>Кнопка «Магазин способностей» перенесена из блока «Ход» в правую колонку — под карточку «Способности». Магазин открывается в свой ход до броска кубиков, логика покупок не изменилась. Панель способностей тоже переехала: карточка «Способности» появилась под журналом, а активация происходит кликом по значку способности — при наведении на значок всплывает описание эффекта.</li>
         
           <li><b>🧭 Центр поля без границ</b><br>Панели «Ход» и «Игроки» объединены в единый блок в центре поля без подложки, рамок и теней — текст лежит прямо на поле. Блок занимает всю свободную зону в центре и не перекрывает клетки пути: Старт, Финиш, Полиция и Влияние остаются на своих местах.</li>
           <li><b>📋 Детали партии и панели в центре</b><br>В окне результатов появилась подробная статистика: броски и дубли, жетоны, покупки и траты, мины и подрывы, Полиция со штрафами, налоги, Блокировки, Возвраты/Заморозки, блоки Защитой и взломы шифра, лечения. Панели «Ход» и «Игроки» перенесены в центр игрового поля, журнал хода — внутри панели «Игроки».</li>
@@ -897,8 +902,8 @@ var partyStats = {
 function pst(i, k, v){ try{ partyStats.add(i, k, v); }catch(e){} }
 function partyStatsReset(){ try{ partyStats.reset(); }catch(e){} }
 const PATH_VALUES = ["Старт",1,2,3,4,5,6,7,8,9,"Полиция",10,11,12,13,14,15,16,17,18,"Влияние",19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,"Финиш"];
-const PLAYER_COLORS = ['#f43f5e','#3b82f6','#22c55e','#a855f7'];
-const PLAYER_NAMES = ['Игрок 1','Игрок 2','Игрок 3','Игрок 4'];
+const PLAYER_COLORS = ['#f43f5e','#3b82f6','#22c55e','#a855f7','#f97316','#06b6d4','#eab308'];
+const PLAYER_NAMES = ['Игрок 1','Игрок 2','Игрок 3','Игрок 4','Бот 1','Бот 2','Бот 3'];
 const POLICE_INDEX = 10;
 
 let players = [];
@@ -909,6 +914,7 @@ let rolling = false;
 let autoFinish = false;
 let winSum = 2000, finishPenalty = 0, policePenalty = Math.floor(winSum * 0.1);
 let playerCount = 2;
+let botCount = 1;
 let botMode = true;
 let botDifficulty = 'easy';
 let doublesInRow = {};
@@ -1338,11 +1344,11 @@ let resultsShown = false;
 
 function makePlayers(){
   players = [];
-  let count = botMode ? 2 : playerCount;
-  for (let i=0;i<count;i++){
-    let name = PLAYER_NAMES[i];
-    if (botMode && i === 1) name = 'Бот';
-    players.push({name:name, color:PLAYER_COLORS[i], pos:0, sum:0, skip:false, finished:false, isBot:(botMode && i===1), health:100});
+  const live = playerCount - botCount;
+  for (let i=0;i<playerCount;i++){
+    const isBot = i >= live;
+    let name = isBot ? ('Бот ' + (i - live + 1)) : PLAYER_NAMES[i];
+    players.push({name:name, color:PLAYER_COLORS[i], pos:0, sum:0, skip:false, finished:false, isBot:isBot, health:100});
   }
   currentPlayer = 0;
   doublesInRow = {};
@@ -1490,18 +1496,18 @@ function updateUI(){ renderInvPanel(); updatePieces(); updatePlayers(); updateTu
 function updateSettingsSummary(){
   const s = document.getElementById('settingsSummary');
   if (!s) return;
-  s.innerHTML = 'Игроков: <b>'+(botMode?'2 (1 человек + 1 бот)':playerCount)+'</b><br>'+
+  s.innerHTML = 'Игроков: <b>'+playerCount+(botCount?' (живых: '+(playerCount-botCount)+', ботов: '+botCount+')':'')+'</b><br>'+
     'Сумма для победы: <b>'+winSum+'</b><br>'+
     'Штраф Полиции: <b>'+policePenalty+' (10% от '+winSum+')</b> — за три дубля подряд<br>'+
         'Автопереход: <b>'+(autoFinish?'вкл':'выкл')+'</b><br>'+
-    'Режим: <b>'+(botMode?'Против бота ('+botDifficulty+')':'Игроки')+'</b>';
+    'Режим: <b>'+(botMode?botCount+' бот'+(botCount===1?'':'(ов)')+', сложность: '+botDifficulty:'Обычная партия')+'</b>';
 }
 
 function lockSettings(){
   document.querySelectorAll('#winSum,#playersSeg button')
 .forEach(el=> el.disabled=true);
   document.getElementById('autoTgl').classList.add('locked');
-  document.getElementById('botTgl').classList.add('locked');
+  document.querySelectorAll('#botCountSeg button').forEach(x=> x.disabled=true);
   document.getElementById('beginnerTgl').classList.add('locked');
   document.querySelectorAll('#botDiffSeg button').forEach(b=> b.disabled=true);
   document.getElementById('lockNote').classList.add('show');
@@ -1512,7 +1518,7 @@ function unlockSettings(){
 document.querySelectorAll('#winSum,#playersSeg button')
 .forEach(el=> el.disabled=false);
   document.getElementById('autoTgl').classList.remove('locked');
-  document.getElementById('botTgl').classList.remove('locked');
+  if (typeof updateBotCountSeg === 'function') updateBotCountSeg();
   document.getElementById('beginnerTgl').classList.remove('locked');
   document.querySelectorAll('#botDiffSeg button').forEach(b=> b.disabled=false);
   document.getElementById('lockNote').classList.remove('show');
@@ -1539,45 +1545,29 @@ function winGame(p){
   updateUI();
 }
 
-function movePlayer(p, pi, steps){
-  const oldPos = p.pos;
-  // Check cells passed through (not landing on)
-  for (let s = 1; s < steps; s++){
-    const passPos = (oldPos + s) % 40;
-    // Passed Police bonus
-    if (passPos === POLICE_INDEX && p.sum < winSum){
-      p.sum += 100;
-      pst(pi,'passpol',1);
-      log('\u{1F389} '+p.name+' прошёл мимо Полиции: +100 очков (случайный бонус)!', 'win');
-    }
-    // Passed mine bonus
-    if (passPos in mines && mines[passPos] !== pi && p.sum < winSum){
-      p.sum += 150;
-      pst(pi,'passmine',1);
-      log('\u{1F389} '+p.name+' прошёл мимо мины: +150 очков (случайный бонус)!', 'win');
-    }
-  }
-  p.pos = (oldPos + steps) % 40;
-  // Check mine first
-  if (p.pos in mines && mines[p.pos] !== pi){
-    const mineOwner = mines[p.pos];
-    const dmg = reconfiguredMines[p.pos] ? 25 : 50;
+// Мина: единая логика подрыва (обычный ход и телепорт-наказание)
+function tryMineExplode(pi, pos){
+  const p = players[pi];
+  if (!(pos in mines) || mines[pos] === pi) return false;
+  
+    const mineOwner = mines[pos];
+    const dmg = reconfiguredMines[pos] ? 25 : 50;
     if (abilities[pi] && abilities[pi].sapper){
       abilities[pi].sapper = false;
       log('🛡 '+p.name+' наступил на мину — Сапёр использован. Урона нет.', 'sapper');
       if (p.isBot){
-        const canReconfig = !reconfiguredMines[p.pos] && !eliminated.has(mineOwner);
+        const canReconfig = !reconfiguredMines[pos] && !eliminated.has(mineOwner);
         if (botDifficulty === 'hard' && canReconfig && (players[mineOwner].health||100) <= 50){
-          mines[p.pos] = pi;
-          reconfiguredMines[p.pos] = true;
+          mines[pos] = pi;
+          reconfiguredMines[pos] = true;
         } else {
-          delete mines[p.pos];
+          delete mines[pos];
           renderMines();
         }
       } else {
         startAbilityPending = true;
-        sapperChoicePi = pi; sapperChoicePos = p.pos;
-        showSapperChoiceModal(pi, p.pos);
+        sapperChoicePi = pi; sapperChoicePos = pos;
+        showSapperChoiceModal(pi, pos);
       }
       if (beginnerMode && !shownHints.has('sapperChoice') && !p.isBot) showBeginnerHint('sapperChoice', '🛡 Выбор Сапёра', 'У вас Сапёр — урона не будет. Выберите: обезвредить мину, оставить её на поле или перенастроить против владельца (урон 25 HP). Сапёр расходуется в любом случае.');
     } else {
@@ -1598,14 +1588,36 @@ function movePlayer(p, pi, steps){
         }
         resetAllAbilities(pi);
         eliminated.add(pi);
-        delete mines[p.pos];
+        delete mines[pos];
         renderMines();
         if (beginnerMode && !shownHints.has('mineElimination')) showBeginnerHint('mineElimination', '☠️ Выбытие по здоровью', 'Здоровье опустилось до 0 — игрок выбывает, как раньше при мине. Мина снимает 50 HP из 100; Старт и Аптечка восстанавливают по 25.');
         checkElimination();
       }
     }
-    return;
+  return true;
+}
+
+function movePlayer(p, pi, steps){
+  const oldPos = p.pos;
+  // Check cells passed through (not landing on)
+  for (let s = 1; s < steps; s++){
+    const passPos = (oldPos + s) % 40;
+    // Passed Police bonus
+    if (passPos === POLICE_INDEX && p.sum < winSum){
+      p.sum += 100;
+      pst(pi,'passpol',1);
+      log('\u{1F389} '+p.name+' прошёл мимо Полиции: +100 очков (случайный бонус)!', 'win');
+    }
+    // Passed mine bonus
+    if (passPos in mines && mines[passPos] !== pi && p.sum < winSum){
+      p.sum += 150;
+      pst(pi,'passmine',1);
+      log('\u{1F389} '+p.name+' прошёл мимо мины: +150 очков (случайный бонус)!', 'win');
+    }
   }
+    p.pos = (oldPos + steps) % 40;
+  // Мина проверяется первой — подрыв вынесен в tryMineExplode (работает и при телепорте)
+  if (tryMineExplode(pi, p.pos)) return;
   const val = PATH_VALUES[p.pos];
   if (val === "Полиция"){
     p.skip = true;
@@ -1616,11 +1628,31 @@ function movePlayer(p, pi, steps){
     if (p.sum >= winSum){
       winGame(p);
     } else {
-      p.pos = 0;
-      pendingStartAbilities[pi] = 'none';
       pst(pi,'fshort',1);
-      if (beginnerMode && !shownHints.has('finishReturn')) showBeginnerHint('finishReturn', '🏁 Финиш — недобор!', 'Вы дошли до Финиша, но не набрали нужную сумму. Возврат на Старт без права выбора способностей. Проходите круг заново!');
-      log(p.name+': Финиш не засчитан ('+p.sum+' из '+winSum+'). Возврат на Старт, способности недоступны!', 'pen');
+      if (beginnerMode && !shownHints.has('finishReturn')) showBeginnerHint('finishReturn', '🏁 Финиш — недобор!', 'Вы дошли до Финиша, но не набрали нужную сумму. Наказание: телепорт на случайную числовую клетку! Мины на клетке телепорта срабатывают.');
+      log(p.name+': Финиш не засчитан ('+p.sum+' из '+winSum+'). Телепорт на случайную числовую клетку!', 'pen');
+      const tOptions = [];
+      for (let t = 0; t < PATH_VALUES.length; t++){
+        if (typeof PATH_VALUES[t] === 'number' && t !== p.pos) tOptions.push(t);
+      }
+      const tPos = tOptions[Math.floor(Math.random() * tOptions.length)];
+      p.pos = tPos;
+      if (beginnerMode && !shownHints.has('teleportHint')) showBeginnerHint('teleportHint', '⚡ Телепорт-наказание', 'Фишка телепортирована на числовую клетку ' + PATH_VALUES[tPos] + '. Очки начислены, если сумма ещё не достигнута. Мины на этой клетке срабатывают!');
+      if (tryMineExplode(pi, p.pos)) return;
+      if (abilities[pi] && abilities[pi].taxBlockTurns > 0){
+        log(p.name+' телепортирован на '+PATH_VALUES[tPos]+', но очки заблокированы Блокировкой (осталось '+abilities[pi].taxBlockTurns+' ход.)', 'tax');
+      } else {
+        if (p.sum < winSum){
+          p.sum += Number(PATH_VALUES[tPos]);
+          log(p.name+' телепортирован на числовую клетку '+PATH_VALUES[tPos]+': +'+PATH_VALUES[tPos]+' (сумма '+p.sum+')');
+        } else {
+          log(p.name+' телепортирован на числовую клетку '+PATH_VALUES[tPos]+' — сумма уже достигнута, очки не начисляются.');
+        }
+        if (autoFinish && p.sum >= winSum){
+          log(p.name+': сумма достигнута — автопереход на Финиш!', 'win');
+          winGame(p);
+        }
+      }
     }
   } else if (val === "Старт"){
     log(p.name+' остановился на Старте');
@@ -2368,7 +2400,7 @@ function startGame(){
   document.getElementById('onlineOverlay').style.display = 'none';
   document.getElementById('startScreen').style.display = 'none';
   document.getElementById('gameControls').style.display = 'block';
-  log('Игра началась. Цель: '+winSum+'. '+(botMode?'Режим: против бота ('+botDifficulty+')':'Игроков: '+players.length)+'. Автопереход: '+(autoFinish?'вкл':'выкл'));
+  log('Игра началась. Цель: '+winSum+'. Игроков: '+players.length+(botCount?' (ботов: '+botCount+', сложность: '+botDifficulty+')':'')+'. Автопереход: '+(autoFinish?'вкл':'выкл'));
   updateUI();
 }
 
@@ -2389,7 +2421,7 @@ function reset(){
   document.getElementById('startScreen').style.display = 'block';
   document.getElementById('gameControls').style.display = 'none';
   renderDice(1,1);
-  log('Новая игра. '+(botMode?'Режим: против бота':'Игроков: '+playerCount)+', цель: '+winSum);
+  log('Новая игра. Игроков: '+playerCount+(botCount?' (ботов: '+botCount+', сложность: '+botDifficulty+')':'')+', цель: '+winSum);
   updateUI();
   updateSettingsSummary();
 }
@@ -2424,19 +2456,32 @@ document.getElementById('playersSeg').addEventListener('click', e=>{
   document.querySelectorAll('#playersSeg button').forEach(x=> x.classList.remove('active'));
   b.classList.add('active');
   playerCount = parseInt(b.dataset.n);
-  if (!botMode){ makePlayers(); updateUI(); }
+  if (botCount > playerCount - 1){ botCount = playerCount - 1; updateBotCountSeg(); }
+  makePlayers(); updateUI();
   updateSettingsSummary();
 });
 
-document.getElementById('botTgl').addEventListener('click', function(){
-  if (gameStarted) return;
-  botMode = !botMode;
-  this.classList.toggle('on', botMode);
-  document.getElementById('botDifficultyField').style.display = botMode ? 'block' : 'none';
-  makePlayers();
-  updateUI();
-  updateSettingsSummary();
+document.querySelectorAll('#botCountSeg button').forEach(function(b){
+  b.addEventListener('click', function(){
+    if (gameStarted) return;
+    document.querySelectorAll('#botCountSeg button').forEach(x=> x.classList.remove('active'));
+    b.classList.add('active');
+    botCount = parseInt(b.dataset.b);
+    botMode = botCount > 0;
+    document.getElementById('botDifficultyField').style.display = botMode ? 'block' : 'none';
+    makePlayers();
+    updateUI();
+    updateSettingsSummary();
+  });
 });
+
+function updateBotCountSeg(){
+  document.querySelectorAll('#botCountSeg button').forEach(function(x){
+    const n = parseInt(x.dataset.b);
+    x.classList.toggle('active', n === botCount);
+    x.disabled = gameStarted || n > playerCount - 1;
+  });
+}
 
 document.getElementById('botDiffSeg').addEventListener('click', e=>{
   const b = e.target.closest('button');
@@ -3373,7 +3418,7 @@ setInterval(()=>{
 buildBoard();
 makePlayers();
 renderDice(1,1);
-log('Новая игра. '+(botMode?'Режим: против бота':'Игроков: '+playerCount)+', цель: '+winSum);
+log('Новая игра. Игроков: '+playerCount+(botCount?' (ботов: '+botCount+', сложность: '+botDifficulty+')':'')+', цель: '+winSum);
 updateUI();
 updateSettingsSummary();
 
