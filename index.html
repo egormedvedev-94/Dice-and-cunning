@@ -2979,14 +2979,18 @@ function handleMQTTMessage(topic, data){
     } else if (data.type === 'applyFreeze' && data.playerId === currentPlayer){
       applyFreezeOrig(data.playerId, data.targetIdx); setTimeout(onlineSync, 300);
     } else if (data.type === 'placeMine' && data.playerId === currentPlayer){
-      placeMineOrig(data.playerId, data.cellIdx); setTimeout(onlineSync, 300);
+      const ci = data.cellIdx;
+      if (typeof PATH_VALUES[ci] === 'number' && !(ci in mines)){ minePlacingMode = true; placeMineOrig(data.playerId, ci); }
+      setTimeout(onlineSync, 300);
     } else if (data.type === 'buyAbility' && data.playerId === currentPlayer){
       buyAbilityOrig(data.itemId, data.playerId); setTimeout(onlineSync, 300);
     } else if (data.type === 'useInv' && data.playerId === currentPlayer){
       if (data.itemId !== 'mine') useInvItemOrig(data.playerId, data.itemId);
       setTimeout(onlineSync, 300);
     } else if (data.type === 'invMine' && data.playerId === currentPlayer){
-      invPlaceMineOrig(data.playerId, data.cellIdx); setTimeout(onlineSync, 300);
+      const ci = data.cellIdx;
+      if (typeof PATH_VALUES[ci] === 'number' && !(ci in mines)){ minePlacingMode = true; invPlaceMineOrig(data.playerId, ci); }
+      setTimeout(onlineSync, 300);
     } else if (data.type === 'invTarget' && data.playerId === currentPlayer){
       invApplyTargetOrig(data.playerId, data.targetIdx, data.itemId); setTimeout(onlineSync, 300);
     }
