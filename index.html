@@ -482,7 +482,7 @@
 <div class="modal-overlay" id="onlineOverlay" style="display:none">
     <div class="modal" style="max-width:380px;position:relative">
       <button class="close-x" id="onlineCloseX" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
-      <h2>&#127760; Онлайн-игра <span id="onlineVerTag" style="font-size:12px;color:#999;font-weight:400;vertical-align:middle">v19</span></h2>
+      <h2>&#127760; Онлайн-игра <span id="onlineVerTag" style="font-size:12px;color:#999;font-weight:400;vertical-align:middle">v23</span></h2>
       <div id="onlineFields">
         <div class="field">
           <label>Ваш никнейм</label>
@@ -622,7 +622,7 @@
         <h3>Клетка «Старт» — положительные способности</h3>
         <p>При попадании на Старт <b>своим ходом</b> игрок выбирает одну из способностей:</p>
         <ul>
-          <li><b>💯 +100 очков</b> — добавить 100 к своей сумме.</li>
+          <li><b>💳 Фин. Ловкость 2.0</b> — способность из магазина (350 очков): активация в свой ход до броска даёт 3 хода иммунитета к Налогу и регенерацию +200 по истечении. Пока на панели перехватывает Налог: не действует и даёт +150.</li>
           <li><b>🛡 Сапёр</b> — при наступлении на мину открывает выбор: <b>обезвредить</b> (мина снимается с поля), <b>оставить на поле</b> или <b>перенастроить</b> её против владельца (урон мины снижается до 25 HP, перенастроить можно один раз). В любом варианте урона вы не получаете. Расходуется после первого срабатывания — способность удаляется с панели. Перенастройка не объявляется в логе — следите за своими минами.</li>
           <li><b>🛡 Защита</b> — блокирует «Возврат» или «Заморозку» соперника (до 2 успешных блоков). При активации игрок устанавливает шифр — одно число от 1 до 6, видимое только ему. Соперник, применяя Возврат или Заморозку против владельца Защиты, должен угадать шифр с одной попытки; попытка расходует очко действия атакующего, но не саму способность. Угадал — Защита расходуется, способность срабатывает. Не угадал — атака блокируется, способность остаётся на панели, а владелец получает +100 очков; шифр сохраняется. После двух успешных блоков Защита расходуется, и владельцу начисляется ещё +100 очков. В свой ход до броска шифр можно сменить (клик по бейджу «Защита») — смена не видна соперникам. При выбытии или сдаче Защита и шифр сбрасываются.</li>
           <li><b>🗝 Жетон освобождения</b> — мгновенный выход из Полиции (после трёх дублей подряд) без попыток. Используется один раз, после чего израсходуется. Можно получить заново при попадании на Старт.</li>
@@ -632,7 +632,7 @@
         <h3>Клетка «Влияние» — отрицательные способности</h3>
         <p>При попадании на «Влияние» игрок выбирает одну из способностей против соперников:</p>
         <ul>
-          <li><b>↩️ Возврат</b> — отправить выбранного соперника на Старт (без +100 очков, но с выбором Сапёр/Защита/Жетон). Против владельца Защиты нужно угадать его шифр с одной попытки: не угадали — способность остаётся на панели, а владелец Защиты получает +100 очков.</li>
+          <li><b>↩️ Возврат</b> — отправить выбранного соперника на Старт (без бонуса за круг, но с выбором Сапёр/Защита/Жетон). Против владельца Защиты нужно угадать его шифр с одной попытки: не угадали — способность остаётся на панели, а владелец Защиты получает +100 очков.</li>
           <li><b>💰 Блокировка</b> — временно лишает всех соперников возможности получать очки с числовых клеток на 3 хода.</li>
           <li><b>💴 Налог</b> — временно снимает по 100 очков у всех соперников каждый ход на протяжении 3 ходов. При повторной активации сумма списания удваивается (100 → 200 → 400 и т.д.), таймер обнуляется до 3 ходов.</li>
           <li><b>💣 Мина</b> — установить мину на числовую клетку. Соперник, наступивший на мину, теряет 50 HP (если у него нет Сапёра). При 0 HP игрок выбывает: его мины снимаются, способности и шифр Защиты сбрасываются. Здоровье каждого игрока — 100 HP.</li>
@@ -660,7 +660,7 @@
         Из Полиции сдаться нельзя; зрители и боты не сдаются.</p>
 
         <h3>Боты в игре</h3>
-        <p>В окне настроек (значок ⚙️) выберите, сколько ботов добавить — 0, 1, 2 или 3. Ботов не может быть больше, чем «число игроков − 1»: минимум один живой игрок. Боты занимают последние места в списке и ходят по очереди автоматически; ноль ботов — обычная партия по кругу. Доступны два уровня сложности, общие для всех ботов.<br><b>Сложный бот</b> играет в магазин по своей стратегии: покупает 🗝 Жетон освобождения при задержании, 🧰 Аптечку при ранениях (75 HP и меньше), ❄️ Заморозку или ↩️ Возврат, когда соперник близок к победе, 🛡 Сапёра, если на поле есть чужие мины, 💣 Мину «на будущее» и 🛡 Защиту в опасной ситуации. Лёгкий бот ставит шифр и угадывает чужой случайно; сложный бот запоминает свои неудачные попытки и не повторяет их, а свой шифр меняет после первой атаки на него. При большом запасе очков — 💴 Налог или 💰 Блокировка. Бот всегда сохраняет резерв очков и делает максимум одну покупку за ход.</p>
+        <p>В окне настроек (значок ⚙️) выберите, сколько ботов добавить — 0, 1, 2 или 3. Ботов может быть столько же, сколько игроков: все места могут занять боты — включится режим наблюдателя, первый ход бота запустится автоматически, а кнопки хода у ботов заблокированы. Боты занимают последние места в списке и ходят по очереди автоматически; ноль ботов — обычная партия по кругу. Доступны два уровня сложности, общие для всех ботов.<br><b>Сложный бот</b> играет в магазин по своей стратегии: покупает 🗝 Жетон освобождения при задержании, 🧰 Аптечку при ранениях (75 HP и меньше), ❄️ Заморозку или ↩️ Возврат, когда соперник близок к победе, 🛡 Сапёра, если на поле есть чужие мины, 💣 Мину «на будущее» и 🛡 Защиту в опасной ситуации. Лёгкий бот ставит шифр и угадывает чужой случайно; сложный бот запоминает свои неудачные попытки и не повторяет их, а свой шифр меняет после первой атаки на него. При большом запасе очков — 💴 Налог или 💰 Блокировка. Бот всегда сохраняет резерв очков и делает максимум одну покупку за ход.</p>
 
         <h3>Автопереход на Финиш</h3>
         <p>Если включён — при достижении целевой суммы игрок автоматически переходит на Финиш и побеждает.</p>
@@ -668,7 +668,7 @@
         <h3>Возврат на Старт</h3>
         <ul>
           <li><b>Недобор на Финиш</b> — если игрок встал на Финиш, но не набрал нужную сумму, его фишка <b>телепортируется на случайную числовую клетку</b> поля (от 1 до 36). Очки этой клетки начисляются сразу, если сумма ещё не достигнута. Мины на клетке телепорта <b>срабатывают</b> как при обычном ходе: с Сапёром можно обезвредить, оставить или перенастроить мину. Способности со Старта не выдаются. Если после телепорта сумма достигла цели и включён «Автопереход на Финиш» — победа засчитывается.</li>
-          <li><b>Возврат от соперника</b> — если соперник применил «Возврат» (шифр Защиты угадан или Защиты нет), игрок отправляется на Старт и <b>может выбрать</b> Сапёр, Защиту или Жетон, но <b>не получает +100 очков</b>.</li>
+          <li><b>Возврат от соперника</b> — если соперник применил «Возврат» (шифр Защиты угадан или Защиты нет), игрок отправляется на Старт и <b>может выбрать</b> Сапёр, Защиту или Жетон, но <b>не получает Фин. Ловкость 2.0</b>.</li>
           <li>Сумма не может опуститься ниже нуля.</li>
         </ul>
 
@@ -678,7 +678,7 @@
         <h3>🎲 Очки за случайные действия</h3>
         <p>Во время игры очки автоматически начисляются за следующие события. <b>Если сумма игрока уже достигла цели — очки не начисляются</b>, пока сумма снова не опустится ниже цели.</p>
         <ul>
-          <li><b>🚔 Прошли мимо Полиции</b> — +100 очков. Если при ходе фишка пересекает клетку Полиции, но не останавливается на ней.</li>
+          <li><b>🏁 Пройденный круг — +300 очков.</b> Если фишка своим ходом пересекает клетку Старт (круг от Старт до Старта). Телепорты и Возврат кругом не считаются.</li>           <li><b>🚔 Прошли мимо Полиции</b> — +100 очков. Если при ходе фишка пересекает клетку Полиции, но не останавливается на ней.</li>
           <li><b>🎲 Освобождение из Полиции дублем</b> — +200 очков. Если игрок выбросил дубль, выходя из Полиции.</li>
           <li><b>💣 Прошли мину соперника</b> — +150 очков. Если при ходе фишка пересекла клетку с миной, но не наступила на неё.</li>
           <li><b>🛡 Защита сработала</b> — +100 очков. Если соперник не угадал шифр Защиты, владелец получает бонус; при исчерпании лимита (2 блока) — разово ещё +100. Если сумма уже достигла цели — очки не начисляются.</li>
@@ -697,7 +697,7 @@
           <tr><td style="padding:4px">💣 Мина</td><td style="padding:4px">100</td><td style="padding:4px">Наступивший теряет 50 HP (Сапёр спасает)</td></tr>
           <tr><td style="padding:4px">💰 Блокировка</td><td style="padding:4px">250</td><td style="padding:4px">Лишить соперников очков на 3 хода</td></tr>
           <tr><td style="padding:4px">💴 Налог</td><td style="padding:4px">200</td><td style="padding:4px">Снимать по 100 очков у соперников 3 хода</td></tr>
-          <tr><td style="padding:4px">↩️ Возврат</td><td style="padding:4px">200</td><td style="padding:4px">Отправить соперника на Старт (без +100)</td></tr>
+          <tr><td style="padding:4px">↩️ Возврат</td><td style="padding:4px">200</td><td style="padding:4px">Отправить соперника на Старт (без бонуса за круг)</td></tr>
           <tr><td style="padding:4px">❄️ Заморозка</td><td style="padding:4px">180</td><td style="padding:4px">Заморозить соперника — пропуск хода</td></tr>
           <tr><td style="padding:4px">💳 Фин. Ловкость 2.0</td><td style="padding:4px">350</td><td style="padding:4px">Активация: 3 хода иммунитета к Налогу + регенерация +200 по истечении. Пока на панели перехватывает Налог: не действует и даёт +150</td></tr>
         </table>
@@ -744,9 +744,11 @@
       <div class="rules">
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
-        <ul><li><b>🔢 Шифр Защиты — одно число (v19)</b><br>Упрощено угадывание шифра Защиты: теперь это одно число от 1 до 6 (шанс взлома 1/6 вместо прежнего 1/36). Окна установки и взлома показывают одну сетку чисел. Бот по-прежнему помнит свои неудачные попытки и не повторяет их, а свой шифр меняет после первой атаки. В свой ход шифр можно сменить кликом по бейджу «Защита» — смена по-прежнему невидима соперникам. Работает и в онлайне.</li>
-        <li><b>🏃 Плавное движение фишки соперника (v18)</b><br>В онлайн-режиме фишка соперника больше не «отскакивает»: анимация полёта запускается до перерисовки поля, фишка идёт по клеткам от старой позиции к новой, повторные синхронизации не запускают полёт заново (защита от дублей по ключу позиции).</li>
-        <li><b>🎯 Фишка больше не сбрасывается на Старт (v17)</b><br>Исправлена причина, из-за которой после перезагрузки страницы у любого игрока фишка возвращалась на Старт, а очки обнулялись. Причина: при восстановлении сессии не включался онлайн-режим — клиент бросал кубики локально на устаревшем состоянии, а синхронизация хоста возвращала фишку назад. Теперь восстановление сессии корректно включает онлайн-режим: броски снова уходят хосту, синхронизация и журнал работают. Дополнительно: хост после перезагрузки рассылает актуальное состояние вместо «старта» (клиенты больше не пересоздаются с нулевыми позициями), повторные команды старта игнорируются, список игроков комнаты сохраняется при переподключении хоста.</li><li><b>📜 Синхронизация журнала (v16)</b><br>Журнал партии теперь общий: события (броски, мины, способности, выбытия) появляются в «Журнале» у всех участников комнаты мгновенно, а не только у хоста. Подключившиеся и переподключившиеся игроки видят последние записи партии — журнал догоняет автоматически и без дублей. Журнал переживает перезагрузку страницы хоста: сохраняется в снимок сессии и восстанавливается вместе с партией.</li><li><b>🚶 Плавное движение фишек (v15)</b><br>Фишка больше не «перепрыгивает» на клетку: при броске она шагает по полю клетка за клеткой с плавным переходом. Скорость подстраивается под дистанцию — двойной шаг проходит путь быстрее. Работает в одиночной игре, у ботов и в онлайн-режиме (движение видно всем игрокам). Телепорты (недобор на Финише, Возврат на Старт) остаются мгновенными — это по-прежнему телепортация.</li><li><b>🛡 Сапёр — одноразовый (v13)</b><br>Сапёр расходуется сразу при первом срабатывании на мине: бейдж исчезает с панели, в журнале появляется запись об израсходовании. Состояние способности сохраняется в снимке сессии сразу после подрыва — перезагрузка страницы больше не возвращает израсходованный Сапёр.</li><li><b>💳 Финансовая Ловкость 2.0</b><br>Новая способность магазина (350 очков). Активация в свой ход до броска: 3 хода полного иммунитета к Налогу (с клетки «Влияние» и из магазина), Налог на владельце не удваивается, списания на паузе. По истечении действия — регенерация +200 очков. Пока способность на панели и не активирована, она перехватывает Налог, нацеленный на владельца: налог не действует, владелец получает +150 очков, способность расходуется. Один раз за игру. Не защищает от Полиции и других способностей.</li><li><b>🤖 Боты в игре</b><br>Вместо тумблера «Игра против бота» — выбор количества ботов: 0, 1, 2 или 3. Ботов не больше «игроков − 1», сложность общая для всех, боты ходят по очереди автоматически.</li><li><b>⚡ Телепорт-наказание на Финише</b><br>При недоборе на Финише фишка телепортируется на случайную числовую клетку (вместо возврата на Старт). Очки клетки начисляются, мины на клетке телепорта срабатывают, Сапёр работает как обычно. При включённом «Автопереходе» телепорт может сразу привести к победе.</li><li><b>🛒 Магазин — в колонке</b><br>Кнопка «Магазин способностей» перенесена из блока «Ход» в правую колонку — под карточку «Способности». Магазин открывается в свой ход до броска кубиков, логика покупок не изменилась. Панель способностей тоже переехала: карточка «Способности» появилась под журналом, а активация происходит кликом по значку способности — при наведении на значок всплывает описание эффекта.</li>
+        <ul><li><b>📜 Правила приведены в соответствие (v23)</b><br>Устаревшие формулировки исправлены: в списке способностей Старт «+100 очков» заменён на 💳 Фин. Ловкость 2.0, в описании Возврата теперь «не получает Фин. Ловкость», в «Очках за случайные действия» добавлен пункт «🏁 Пройденный круг — +300».</li><li><b>💳 Фин. Ловкость 2.0 на Старте и бонус за круг (v22)</b><br>Кнопка «+100 очков» на клетке Старт заменена на Фин. Ловкость 2.0: активация даёт 3 хода иммунитета к Налогу и регенерацию +200 по истечении (кнопка «Навык +100» удалена из игры). За каждый пройденный круг от Старта до Старта начисляется +300 очков — в свой ход; телепорты и Возврат кругом не считаются.</li>
+<li><b>🎙 Починен голосовой чат (v22)</b><br>Голосовые пакеты WebRTC больше не теряются: сигналы (offer/answer/ICE) теперь маршрутизируются в голосовой обработчик сразу, до общего парсинга сообщений. Поздние участники комнаты автоматически подключаются к уже идущему разговору.</li>
+<li><b>👁 Режим наблюдателя (v21)</b><br>Боты могут занять все места: выберите число игроков и столько же ботов — партия одних ботов запустится сама (первый ход через 1,5 секунды), вы наблюдаете с полем и журналом. Управление ходами ботов заблокировано.</li>
+<li><b>🔢 Шифр Защиты — одно число (v19)</b><br>Шифр упрощён: одно число от 1 до 6 вместо комбинации из двух (шанс взлома 1/6 вместо 1/36). Окна, логика ботов, правила и магазин обновлены.</li>
+<li><b>🏃 Плавное движение фишки соперника (v18)</b><br>В онлайн-режиме фишка соперника больше не «отскакивает»: анимация полёта запускается до перерисовки поля, фишка идёт по клеткам от старой позиции к новой, повторные синхронизации не запускают полёт заново (защита от дублей по ключу позиции), пересоздание игроков по запоздалому «gameStart» во время партии исключено (правка также закрепляет исправление v17 против сброса на Старт).</li><li><b>📜 Синхронизация журнала (v16)</b><br>Журнал партии теперь общий: события (броски, мины, способности, выбытия) появляются в «Журнале» у всех участников комнаты мгновенно, а не только у хоста. Подключившиеся и переподключившиеся игроки видят последние записи партии — журнал догоняет автоматически и без дублей. Журнал переживает перезагрузку страницы хоста: сохраняется в снимок сессии и восстанавливается вместе с партией.</li><li><b>🚶 Плавное движение фишек (v15)</b><br>Фишка больше не «перепрыгивает» на клетку: при броске она шагает по полю клетка за клеткой с плавным переходом. Скорость подстраивается под дистанцию — двойной шаг проходит путь быстрее. Работает в одиночной игре, у ботов и в онлайн-режиме (движение видно всем игрокам). Телепорты (недобор на Финише, Возврат на Старт) остаются мгновенными — это по-прежнему телепортация.</li><li><b>🛡 Сапёр — одноразовый (v13)</b><br>Сапёр расходуется сразу при первом срабатывании на мине: бейдж исчезает с панели, в журнале появляется запись об израсходовании. Состояние способности сохраняется в снимке сессии сразу после подрыва — перезагрузка страницы больше не возвращает израсходованный Сапёр.</li><li><b>💳 Финансовая Ловкость 2.0</b><br>Новая способность магазина (350 очков). Активация в свой ход до броска: 3 хода полного иммунитета к Налогу (с клетки «Влияние» и из магазина), Налог на владельце не удваивается, списания на паузе. По истечении действия — регенерация +200 очков. Пока способность на панели и не активирована, она перехватывает Налог, нацеленный на владельца: налог не действует, владелец получает +150 очков, способность расходуется. Один раз за игру. Не защищает от Полиции и других способностей.</li><li><b>🤖 Боты в игре</b><br>Вместо тумблера «Игра против бота» — выбор количества ботов: 0, 1, 2 или 3. Ботов не больше «игроков − 1», сложность общая для всех, боты ходят по очереди автоматически.</li><li><b>⚡ Телепорт-наказание на Финише</b><br>При недоборе на Финише фишка телепортируется на случайную числовую клетку (вместо возврата на Старт). Очки клетки начисляются, мины на клетке телепорта срабатывают, Сапёр работает как обычно. При включённом «Автопереходе» телепорт может сразу привести к победе.</li><li><b>🛒 Магазин — в колонке</b><br>Кнопка «Магазин способностей» перенесена из блока «Ход» в правую колонку — под карточку «Способности». Магазин открывается в свой ход до броска кубиков, логика покупок не изменилась. Панель способностей тоже переехала: карточка «Способности» появилась под журналом, а активация происходит кликом по значку способности — при наведении на значок всплывает описание эффекта.</li>
         
           <li><b>🧭 Центр поля без границ</b><br>Панели «Ход» и «Игроки» объединены в единый блок в центре поля без подложки, рамок и теней — текст лежит прямо на поле. Блок занимает всю свободную зону в центре и не перекрывает клетки пути: Старт, Финиш, Полиция и Влияние остаются на своих местах.</li>
           <li><b>📋 Детали партии и панели в центре</b><br>В окне результатов появилась подробная статистика: броски и дубли, жетоны, покупки и траты, мины и подрывы, Полиция со штрафами, налоги, Блокировки, Возвраты/Заморозки, блоки Защитой и взломы шифра, лечения. Панели «Ход» и «Игроки» перенесены в центр игрового поля, журнал хода — внутри панели «Игроки».</li>
@@ -983,7 +985,7 @@ function renderInvPanel(){
     mine: 'Урон 50 HP наступившему. Сапёр спасает; перенастроенная мина — 25 HP.',
     block: 'Соперники 3 хода не получают очки с числовых клеток.',
     tax: 'Списание 100 очков/ход у соперников 3 хода. Повторная активация удваивает.',
-    return: 'Отправить соперника на Старт (без +100 очков). Против Защиты — угадать шифр.',
+    return: 'Отправить соперника на Старт (без Фин. Ловкости). Против Защиты — угадать шифр.',
     freeze: 'Соперник пропускает следующий ход. Против Защиты — угадать шифр.',
     finance: 'Активация: 3 хода иммунитета к Налогу, по истечении +200 очков. Пока на панели перехватывает Налог: не действует и даёт +150. Один раз за игру.'
   };
@@ -1105,27 +1107,27 @@ const shieldCiphers = {};
 let shieldPending = null;
 let shieldRolledThisTurn = false;
 const shieldGuessMem = {};
-function shieldRandomCipher(){ return [1+Math.floor(Math.random()*6)]; }
+function shieldRandomCipher(){ return 1+Math.floor(Math.random()*6); }
 function shieldNumGrid(){ let h=''; for (let n=1;n<=6;n++) h += '<button data-shn="'+n+'" style="width:38px;height:38px;margin:3px;border-radius:8px;border:2px solid #bbb;background:#fff;font-size:17px;cursor:pointer">'+n+'</button>'; return h; }
 function shieldOpenModal(title, sub, cb, cancelCb){
   const ov = document.createElement('div');
   ov.style.cssText = 'position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:99999;display:flex;align-items:center;justify-content:center';
   const bx = document.createElement('div');
   bx.style.cssText = 'background:#fff;border-radius:14px;padding:18px;max-width:340px;width:92%;text-align:center;font-family:inherit;box-shadow:0 10px 40px rgba(0,0,0,.3)';
-  bx.innerHTML = '<h3 style="margin:0 0 6px;font-size:17px">'+title+'</h3><p style="font-size:13px;color:#555;margin:0 0 10px">'+sub+'</p><div><b style="font-size:12px">Число</b><div id="shg1">'+shieldNumGrid()+'</div></div><div style="margin-top:12px"><button id="shok" style="padding:8px 16px;border-radius:8px;border:0;background:#2e7d32;color:#fff;cursor:pointer" disabled>✔ Подтвердить</button>' + (cancelCb ? ' <button id="shc" style="padding:8px 16px;border-radius:8px;border:0;background:#888;color:#fff;cursor:pointer">Отмена</button>' : '') + '</div>';
+  bx.innerHTML = '<h3 style="margin:0 0 6px;font-size:17px">'+title+'</h3><p style="font-size:13px;color:#555;margin:0 0 10px">'+sub+'</p><div><b style="font-size:12px">Число шифра</b><div id="shg1">'+shieldNumGrid()+'</div></div><div style="margin-top:12px"><button id="shok" style="padding:8px 16px;border-radius:8px;border:0;background:#2e7d32;color:#fff;cursor:pointer" disabled>✔ Подтвердить</button>' + (cancelCb ? ' <button id="shc" style="padding:8px 16px;border-radius:8px;border:0;background:#888;color:#fff;cursor:pointer">Отмена</button>' : '') + '</div>';
   ov.appendChild(bx); document.body.appendChild(ov);
-  let pick = null;
+  let pickN = null;
   const grid = bx.querySelector('#shg1');
   const okB = bx.querySelector('#shok');
   bx.addEventListener('click', function(e){
     const btn = e.target.closest ? e.target.closest('[data-shn]') : null;
     if (!btn || btn.parentElement !== grid) return;
-    pick = +btn.getAttribute('data-shn');
+    pickN = +btn.getAttribute('data-shn');
     Array.prototype.forEach.call(grid.children, function(x){ x.style.background = '#fff'; x.style.borderColor = '#bbb'; });
     btn.style.background = '#2e7d32'; btn.style.borderColor = '#2e7d32';
     okB.disabled = false;
   });
-  okB.onclick = function(){ ov.remove(); cb([pick]); };
+  okB.onclick = function(){ ov.remove(); cb(pickN); };
   if (cancelCb) bx.querySelector('#shc').onclick = function(){ ov.remove(); cancelCb(); };
 }
 function shieldSpend(){ if (typeof actionsLeft !== 'undefined' && actionsLeft > 0) actionsLeft--; }
@@ -1140,12 +1142,12 @@ function shieldGrant(pi){
     if (mqttClient) mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'shieldCipherReq', forPlayerId: pi}));
     return;
   }
-  shieldOpenModal('🛡 Защита активирована — установите шифр', 'Выберите одно число от 1 до 6 — это ваш шифр, его увидите только вы. Соперник при атаке должен угадать его с одной попытки.', function(ab){ shieldCiphers[pi] = ab; log('🛡 ' + players[pi].name + ' активировал Защиту — установлен шифр', 'protect'); updateUI(); if (typeof onlineMode !== 'undefined' && onlineMode && isHost) setTimeout(onlineSync, 300); }, null);
+  shieldOpenModal('🛡 Защита активирована — установите шифр', 'Выберите число от 1 до 6 — это ваш шифр, его увидите только вы. Соперник при атаке должен угадать его с одной попытки.', function(ab){ shieldCiphers[pi] = ab; log('🛡 ' + players[pi].name + ' активировал Защиту — установлен шифр', 'protect'); updateUI(); if (typeof onlineMode !== 'undefined' && onlineMode && isHost) setTimeout(onlineSync, 300); }, null);
 }
 function shieldBotGuess(pi, t){
   const key = pi + '_' + t; const mem = shieldGuessMem[key] || [];
   const cand = [];
-  for (let a=1;a<=6;a++){ if (mem.indexOf(String(a)) === -1) cand.push([a]); }
+  for (let n=1;n<=6;n++) if (mem.indexOf(n) === -1) cand.push(n);
   return cand.length ? cand[Math.floor(Math.random()*cand.length)] : shieldRandomCipher();
 }
 function shieldAttempt(pi, t, core, onCancel, costAction, onBlock){
@@ -1156,7 +1158,7 @@ function shieldAttempt(pi, t, core, onCancel, costAction, onBlock){
   if (typeof onlineMode !== 'undefined' && onlineMode && typeof isHost !== 'undefined' && isHost && pi !== shieldMyIdx() && mqttClient){
     mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'shieldGuessReq', forPlayerId: pi, targetIdx: t}));
     const pid = pi;
-    setTimeout(function(){ if (shieldPending && shieldPending.playerId === pid){ log('⏱ Владелец не ответил — атака заблокирована', 'protect'); shieldResolve(pid, shieldPending.target, [0,0]); } }, 10000);
+    setTimeout(function(){ if (shieldPending && shieldPending.playerId === pid){ log('⏱ Владелец не ответил — атака заблокирована', 'protect'); shieldResolve(pid, shieldPending.target, 0); } }, 10000);
     return;
   }
   shieldOpenModal('🔒 Попытка взлома Защиты', 'Угадайте шифр ' + players[t].name + ' — одно число от 1 до 6, одна попытка. Не угадаете — атака заблокирована, способность останется на панели, а соперник получит +' + SHIELD_BONUS + ' очков.', function(g){ shieldResolve(pi, t, g); }, function(){ shieldPending = null; if (onCancel) onCancel(); else if (onBlock) onBlock(); updateUI(); });
@@ -1164,14 +1166,14 @@ function shieldAttempt(pi, t, core, onCancel, costAction, onBlock){
 function shieldResolve(pi, t, g){
   const pend = shieldPending; shieldPending = null;
   const c = shieldCiphers[t];
-  if (c && g && g[0] === c[0]){
+  if (c && g && g === c){
     pst(pi,'scrk',1);
     abilities[t].protect = false; abilities[t].protectBlocks = 0; delete shieldCiphers[t];
     log('🔓 ' + players[pi].name + ' угадал шифр — Защита ' + players[t].name + ' снята, способность сработает', 'protect');
     updateUI();
     if (pend && pend.core) pend.core();
   } else {
-    const key = pi + '_' + t; if (!shieldGuessMem[key]) shieldGuessMem[key] = []; shieldGuessMem[key].push(String(g[0]));
+    const key = pi + '_' + t; if (!shieldGuessMem[key]) shieldGuessMem[key] = []; shieldGuessMem[key].push(g);
     abilities[t].protectBlocks = (abilities[t].protectBlocks || 0) + 1;
     pst(t,'sblk',1);
     if (players[t] && players[t].isBot) shieldCiphers[t] = shieldRandomCipher();
@@ -1189,7 +1191,7 @@ function shieldResolve(pi, t, g){
   if (typeof onlineMode !== 'undefined' && onlineMode && typeof isHost !== 'undefined' && isHost) setTimeout(onlineSync, 300);
 }
 function shieldChangeOpen(mi){
-  shieldOpenModal('🛡 Смена шифра', 'Выберите новое число от 1 до 6 — соперники об этом не узнают.', function(ab){ shieldCiphers[mi] = ab; updateUI(); if (typeof onlineMode !== 'undefined' && onlineMode && isHost) setTimeout(onlineSync, 300); }, null);
+  shieldOpenModal('🛡 Смена шифра', 'Выберите новое число — соперники об этом не узнают.', function(ab){ shieldCiphers[mi] = ab; updateUI(); if (typeof onlineMode !== 'undefined' && onlineMode && isHost) setTimeout(onlineSync, 300); }, null);
 }
 document.addEventListener('click', function(e){
   const b = e.target && e.target.closest ? e.target.closest('.badge-protect') : null;
@@ -1398,7 +1400,8 @@ function makePlayers(){
 function isCurrentBot(){ return players[currentPlayer] && players[currentPlayer].isBot; }
 
 let pieceAnim = null;
-let pieceAnimKeys = {};
+let pieceAnimLastKey = {};
+let pieceAnimLastTime = {};
 function pieceAnimClear(){
   try{
     if (pieceAnim && pieceAnim.clone && pieceAnim.clone.parentNode) pieceAnim.clone.parentNode.removeChild(pieceAnim.clone);
@@ -1410,13 +1413,18 @@ function animatePiecePath(pi, fromPos, toPos){
   try{
     const total = (toPos - fromPos + 40) % 40;
     if (!total || total > 30) return;
+    const key = fromPos + '>' + toPos;
+    if (pieceAnim && pieceAnim.pi === pi && pieceAnim.to === toPos) return;
+    if (pieceAnimLastKey[pi] === key && Date.now() - (pieceAnimLastTime[pi] || 0) < 4000) return;
     let real = null;
     document.querySelectorAll('.pieces .piece').forEach(function(el){ if (el.textContent == (pi+1)) real = el; });
     if (!real) return;
     const r0 = real.getBoundingClientRect();
     if (!r0 || !r0.width) return;
     if (pieceAnim) pieceAnimClear();
-    pieceAnim = { pi: pi, clone: null };
+    pieceAnim = { pi: pi, to: toPos, clone: null };
+    pieceAnimLastKey[pi] = key;
+    pieceAnimLastTime[pi] = Date.now();
     real.style.visibility = 'hidden';
     const clone = real.cloneNode(true);
     clone.classList.remove('current');
@@ -1710,6 +1718,11 @@ function movePlayerLogic(p, pi, steps){
       pst(pi,'passpol',1);
       log('\u{1F389} '+p.name+' прошёл мимо Полиции: +100 очков (случайный бонус)!', 'win');
     }
+    // Passed Start = lap bonus
+    if (passPos === 0 && p.sum < winSum){
+      p.sum += 300;
+      log('🏁 '+p.name+' прошёл круг от Старт до Старт: +300 очков (сумма '+p.sum+')', 'win');
+    }
     // Passed mine bonus
     if (passPos in mines && mines[passPos] !== pi && p.sum < winSum){
       p.sum += 150;
@@ -1807,12 +1820,16 @@ function handleStartCell(pi){
     log('❤️ '+p.name+' восстановил '+healed+' HP на Стартe ('+p.health+'/100)', 'win');
     pst(pi,'heal',healed);
   }
-  log(p.name+' попал на Старт' + (noBonus ? ' (после Возврата — без +100)' : '') + ' — выбор способности!', 'win');
+  if (p.sum < winSum){
+    p.sum += 300;
+    log('🏁 '+p.name+' прошёл круг от Старт до Старт: +300 очков (сумма '+p.sum+')', 'win');
+  }
+  log(p.name+' попал на Старт' + (noBonus ? ' (после Возврата — без бонуса за круг)' : '') + ' — выбор способности!', 'win');
   if (p.isBot){
     botChooseStartAbility(pi, noBonus);
   } else {
     startAbilityPending = true;
-    if (beginnerMode && !shownHints.has('startCell')) showBeginnerHint('startCell', '🟢 Клетка «Старт»', 'Вы попали на Старт! Выберите одну из способностей: +100 очков, Сапёр (защита от мин), Защита (от Возврата/Заморозки) или Жетон освобождения (выход из Полиции).');
+    if (beginnerMode && !shownHints.has('startCell')) showBeginnerHint('startCell', '🟢 Клетка «Старт»', 'Вы попали на Старт! Выберите одну из способностей: Фин. Ловкость 2.0, Сапёр (защита от мин), Защита (от Возврата/Заморозки) или Жетон освобождения (выход из Полиции).');
     showStartModal(pi, noBonus);
   }
 }
@@ -1834,7 +1851,7 @@ function showStartModal(pi, noBonus){
   const content = document.getElementById('startModalContent');
   let html = '<h2>\u{1F3E0} Старт' + (noBonus ? ' (после Возврата)' : '') + '</h2><div class="abilities">';
   if (!noBonus){
-  html += '<button class="ability-btn pos-btn" onclick="startChoose(\'bonus\', '+pi+')"><span class="ico">\u{1F4AF}</span> +100 очков<div class="ability-desc">Добавить 100 к своей сумме</div></button>';
+  html += '<button class="ability-btn pos-btn" onclick="startChoose(\'finance\', '+pi+')"><span class="ico">💳</span> Фин. Ловкость 2.0<div class="ability-desc">3 хода иммунитета к Налогу + регенерация +200 по истечении</div></button>';
   }
   html += '<button class="ability-btn pos-btn" onclick="startChoose(\'sapper\', '+pi+')"><span class="ico">\u{1F6E1}\uFE0F</span> Сапёр<div class="ability-desc">Защита от мин: обезвредить, оставить или перенастроить</div></button>';
   html += '<button class="ability-btn pos-btn" onclick="startChoose(\'protect\', '+pi+')"><span class="ico">\u{1F6E1}\uFE0F</span> Защита<div class="ability-desc">Блокирует Возврат или Заморозку один раз</div></button>';
@@ -1847,19 +1864,9 @@ function showStartModal(pi, noBonus){
 function startChoose(ability, pi){
   const p = players[pi];
   if (!abilities[pi]) initAbilities(pi);
-  if (ability === 'bonus'){
-    if (p.sum < winSum){
-      p.sum += 100;
-      log('\u{1F4AF} '+p.name+' получил +100 очков (сумма '+p.sum+')', 'win');
-    } else {
-      log('\u{1F4AF} '+p.name+' уже набрал нужную сумму — +100 не начисляется. Доберитесь до Финиша!');
-    }
-    if (autoFinish && p.sum >= winSum){
-      closeStartModal();
-      log(p.name+': сумма достигнута — автопереход на Финиш!', 'win');
-      winGame(p);
-      return;
-    }
+  if (ability === 'finance'){
+    (inventory[pi] = inventory[pi] || []).push('finance');
+    log('💳 '+p.name+' получил Фин. Ловкость 2.0 — способность на панели, активируется в свой ход до броска', 'win');
   } else if (ability === 'sapper'){
     abilities[pi].sapper = true; abilities[pi].sapperUses = 1;
     log('\u{1F6E1}\uFE0F '+p.name+' получил Сапёра', 'sapper');
@@ -1930,17 +1937,8 @@ function botChooseStartAbility(pi, noBonus){
   if (!abilities[pi]) initAbilities(pi);
   const choice = noBonus ? 1 + Math.floor(Math.random()*3) : Math.floor(Math.random()*4);
   if (choice === 0){
-    if (p.sum < winSum){
-      p.sum += 100;
-      log('\u{1F4AF} \u{1F916} '+p.name+' получил +100 очков (сумма '+p.sum+')', 'win');
-    } else {
-      log('\u{1F4AF} \u{1F916} '+p.name+' уже набрал нужную сумму — +100 не начисляется.');
-    }
-    if (autoFinish && p.sum >= winSum){
-      log(p.name+': сумма достигнута — автопереход на Финиш!', 'win');
-      winGame(p);
-      return;
-    }
+    (inventory[pi] = inventory[pi] || []).push('finance');
+    log('💳 \u{1F916} '+p.name+' получил Фин. Ловкость 2.0 — активирует в свой ход', 'win');
   } else if (choice === 1){
     abilities[pi].sapper = true; abilities[pi].sapperUses = 1;
     log('\u{1F6E1}\uFE0F \u{1F916} '+p.name+' получил Сапёра', 'sapper');
@@ -2524,6 +2522,7 @@ function startGame(){
   document.getElementById('gameControls').style.display = 'block';
   log('Игра началась. Цель: '+winSum+'. Игроков: '+players.length+(botCount?' (ботов: '+botCount+', сложность: '+botDifficulty+')':'')+'. Автопереход: '+(autoFinish?'вкл':'выкл'));
   updateUI();
+  if (!onlineMode && !gameOver && isCurrentBot()) setTimeout(botInfluenceOrRoll, 1500);
 }
 
 function reset(){
@@ -2578,7 +2577,7 @@ document.getElementById('playersSeg').addEventListener('click', e=>{
   document.querySelectorAll('#playersSeg button').forEach(x=> x.classList.remove('active'));
   b.classList.add('active');
   playerCount = parseInt(b.dataset.n);
-  if (botCount > playerCount - 1){ botCount = playerCount - 1; updateBotCountSeg(); }
+  if (botCount > playerCount){ botCount = playerCount; updateBotCountSeg(); }
   makePlayers(); updateUI();
   updateSettingsSummary();
 });
@@ -2601,7 +2600,7 @@ function updateBotCountSeg(){
   document.querySelectorAll('#botCountSeg button').forEach(function(x){
     const n = parseInt(x.dataset.b);
     x.classList.toggle('active', n === botCount);
-    x.disabled = gameStarted || n > playerCount - 1;
+    x.disabled = gameStarted || n > playerCount;
   });
 }
 
@@ -2685,6 +2684,7 @@ document.getElementById('resetBtn').addEventListener('click', reset);
 document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
 document.getElementById('endTurnBtn').addEventListener('click', function(e){
   if (e.isTrusted === false) return;
+  if (isCurrentBot()) return;
   if (actionsLeft >= ACTIONS_PER_TURN && !freeRollPending) return;
   if (!gameStarted || gameOver || rolling) return;
   if (minePlacingMode || influencePending || startAbilityPending) return;
@@ -2747,7 +2747,7 @@ document.getElementById('surrenderBtn').addEventListener('click', function(e){
 // ===== SHOP =====
 const SHOP_ITEMS = [
   {id:'sapper', icon:'🛡', name:'Сапёр', desc:'Защита от одной мины: обезвредить, оставить или перенастроить. Одноразовый — расходуется', price:150},
-  {id:'protect', icon:'🛡', name:'Защита', desc:'Блокирует Возврат/Заморозку до 2 раз. Шифр — одно число 1–6: угадан — защита снята; не угадан — блок, +100 владельцу, при исчерпании — ещё +100', price:250},
+  {id:'protect', icon:'🛡', name:'Защита', desc:'Блокирует Возврат/Заморозку до 2 раз. Шифр из двух чисел 1–6: угадан — защита снята; не угадан — блок, +100 владельцу, при исчерпании — ещё +100', price:250},
   {id:'token', icon:'🗝', name:'Жетон освобождения', desc:'Мгновенный выход из Полиции (после трёх дублей), без попыток', price:100},
   {id:'firstaid', icon:'🧰', name:'Аптечка', desc:'Восстанавливает 25 HP в свой ход до броска', price:130},
   {id:'moveToken', icon:'🎟', name:'Жетон хода', desc:'Копится: +1 к броску (до 2 за ход) или двойной шаг (2 шт.)', price:80},
@@ -2997,8 +2997,7 @@ function connectMQTT(){
         onlinePlayers = [];
       } else {
         myPlayerId = 0;
-        var prevOthers = onlinePlayers.filter(function(p){return p.id !== 0;});
-        onlinePlayers = [{id: 0, nickname: myNickname, connected: true}].concat(prevOthers);
+        onlinePlayers = [{id: 0, nickname: myNickname, connected: true}];
       onlineBeginnerModes = {0: beginnerMode};
       }
       renderOnlinePlayers();
@@ -3014,14 +3013,14 @@ function connectMQTT(){
   });
 
   mqttClient.on('message', (topic, message)=>{
+    if (topic.endsWith('/voice')){
+      try { handleVoiceSignal(JSON.parse(message.toString())); } catch(e2){}
+      return;
+    }
     try {
       const data = JSON.parse(message.toString());
       handleMQTTMessage(topic, data);
-    } catch(e){
-      if (topic.endsWith('/voice')){
-        try { handleVoiceSignal(JSON.parse(message.toString())); } catch(e2){}
-      }
-    }
+    } catch(e){}
   });
 
   mqttClient.on('error', (err)=>{ setOnlineStatus('Ошибка сети: ' + err.message, true, false); });
@@ -3068,6 +3067,7 @@ function handleMQTTMessage(topic, data){
       }));
       setOnlineStatus('Игрок "' + data.nickname + '" подключился! Всего: ' + onlinePlayers.length, false, true);
       renderOnlinePlayers();
+      voiceEnsurePeers();
       renderSpectatorStatus();
       if (onlinePlayers.length >= 2 && !spectatorMode){
         document.getElementById('onlineConnectBtn').textContent = '\u25B6 Начать онлайн-игру (' + onlinePlayers.length + ' игр.)';
@@ -3116,6 +3116,7 @@ function handleMQTTMessage(topic, data){
     if (data.type === 'joined' && data.playerId !== undefined){
       myPlayerId = data.playerId;
       onlinePlayers = data.players.map(p=>({id: p.id, nickname: p.nickname, connected: true}));
+      setTimeout(voiceEnsurePeers, 1500);
       if (data.rejoined){
         setOnlineStatus('Вы вернулись в комнату ' + roomCode + ' — восстанавливаем партию...', false, true);
         try { if (typeof diceStopJoinRetry === 'function') diceStopJoinRetry(); } catch(e){}
@@ -3127,15 +3128,15 @@ function handleMQTTMessage(topic, data){
       setOnlineStatus(data.reason || 'Подключение отклонено', true, false);
       try { if (typeof diceStopJoinRetry === 'function') diceStopJoinRetry(); } catch(e){}
     } else if (data.type === 'gameStart'){
-      onlinePlayers = data.players.map(p=>({id: p.id, nickname: p.nickname, connected: true}));
       if (gameStarted && data.gamePlayers && data.gamePlayers.length){
         applyOnlineState(data);
       } else {
+        onlinePlayers = data.players.map(p=>({id: p.id, nickname: p.nickname, connected: true}));
         startOnlineGame(data);
       }
     } else if (data.type === 'gameState'){
       applyOnlineState(data);
-    } else if (data.type === 'shieldCipherReq' && !isHost && data.forPlayerId === myPlayerId){ shieldOpenModal('🛡 Защита активирована — установите шифр', 'Выберите одно число от 1 до 6 — это ваш шифр, его увидите только вы.', function(ab){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldCipherSet', playerId: myPlayerId, cipher: ab})); }, null); } else if (data.type === 'shieldGuessReq' && !isHost && data.forPlayerId === myPlayerId){ shieldOpenModal('🔒 Попытка взлома Защиты', 'Угадайте шифр — одно число от 1 до 6, одна попытка. Не угадаете — атака заблокирована, способность останется на панели, а соперник получит +' + SHIELD_BONUS + ' очков.', function(g){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldGuess', playerId: myPlayerId, guess: g})); }, function(){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldGuess', playerId: myPlayerId, guess: null, cancelled: true})); }); } else if (data.type === 'chat'){
+    } else if (data.type === 'shieldCipherReq' && !isHost && data.forPlayerId === myPlayerId){ shieldOpenModal('🛡 Защита активирована — установите шифр', 'Выберите число от 1 до 6 — это ваш шифр, его увидите только вы.', function(ab){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldCipherSet', playerId: myPlayerId, cipher: ab})); }, null); } else if (data.type === 'shieldGuessReq' && !isHost && data.forPlayerId === myPlayerId){ shieldOpenModal('🔒 Попытка взлома Защиты', 'Угадайте шифр — одно число от 1 до 6, одна попытка. Не угадаете — атака заблокирована, способность останется на панели, а соперник получит +' + SHIELD_BONUS + ' очков.', function(g){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldGuess', playerId: myPlayerId, guess: g})); }, function(){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldGuess', playerId: myPlayerId, guess: null, cancelled: true})); }); } else if (data.type === 'chat'){
       addChatMessage(data.nickname, data.text, data.nickname === myNickname, false, data.msgId);
     } else if (data.type === 'logMsg'){
       const le = data.entry;
@@ -3240,18 +3241,6 @@ function broadcastGameState(msgType){
 
 function applyOnlineState(data){
   const prevPositions = players.map(function(p){ return p ? p.pos : null; });
-  let animPlan = null;
-  if (gameStarted && data.gamePlayers && players.length === data.gamePlayers.length && prevPositions.length === data.gamePlayers.length && (typeof rolling === 'undefined' || !rolling)){
-    const changedA = [];
-    data.gamePlayers.forEach(function(np, i){
-      if (prevPositions[i] !== null && np && !(eliminated && eliminated.has && eliminated.has(i)) && np.pos !== prevPositions[i]) changedA.push(i);
-    });
-    if (changedA.length === 1){
-      const api = changedA[0], fromP = prevPositions[api], toP = data.gamePlayers[api].pos;
-      const d = (toP - fromP + 40) % 40;
-      if (d >= 1 && d <= 24) animPlan = { pi: api, from: fromP, to: toP };
-    }
-  }
   if (data.gamePlayers){
     players = data.gamePlayers.map(p=>({name:p.name, color:p.color, pos:p.pos, sum:p.sum, skip:p.skip, finished:p.finished, isBot:p.isBot, health:p.health||100}));
   }
@@ -3276,13 +3265,6 @@ function applyOnlineState(data){
   if (data.partyTurns !== undefined) partyTurns = data.partyTurns;
   if (data.surrenderCount !== undefined) surrenderCount = data.surrenderCount;
   if (data.logTail && data.logTail.length){ data.logTail.forEach(function(e){ if (e && e.seq > clientLogSeq){ clientLogSeq = e.seq; log(e.text, e.cls); } }); }
-  if (animPlan){
-    const akey = animPlan.pi + ':' + animPlan.from + '>' + animPlan.to;
-    const anow = Date.now();
-    if (pieceAnimKeys[akey] && anow - pieceAnimKeys[akey] < 4000) animPlan = null;
-    else pieceAnimKeys[akey] = anow;
-  }
-  if (animPlan) animatePiecePath(animPlan.pi, animPlan.from, animPlan.to);
   renderOnlinePlayers();
   if (gameStarted){
     document.getElementById('settingsOverlay').style.display = 'none';
@@ -3293,6 +3275,17 @@ function applyOnlineState(data){
     document.getElementById('voicePanel').style.display = 'block';
   }
   renderMines();
+  try{
+    if (gameStarted && prevPositions && players.length === prevPositions.length){
+      const changed = [];
+      players.forEach(function(p,i){ if (prevPositions[i] !== null && !eliminated.has(i) && p.pos !== prevPositions[i]) changed.push(i); });
+      if (changed.length === 1){
+        const api = changed[0], fromP = prevPositions[api], toP = players[api].pos;
+        const d = (toP - fromP + 40) % 40;
+        if (d >= 1 && d <= 24) animatePiecePath(api, fromP, toP);
+      }
+    }
+  }catch(e){}
   updateUI();
   if (gameOver && gameStarted && !resultsShown){ resultsShown = true; const wi = players.findIndex(p=>p.finished); showResults(wi >= 0 ? wi : 0); }
 }
@@ -3343,9 +3336,7 @@ async function toggleVoice(){
       voiceOn = true;
       document.getElementById('voiceBtn').textContent = '\uD83D\uDD07 Выключить микрофон';
       document.getElementById('voiceBtn').classList.add('on');
-      for (const p of onlinePlayers){
-        if (p.id !== myPlayerId) createVoicePeer(p.id);
-      }
+      voiceEnsurePeers();
       updateVoiceParticipants();
     } catch(e){
       setOnlineStatus('\u041E\u0448\u0438\u0431\u043A\u0430 \u043C\u0438\u043A\u0440\u043E\u0444\u043E\u043D\u0430: ' + e.message, true, false);
@@ -3360,6 +3351,10 @@ async function toggleVoice(){
   }
 }
 
+function voiceEnsurePeers(){
+  if (!voiceOn || !onlineMode) return;
+  for (const p of onlinePlayers){ if (p.id !== myPlayerId) createVoicePeer(p.id); }
+}
 function createVoicePeer(peerId){
   if (voicePCs[peerId]) return;
   const pc = new RTCPeerConnection(STUN_SERVERS);
@@ -4008,7 +4003,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 <!-- v16 session machinery -->
-<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:none">v19</div>
+<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:none">v23</div>
 <div id="diceResumeBanner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99990;background:#16a34a;color:#fff;padding:8px 14px;border-radius:0 0 12px 12px;font-size:13px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.25)">&#128260; Сессия найдена: комната <span id="diceBannerCode"></span>
 <button id="diceBannerResume" style="background:#fff;color:#16a34a;border:none;border-radius:8px;padding:4px 10px;font-weight:700;cursor:pointer;margin-left:6px">Продолжить</button>
 <button id="diceBannerDismiss" style="background:none;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:8px;padding:4px 10px;cursor:pointer;margin-left:6px">Нет</button></div>
@@ -4146,7 +4141,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var s=load(SKEY); if(!s || !s.roomCode) return;
     hideAll();
     try{
-      roomCode=s.roomCode; isHost=!!s.isHost; onlineMode=true; myNickname=s.nickname||'Игрок';
+      roomCode=s.roomCode; isHost=!!s.isHost; myNickname=s.nickname||'Игрок';
       spectatorMode=!!s.spectator; beginnerMode=!!s.beginner;
       var ht=document.getElementById('hostTgl'); if(ht) ht.classList.toggle('on', isHost);
       var st=document.getElementById('spectatorTgl'); if(st) st.classList.toggle('on', spectatorMode);
@@ -4155,7 +4150,7 @@ document.addEventListener('DOMContentLoaded', function(){
       var cf=document.getElementById('clientFields'); if(cf) cf.style.display=isHost?'none':'block';
       var ni=document.getElementById('nicknameInput'); if(ni) ni.value=myNickname;
       var oo=document.getElementById('onlineOverlay'); if(oo) oo.style.display='flex';
-      resumePending=true;
+      resumePending=true; onlineMode = true;
       setOnlineStatus('Восстанавливаем сессию: комната ' + roomCode + '...', false, false);
       if(typeof mqtt==='undefined'){ setOnlineStatus('Библиотека MQTT не загрузилась — подождите или обновите страницу', true, false); return; }
       connectMQTT();
@@ -4183,6 +4178,6 @@ document.addEventListener('DOMContentLoaded', function(){
   setInterval(function(){ try{ window.diceSaveSnapshot(); }catch(e){} }, 5000);
 })();
 </script>
-<div class="ver-badge">v19</div>
+<div class="ver-badge">v23</div>
 </body>
 </html>
