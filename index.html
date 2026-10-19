@@ -103,8 +103,13 @@
   .cell.police { background: linear-gradient(150deg, #2c3e50, #34495e); color: #ecf0f1; border: none; box-shadow: 0 0 16px rgba(44,62,80,.4); font-size: clamp(13px, 1.7vw, 22px); }
   .cell .val { z-index: 1; }
   .cell.start .val, .cell.finish .val { font-size: .72em; letter-spacing: .3px; }
-  .pieces { position: absolute; left: 2px; right: 2px; bottom: 2px; display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; z-index: 2; pointer-events: none; }
-  .piece { width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; color: #fff; border: 1.5px solid rgba(255,255,255,.85); box-shadow: 0 2px 5px rgba(0,0,0,.35); }
+  .pieces { position: absolute; left: 2px; right: 2px; bottom: 2px; display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; z-index: 4; pointer-events: none; }
+  .piece { width: clamp(19px, 2.6vw, 30px); height: clamp(19px, 2.6vw, 30px); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: clamp(10px, 1.3vw, 15px); font-weight: 800; color: #fff; border: 2px solid #2c2620; box-shadow: 0 0 0 2.5px #ffffff, 0 3px 8px rgba(0,0,0,.5); text-shadow: 0 1px 2px rgba(0,0,0,.7); }
+  .piece.current { animation: piecePulse 1.1s ease-in-out infinite; }
+  @keyframes piecePulse {
+    0%, 100% { box-shadow: 0 0 0 2.5px #ffffff, 0 0 0 5px rgba(230,126,34,.85), 0 3px 8px rgba(0,0,0,.5); }
+    50% { box-shadow: 0 0 0 2.5px #ffffff, 0 0 0 9px rgba(230,126,34,.15), 0 3px 8px rgba(0,0,0,.5); }
+  }
   .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14px; font-size: 12px; color: #7a6b55; }
   .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; margin-right: 6px; vertical-align: -1px; }
 
@@ -273,7 +278,7 @@
   body:fullscreen .board { gap: 4px; }
   body:fullscreen .cell { font-size: clamp(9px, 0.95vw, 14px); }
   body:fullscreen .cell.police, body:fullscreen .cell.influence { font-size: clamp(14px, 1.5vw, 20px); }
-  body:fullscreen .piece { width: 18px; height: 18px; font-size: 10px; }
+  body:fullscreen .piece { width: 26px; height: 26px; font-size: 13px; }
   body:fullscreen .die { width: 72px; height: 72px; }
   body:fullscreen .center-log { width: 44%; font-size: 13px; }
   body:fullscreen .card { padding: 22px; }
@@ -288,7 +293,7 @@
   body:-webkit-full-screen .board { gap: 4px; }
   body:-webkit-full-screen .cell { font-size: clamp(9px, 0.95vw, 14px); }
   body:-webkit-full-screen .cell.police, body:-webkit-full-screen .cell.influence { font-size: clamp(14px, 1.5vw, 20px); }
-  body:-webkit-full-screen .piece { width: 18px; height: 18px; font-size: 10px; }
+  body:-webkit-full-screen .piece { width: 26px; height: 26px; font-size: 13px; }
   body:-webkit-full-screen .die { width: 72px; height: 72px; }
   body:-webkit-full-screen .center-log { width: 44%; font-size: 13px; }
   body:-webkit-full-screen .card { padding: 22px; }
@@ -393,6 +398,9 @@
   #journalCard h2 { font-size: 12px; margin-bottom: 8px; }
   #journalCard .log { max-height: clamp(160px, 30vh, 300px); gap: 4px; font-size: 12px; line-height: 1.35; }
   @media (max-width: 920px) { #invCard { display: none; } }
+
+  /* Version badge */
+  .ver-badge { position: fixed; left: 10px; bottom: 10px; z-index: 9999; background: #2f6fed; color: #fff; font-size: 12px; font-weight: 800; padding: 3px 9px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,.4); pointer-events: none; }
 </style>
 <script>
   // Загрузка MQTT: цепочка CDN — jsDelivr, затем unpkg (резерв на случай блокировок)
@@ -474,7 +482,7 @@
 <div class="modal-overlay" id="onlineOverlay" style="display:none">
     <div class="modal" style="max-width:380px;position:relative">
       <button class="close-x" id="onlineCloseX" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
-      <h2>&#127760; Онлайн-игра</h2>
+      <h2>&#127760; Онлайн-игра <span id="onlineVerTag" style="font-size:12px;color:#999;font-weight:400;vertical-align:middle">v18</span></h2>
       <div id="onlineFields">
         <div class="field">
           <label>Ваш никнейм</label>
@@ -615,7 +623,7 @@
         <p>При попадании на Старт <b>своим ходом</b> игрок выбирает одну из способностей:</p>
         <ul>
           <li><b>💯 +100 очков</b> — добавить 100 к своей сумме.</li>
-          <li><b>🛡 Сапёр</b> — при наступлении на мину открывает выбор: <b>обезвредить</b> (мина снимается с поля), <b>оставить на поле</b> или <b>перенастроить</b> её против владельца (урон мины снижается до 25 HP, перенастроить можно один раз). В любом варианте урона вы не получаете. Расходуется после срабатывания. Перенастройка не объявляется в логе — следите за своими минами.</li>
+          <li><b>🛡 Сапёр</b> — при наступлении на мину открывает выбор: <b>обезвредить</b> (мина снимается с поля), <b>оставить на поле</b> или <b>перенастроить</b> её против владельца (урон мины снижается до 25 HP, перенастроить можно один раз). В любом варианте урона вы не получаете. Расходуется после первого срабатывания — способность удаляется с панели. Перенастройка не объявляется в логе — следите за своими минами.</li>
           <li><b>🛡 Защита</b> — блокирует «Возврат» или «Заморозку» соперника (до 2 успешных блоков). При активации игрок устанавливает шифр — комбинацию из двух чисел от 1 до 6, видимую только ему. Соперник, применяя Возврат или Заморозку против владельца Защиты, должен угадать шифр с одной попытки; попытка расходует очко действия атакующего, но не саму способность. Угадал — Защита расходуется, способность срабатывает. Не угадал — атака блокируется, способность остаётся на панели, а владелец получает +100 очков; шифр сохраняется. После двух успешных блоков Защита расходуется, и владельцу начисляется ещё +100 очков. В свой ход до броска шифр можно сменить (клик по бейджу «Защита») — смена не видна соперникам. При выбытии или сдаче Защита и шифр сбрасываются.</li>
           <li><b>🗝 Жетон освобождения</b> — мгновенный выход из Полиции (после трёх дублей подряд) без попыток. Используется один раз, после чего израсходуется. Можно получить заново при попадании на Старт.</li>
           <li><b>🧰 Лечение</b> — при попадании на Старт своим ходом здоровье восстанавливается на +25 HP (не выше 100). Действует в дополнение к выбранной способности.</li>
@@ -681,7 +689,7 @@
         <p>В свой ход, до броска кубиков, игрок может открыть магазин и купить способности за очки. Каждая покупка — это компромисс: очки идут в зачёт победы или тратятся на тактику.</p>
         <table style="width:100%;font-size:13px;border-collapse:collapse;margin:8px 0">
           <tr style="font-weight:700;color:#4a3d2e"><td style="padding:4px">Навык</td><td style="padding:4px">Цена</td><td style="padding:4px">Эффект</td></tr>
-          <tr><td style="padding:4px">🛡 Сапёр</td><td style="padding:4px">150</td><td style="padding:4px">Защита от мины: обезвредить, оставить на поле или перенастроить (урон 25 HP)</td></tr>
+          <tr><td style="padding:4px">🛡 Сапёр</td><td style="padding:4px">150</td><td style="padding:4px">Защита от одной мины: обезвредить, оставить на поле или перенастроить. Одноразовый — расходуется (урон 25 HP)</td></tr>
           <tr><td style="padding:4px">🛡 Защита</td><td style="padding:4px">250</td><td style="padding:4px">Блокирует Возврат/Заморозку до 2 раз. Шифр из двух чисел: угадан — защита снята; не угадан — блок, +100 владельцу, при исчерпании — ещё +100</td></tr>
           <tr><td style="padding:4px">🗝 Жетон</td><td style="padding:4px">100</td><td style="padding:4px">Мгновенный выход из Полиции (после трёх дублей), без попыток</td></tr>
           <tr><td style="padding:4px">🧰 Аптечка</td><td style="padding:4px">130</td><td style="padding:4px">Восстанавливает 25 HP в свой ход до броска (не выше 100)</td></tr>
@@ -736,7 +744,7 @@
       <div class="rules">
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
-        <ul><li><b>💳 Финансовая Ловкость 2.0</b><br>Новая способность магазина (350 очков). Активация в свой ход до броска: 3 хода полного иммунитета к Налогу (с клетки «Влияние» и из магазина), Налог на владельце не удваивается, списания на паузе. По истечении действия — регенерация +200 очков. Пока способность на панели и не активирована, она перехватывает Налог, нацеленный на владельца: налог не действует, владелец получает +150 очков, способность расходуется. Один раз за игру. Не защищает от Полиции и других способностей.</li><li><b>🤖 Боты в игре</b><br>Вместо тумблера «Игра против бота» — выбор количества ботов: 0, 1, 2 или 3. Ботов не больше «игроков − 1», сложность общая для всех, боты ходят по очереди автоматически.</li><li><b>⚡ Телепорт-наказание на Финише</b><br>При недоборе на Финише фишка телепортируется на случайную числовую клетку (вместо возврата на Старт). Очки клетки начисляются, мины на клетке телепорта срабатывают, Сапёр работает как обычно. При включённом «Автопереходе» телепорт может сразу привести к победе.</li><li><b>🛒 Магазин — в колонке</b><br>Кнопка «Магазин способностей» перенесена из блока «Ход» в правую колонку — под карточку «Способности». Магазин открывается в свой ход до броска кубиков, логика покупок не изменилась. Панель способностей тоже переехала: карточка «Способности» появилась под журналом, а активация происходит кликом по значку способности — при наведении на значок всплывает описание эффекта.</li>
+        <ul><li><b>🏃 Плавное движение фишки соперника (v18)</b><br>В онлайн-режиме фишка соперника больше не «отскакивает»: анимация полёта запускается до перерисовки поля, фишка идёт по клеткам от старой позиции к новой, повторные синхронизации не запускают полёт заново (защита от дублей по ключу позиции), пересоздание игроков по запоздалому «gameStart» во время партии исключено (правка также закрепляет исправление v17 против сброса на Старт).</li><li><b>📜 Синхронизация журнала (v16)</b><br>Журнал партии теперь общий: события (броски, мины, способности, выбытия) появляются в «Журнале» у всех участников комнаты мгновенно, а не только у хоста. Подключившиеся и переподключившиеся игроки видят последние записи партии — журнал догоняет автоматически и без дублей. Журнал переживает перезагрузку страницы хоста: сохраняется в снимок сессии и восстанавливается вместе с партией.</li><li><b>🚶 Плавное движение фишек (v15)</b><br>Фишка больше не «перепрыгивает» на клетку: при броске она шагает по полю клетка за клеткой с плавным переходом. Скорость подстраивается под дистанцию — двойной шаг проходит путь быстрее. Работает в одиночной игре, у ботов и в онлайн-режиме (движение видно всем игрокам). Телепорты (недобор на Финише, Возврат на Старт) остаются мгновенными — это по-прежнему телепортация.</li><li><b>🛡 Сапёр — одноразовый (v13)</b><br>Сапёр расходуется сразу при первом срабатывании на мине: бейдж исчезает с панели, в журнале появляется запись об израсходовании. Состояние способности сохраняется в снимке сессии сразу после подрыва — перезагрузка страницы больше не возвращает израсходованный Сапёр.</li><li><b>💳 Финансовая Ловкость 2.0</b><br>Новая способность магазина (350 очков). Активация в свой ход до броска: 3 хода полного иммунитета к Налогу (с клетки «Влияние» и из магазина), Налог на владельце не удваивается, списания на паузе. По истечении действия — регенерация +200 очков. Пока способность на панели и не активирована, она перехватывает Налог, нацеленный на владельца: налог не действует, владелец получает +150 очков, способность расходуется. Один раз за игру. Не защищает от Полиции и других способностей.</li><li><b>🤖 Боты в игре</b><br>Вместо тумблера «Игра против бота» — выбор количества ботов: 0, 1, 2 или 3. Ботов не больше «игроков − 1», сложность общая для всех, боты ходят по очереди автоматически.</li><li><b>⚡ Телепорт-наказание на Финише</b><br>При недоборе на Финише фишка телепортируется на случайную числовую клетку (вместо возврата на Старт). Очки клетки начисляются, мины на клетке телепорта срабатывают, Сапёр работает как обычно. При включённом «Автопереходе» телепорт может сразу привести к победе.</li><li><b>🛒 Магазин — в колонке</b><br>Кнопка «Магазин способностей» перенесена из блока «Ход» в правую колонку — под карточку «Способности». Магазин открывается в свой ход до броска кубиков, логика покупок не изменилась. Панель способностей тоже переехала: карточка «Способности» появилась под журналом, а активация происходит кликом по значку способности — при наведении на значок всплывает описание эффекта.</li>
         
           <li><b>🧭 Центр поля без границ</b><br>Панели «Ход» и «Игроки» объединены в единый блок в центре поля без подложки, рамок и теней — текст лежит прямо на поле. Блок занимает всю свободную зону в центре и не перекрывает клетки пути: Старт, Финиш, Полиция и Влияние остаются на своих местах.</li>
           <li><b>📋 Детали партии и панели в центре</b><br>В окне результатов появилась подробная статистика: броски и дубли, жетоны, покупки и траты, мины и подрывы, Полиция со штрафами, налоги, Блокировки, Возвраты/Заморозки, блоки Защитой и взломы шифра, лечения. Панели «Ход» и «Игроки» перенесены в центр игрового поля, журнал хода — внутри панели «Игроки».</li>
@@ -1324,6 +1332,13 @@ function log(text, cls){
   cd.textContent = text;
   cl.prepend(cd);
   while (cl.children.length > 8) cl.removeChild(cl.lastChild);
+  if (isHost && onlineMode && mqttClient && roomCode) {
+    onlineLogSeq++;
+    onlineLogHistory.push({seq: onlineLogSeq, text: text, cls: cls || ''});
+    if (onlineLogHistory.length > 80) onlineLogHistory = onlineLogHistory.slice(-60);
+    clientLogSeq = onlineLogSeq;
+    try { mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'logMsg', entry:{seq:onlineLogSeq, text:text, cls:cls||''}})); } catch(e){}
+  }
 }
 
 function initAbilities(pi){
@@ -1341,7 +1356,7 @@ function resetAllAbilities(pi){
   let mineCount = 0;
   for (const k in mines){ if (mines[k] === pi){ delete mines[k]; mineCount++; } }
   if (mineCount > 0) had.push('Мины ('+mineCount+')');
-  abilities[pi].sapper = false;
+  abilities[pi].sapper = false; abilities[pi].sapperUses = 0;
   abilities[pi].protect = false;
   abilities[pi].frozen = false;
   abilities[pi].taxBlockTurns = 0;
@@ -1380,6 +1395,64 @@ function makePlayers(){
 
 function isCurrentBot(){ return players[currentPlayer] && players[currentPlayer].isBot; }
 
+let pieceAnim = null;
+let pieceAnimLastKey = {};
+let pieceAnimLastTime = {};
+function pieceAnimClear(){
+  try{
+    if (pieceAnim && pieceAnim.clone && pieceAnim.clone.parentNode) pieceAnim.clone.parentNode.removeChild(pieceAnim.clone);
+    document.querySelectorAll('.pieces .piece').forEach(function(el){ el.style.visibility = ''; });
+  }catch(e){}
+  pieceAnim = null;
+}
+function animatePiecePath(pi, fromPos, toPos){
+  try{
+    const total = (toPos - fromPos + 40) % 40;
+    if (!total || total > 30) return;
+    const key = fromPos + '>' + toPos;
+    if (pieceAnim && pieceAnim.pi === pi && pieceAnim.to === toPos) return;
+    if (pieceAnimLastKey[pi] === key && Date.now() - (pieceAnimLastTime[pi] || 0) < 4000) return;
+    let real = null;
+    document.querySelectorAll('.pieces .piece').forEach(function(el){ if (el.textContent == (pi+1)) real = el; });
+    if (!real) return;
+    const r0 = real.getBoundingClientRect();
+    if (!r0 || !r0.width) return;
+    if (pieceAnim) pieceAnimClear();
+    pieceAnim = { pi: pi, to: toPos, clone: null };
+    pieceAnimLastKey[pi] = key;
+    pieceAnimLastTime[pi] = Date.now();
+    real.style.visibility = 'hidden';
+    const clone = real.cloneNode(true);
+    clone.classList.remove('current');
+    clone.style.position = 'fixed';
+    clone.style.zIndex = '99995';
+    clone.style.margin = '0';
+    clone.style.pointerEvents = 'none';
+    clone.style.left = r0.left + 'px';
+    clone.style.top = r0.top + 'px';
+    clone.style.visibility = 'visible';
+    document.body.appendChild(clone);
+    pieceAnim.clone = clone;
+    const stepMs = Math.max(60, Math.min(150, Math.round(1200/total)));
+    let pos = fromPos, idx = 0;
+    const finish = function(){ pieceAnimClear(); };
+    const next = function(){
+      idx++; pos = (pos + 1) % 40;
+      if (!pieceAnim || pieceAnim.clone !== clone) return;
+      if (idx > total){ finish(); return; }
+      const cell = document.querySelector('.pieces[data-index="'+pos+'"]');
+      if (!cell){ finish(); return; }
+      const r = cell.getBoundingClientRect();
+      const w = r0.width, h = r0.height;
+      clone.style.transition = 'left '+stepMs+'ms linear, top '+stepMs+'ms linear';
+      clone.style.left = (r.left + r.width/2 - w/2) + 'px';
+      clone.style.top = (r.bottom - h - 2) + 'px';
+      if (idx === total){ setTimeout(finish, stepMs + 30); }
+      else { setTimeout(next, stepMs); }
+    };
+    setTimeout(next, 30);
+  }catch(e){ pieceAnim = null; }
+}
 function updatePieces(){
   document.querySelectorAll('.pieces').forEach(el=> el.innerHTML='');
   players.forEach((p,i)=>{
@@ -1387,9 +1460,10 @@ function updatePieces(){
     const c = document.querySelector('.pieces[data-index="'+p.pos+'"]');
     if (c){
       const dot = document.createElement('div');
-      dot.className = 'piece';
+      dot.className = 'piece' + (gameStarted && !gameOver && i === currentPlayer ? ' current' : '');
       dot.style.background = p.color;
       dot.textContent = i+1;
+      if (pieceAnim && pieceAnim.pi === i) dot.style.visibility = 'hidden';
       c.appendChild(dot);
     }
   });
@@ -1409,7 +1483,7 @@ function updatePlayers(){
     if (inPoliceMode[i]) badges += '<span class="badge badge-police">полиция</span>';
     if (doublesInRow[i] > 0) badges += '<span class="badge badge-doubles">дубли: '+doublesInRow[i]+'/3</span>';
     const ab = abilities[i] || {};
-    if (ab.sapper) badges += '<span class="badge badge-sapper">\u{1F6E1}\uFE0F Сапёр</span>';
+    if (ab.sapper) badges += '<span class="badge badge-sapper">\u{1F6E1}\uFE0F Сапёр ×'+(ab.sapperUses||1)+'</span>';
     if (ab.protect) badges += '<span class="badge badge-protect">\u{1F6E1}\uFE0F Защита'+(ab.protectBlocks?' ×'+ab.protectBlocks:'')+'</span>';
     if (ab.token) badges += '<span class="badge badge-token">\u{1F5DD}\uFE0F Жетон</span>';
     if (ab.frozen) badges += '<span class="badge badge-freeze">\u2744\uFE0F заморозка</span>';
@@ -1572,8 +1646,14 @@ function tryMineExplode(pi, pos){
     const mineOwner = mines[pos];
     const dmg = reconfiguredMines[pos] ? 25 : 50;
     if (abilities[pi] && abilities[pi].sapper){
-      abilities[pi].sapper = false;
-      log('🛡 '+p.name+' наступил на мину — Сапёр использован. Урона нет.', 'sapper');
+      abilities[pi].sapperUses = Math.max(0, (abilities[pi].sapperUses || 0) - 1);
+      if (abilities[pi].sapperUses <= 0){
+        abilities[pi].sapper = false;
+        log('🛡 '+p.name+' наступил на мину — Сапёр сработал и израсходован. Урона нет.', 'sapper');
+      } else {
+        log('🛡 '+p.name+' наступил на мину — Сапёр спас от урона (осталось применений: '+abilities[pi].sapperUses+').', 'sapper');
+      }
+      try { if (typeof diceSaveSnapshot === 'function') diceSaveSnapshot(); } catch(e){}
       if (p.isBot){
         const canReconfig = !reconfiguredMines[pos] && !eliminated.has(mineOwner);
         if (botDifficulty === 'hard' && canReconfig && (players[mineOwner].health||100) <= 50){
@@ -1617,6 +1697,13 @@ function tryMineExplode(pi, pos){
 }
 
 function movePlayer(p, pi, steps){
+  const oldPos = p.pos;
+  const animDest = (oldPos + steps) % 40;
+  const doAnim = steps > 0 && p.pos === oldPos;
+  movePlayerLogic(p, pi, steps);
+  if (doAnim && p.pos === animDest) animatePiecePath(pi, oldPos, animDest);
+}
+function movePlayerLogic(p, pi, steps){
   const oldPos = p.pos;
   // Check cells passed through (not landing on)
   for (let s = 1; s < steps; s++){
@@ -1778,7 +1865,7 @@ function startChoose(ability, pi){
       return;
     }
   } else if (ability === 'sapper'){
-    abilities[pi].sapper = true;
+    abilities[pi].sapper = true; abilities[pi].sapperUses = 1;
     log('\u{1F6E1}\uFE0F '+p.name+' получил Сапёра', 'sapper');
   } else if (ability === 'protect'){
     abilities[pi].protect = true; shieldGrant(pi);
@@ -1859,7 +1946,7 @@ function botChooseStartAbility(pi, noBonus){
       return;
     }
   } else if (choice === 1){
-    abilities[pi].sapper = true;
+    abilities[pi].sapper = true; abilities[pi].sapperUses = 1;
     log('\u{1F6E1}\uFE0F \u{1F916} '+p.name+' получил Сапёра', 'sapper');
   } else if (choice === 2){
     abilities[pi].protect = true; shieldGrant(pi);
@@ -2663,7 +2750,7 @@ document.getElementById('surrenderBtn').addEventListener('click', function(e){
 
 // ===== SHOP =====
 const SHOP_ITEMS = [
-  {id:'sapper', icon:'🛡', name:'Сапёр', desc:'Защита от мины: обезвредить, оставить или перенастроить её', price:150},
+  {id:'sapper', icon:'🛡', name:'Сапёр', desc:'Защита от одной мины: обезвредить, оставить или перенастроить. Одноразовый — расходуется', price:150},
   {id:'protect', icon:'🛡', name:'Защита', desc:'Блокирует Возврат/Заморозку до 2 раз. Шифр из двух чисел 1–6: угадан — защита снята; не угадан — блок, +100 владельцу, при исчерпании — ещё +100', price:250},
   {id:'token', icon:'🗝', name:'Жетон освобождения', desc:'Мгновенный выход из Полиции (после трёх дублей), без попыток', price:100},
   {id:'firstaid', icon:'🧰', name:'Аптечка', desc:'Восстанавливает 25 HP в свой ход до броска', price:130},
@@ -2715,7 +2802,7 @@ function buyAbility(itemId, pi){
   pst(pi,'buys',1); pst(pi,'spent',item.price);
   spendAction();
   log('🛒 '+p.name+' купил «'+item.name+'» за '+item.price+' очков (сумма '+p.sum+')', 'win');
-  if (itemId === 'sapper'){ abilities[pi].sapper = true; }
+  if (itemId === 'sapper'){ abilities[pi].sapper = true; abilities[pi].sapperUses = 1; }
   else if (itemId === 'protect'){ abilities[pi].protect = true; shieldGrant(pi); }
   else if (itemId === 'token'){ abilities[pi].token = true; }
   else if (itemId === 'firstaid'){
@@ -2848,6 +2935,7 @@ function showResults(winnerIdx){
 function playAgain(){
   document.getElementById('resultsModal').style.display = 'none';
   resultsShown = false;
+  try { if (typeof diceClearSnapshot === 'function') diceClearSnapshot(); } catch(e){}
   reset();
   if (onlineMode && isHost){
     document.getElementById('onlineOverlay').style.display = 'flex';
@@ -2862,6 +2950,9 @@ let spectatorMode = false;
 let myNickname = '';
 let roomCode = '';
 let mqttClient = null;
+  let onlineLogHistory = [];
+  let onlineLogSeq = 0;
+  let clientLogSeq = 0;
 let myPlayerId = 0;
 let onlinePlayers = [];
 let voiceStream = null;
@@ -2915,11 +3006,13 @@ function connectMQTT(){
       }
       renderOnlinePlayers();
       renderSpectatorStatus();
+      try { if (typeof diceResumeAfterConnect === 'function') diceResumeAfterConnect(); } catch(e){}
     } else {
       mqttClient.subscribe('dice/' + roomCode + '/state');
       mqttClient.subscribe('dice/' + roomCode + '/voice');
       mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'join', nickname: myNickname, clientId: mqttClient.options.clientId, beginnerMode: beginnerMode}));
       setOnlineStatus('Подключение к комнате ' + roomCode + '...', false, false);
+      try { if (typeof diceResumeAfterConnect === 'function') diceResumeAfterConnect(); } catch(e){}
     }
   });
 
@@ -2941,7 +3034,35 @@ function connectMQTT(){
 function handleMQTTMessage(topic, data){
   if (topic.endsWith('/join') && isHost){
     if (data.type === 'join'){
-      const newId = spectatorMode ? onlinePlayers.length : onlinePlayers.length;
+      let existing = onlinePlayers.find(p => p.nickname === data.nickname);
+      if (!existing && gameStarted){
+        const gi = players.findIndex(p => p.name === data.nickname);
+        if (gi >= 0){
+          existing = {id: gi, nickname: data.nickname};
+          onlinePlayers.push({id: gi, nickname: data.nickname, connected: true, clientId: data.clientId});
+        }
+      }
+      if (existing){
+        existing.connected = true;
+        existing.clientId = data.clientId;
+        onlineBeginnerModes[existing.id] = data.beginnerMode || false;
+        mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({
+          type: 'joined', playerId: existing.id, rejoined: true,
+          players: onlinePlayers.map(p=>({nickname: p.nickname, id: p.id}))
+        }));
+        setOnlineStatus('Игрок "' + data.nickname + '" вернулся в комнату', false, true);
+        renderOnlinePlayers();
+        renderSpectatorStatus();
+        if (gameStarted) setTimeout(onlineSync, 400);
+        return;
+      }
+      if (gameStarted){
+        mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({
+          type: 'joinRefused', reason: 'Партия уже идёт — подключиться нельзя'
+        }));
+        return;
+      }
+      const newId = onlinePlayers.length;
       onlinePlayers.push({id: newId, nickname: data.nickname, connected: true, clientId: data.clientId});
       onlineBeginnerModes[newId] = data.beginnerMode || false;
       mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({
@@ -2956,8 +3077,8 @@ function handleMQTTMessage(topic, data){
         document.getElementById('onlineConnectBtn').disabled = false;
       }
     } else if (data.type === 'shieldCipherSet' && isHost){ shieldCiphers[data.playerId] = data.cipher; } else if (data.type === 'shieldGuess' && isHost){ if (shieldPending && shieldPending.playerId === data.playerId){ if (data.cancelled || !data.guess){ shieldPending = null; log('🔓 Попытка взлома отменена — способность осталась на панели', 'protect'); updateUI(); } else { shieldResolve(shieldPending.attacker, shieldPending.target, data.guess); } } } else if (data.type === 'chat'){
-      mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'chat', nickname: data.nickname, text: data.text}));
-      addChatMessage(data.nickname, data.text, false);
+      mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'chat', nickname: data.nickname, text: data.text, msgId: data.msgId}));
+      addChatMessage(data.nickname, data.text, false, false, data.msgId);
     } else if (data.type === 'roll' && data.playerId === currentPlayer && !rolling){
       doRoll(); setTimeout(onlineSync, 700);
     } else if (data.type === 'surrender' && data.playerId === currentPlayer){
@@ -2998,15 +3119,30 @@ function handleMQTTMessage(topic, data){
     if (data.type === 'joined' && data.playerId !== undefined){
       myPlayerId = data.playerId;
       onlinePlayers = data.players.map(p=>({id: p.id, nickname: p.nickname, connected: true}));
-      setOnlineStatus('Подключён как игрок ' + (myPlayerId+1) + ' (' + myNickname + ')', false, true);
+      if (data.rejoined){
+        setOnlineStatus('Вы вернулись в комнату ' + roomCode + ' — восстанавливаем партию...', false, true);
+        try { if (typeof diceStopJoinRetry === 'function') diceStopJoinRetry(); } catch(e){}
+      } else {
+        setOnlineStatus('Подключён как игрок ' + (myPlayerId+1) + ' (' + myNickname + ')', false, true);
+      }
       renderOnlinePlayers();
+    } else if (data.type === 'joinRefused'){
+      setOnlineStatus(data.reason || 'Подключение отклонено', true, false);
+      try { if (typeof diceStopJoinRetry === 'function') diceStopJoinRetry(); } catch(e){}
     } else if (data.type === 'gameStart'){
-      onlinePlayers = data.players.map(p=>({id: p.id, nickname: p.nickname, connected: true}));
-      startOnlineGame(data);
+      if (gameStarted && data.gamePlayers && data.gamePlayers.length){
+        applyOnlineState(data);
+      } else {
+        onlinePlayers = data.players.map(p=>({id: p.id, nickname: p.nickname, connected: true}));
+        startOnlineGame(data);
+      }
     } else if (data.type === 'gameState'){
       applyOnlineState(data);
     } else if (data.type === 'shieldCipherReq' && !isHost && data.forPlayerId === myPlayerId){ shieldOpenModal('🛡 Защита активирована — установите шифр', 'Выберите два числа от 1 до 6 — это ваш шифр, его увидите только вы.', function(ab){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldCipherSet', playerId: myPlayerId, cipher: ab})); }, null); } else if (data.type === 'shieldGuessReq' && !isHost && data.forPlayerId === myPlayerId){ shieldOpenModal('🔒 Попытка взлома Защиты', 'Угадайте шифр — два числа от 1 до 6, одна попытка. Не угадаете — атака заблокирована, способность останется на панели, а соперник получит +' + SHIELD_BONUS + ' очков.', function(g){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldGuess', playerId: myPlayerId, guess: g})); }, function(){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldGuess', playerId: myPlayerId, guess: null, cancelled: true})); }); } else if (data.type === 'chat'){
-      addChatMessage(data.nickname, data.text, data.nickname === myNickname);
+      addChatMessage(data.nickname, data.text, data.nickname === myNickname, false, data.msgId);
+    } else if (data.type === 'logMsg'){
+      const le = data.entry;
+      if (le && le.seq > clientLogSeq){ clientLogSeq = le.seq; log(le.text, le.cls); }
     }
   }
 }
@@ -3091,6 +3227,7 @@ function hostStartOnlineGame(){
 
 function broadcastGameState(msgType){
   if (!isHost || !mqttClient) return;
+  try { if (typeof diceSaveSnapshot === 'function') diceSaveSnapshot(); } catch(e){}
   mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({
     type: msgType,
     players: onlinePlayers.map(p=>({id: p.id, nickname: p.nickname})),
@@ -3100,11 +3237,12 @@ function broadcastGameState(msgType){
     doublesInRow: doublesInRow, inPoliceMode: inPoliceMode, policeAttempts: policeAttempts,
     abilities: abilities, actionsLeft: actionsLeft, freeRollPending: freeRollPending, mines: mines, reconfiguredMines: reconfiguredMines, eliminated: Array.from(eliminated),
     beginnerModes: onlineBeginnerModes,
-    pendingStartAbilities: pendingStartAbilities, inventory: inventory, plus1Bonus: plus1Bonus, tokenPlusPending: tokenPlusPending, doubleStepPending: doubleStepPending, partyTurns: partyTurns, surrenderCount: surrenderCount
+    pendingStartAbilities: pendingStartAbilities, inventory: inventory, plus1Bonus: plus1Bonus, tokenPlusPending: tokenPlusPending, doubleStepPending: doubleStepPending, partyTurns: partyTurns, surrenderCount: surrenderCount, logTail: onlineLogHistory.slice(-50), logSeq: onlineLogSeq
   }));
 }
 
 function applyOnlineState(data){
+  const prevPositions = players.map(function(p){ return p ? p.pos : null; });
   if (data.gamePlayers){
     players = data.gamePlayers.map(p=>({name:p.name, color:p.color, pos:p.pos, sum:p.sum, skip:p.skip, finished:p.finished, isBot:p.isBot, health:p.health||100}));
   }
@@ -3128,6 +3266,7 @@ function applyOnlineState(data){
   if (data.doubleStepPending) doubleStepPending = data.doubleStepPending;
   if (data.partyTurns !== undefined) partyTurns = data.partyTurns;
   if (data.surrenderCount !== undefined) surrenderCount = data.surrenderCount;
+  if (data.logTail && data.logTail.length){ data.logTail.forEach(function(e){ if (e && e.seq > clientLogSeq){ clientLogSeq = e.seq; log(e.text, e.cls); } }); }
   renderOnlinePlayers();
   if (gameStarted){
     document.getElementById('settingsOverlay').style.display = 'none';
@@ -3138,6 +3277,17 @@ function applyOnlineState(data){
     document.getElementById('voicePanel').style.display = 'block';
   }
   renderMines();
+  try{
+    if (gameStarted && prevPositions && players.length === prevPositions.length){
+      const changed = [];
+      players.forEach(function(p,i){ if (prevPositions[i] !== null && !eliminated.has(i) && p.pos !== prevPositions[i]) changed.push(i); });
+      if (changed.length === 1){
+        const api = changed[0], fromP = prevPositions[api], toP = players[api].pos;
+        const d = (toP - fromP + 40) % 40;
+        if (d >= 1 && d <= 24) animatePiecePath(api, fromP, toP);
+      }
+    }
+  }catch(e){}
   updateUI();
   if (gameOver && gameStarted && !resultsShown){ resultsShown = true; const wi = players.findIndex(p=>p.finished); showResults(wi >= 0 ? wi : 0); }
 }
@@ -3147,9 +3297,15 @@ function onlineSync(){
 }
 
 // Chat
-function addChatMessage(nick, text, isMe, isSys){
+let diceChatSeen = [];
+function addChatMessage(nick, text, isMe, isSys, msgId){
   const box = document.getElementById('chatMessages');
   if (!box) return;
+  if (msgId){
+    if (diceChatSeen.indexOf(msgId) !== -1) return;
+    diceChatSeen.push(msgId);
+    if (diceChatSeen.length > 200) diceChatSeen = diceChatSeen.slice(-100);
+  }
   const d = document.createElement('div');
   d.className = 'chat-msg' + (isMe?' me':'') + (isSys?' sys':'');
   d.textContent = isSys ? text : '';
@@ -3163,12 +3319,13 @@ function sendChat(){
   const text = input.value.trim();
   if (!text || !mqttClient) return;
   const displayName = (spectatorMode && isHost) ? '\u{1F441} ' + myNickname : myNickname;
+  const msgId = Date.now() + '-' + Math.random().toString(36).substr(2,6);
   if (isHost){
-    mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'chat', nickname: displayName, text: text}));
-    addChatMessage(displayName, text, true);
+    mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'chat', nickname: displayName, text: text, msgId: msgId}));
+    addChatMessage(displayName, text, true, false, msgId);
   } else {
-    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'chat', nickname: displayName, text: text}));
-    addChatMessage(displayName, text, true);
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'chat', nickname: displayName, text: text, msgId: msgId}));
+    addChatMessage(displayName, text, true, false, msgId);
   }
   input.value = '';
 }
@@ -3306,11 +3463,13 @@ document.getElementById('onlineConnectBtn').addEventListener('click', function()
       else { setOnlineStatus('Подключение к брокеру ещё не установлено — подождите несколько секунд.', true, false); }
       return;
     }
-    roomCode = genRoomCode(); connectMQTT();
+    roomCode = genRoomCode(); try { diceSaveSession(); } catch(e){}
+    connectMQTT();
   }
   else {
     roomCode = document.getElementById('roomCodeInput').value.trim().toUpperCase();
     if (roomCode.length !== 5){ setOnlineStatus('Введите 5-символьный код комнаты', true, false); return; }
+    try { diceSaveSession(); } catch(e){}
     connectMQTT();
   }
 });
@@ -3842,5 +4001,183 @@ document.addEventListener('DOMContentLoaded', function(){
   window.relayoutCenter = layout;
 })();
 </script>
+
+<!-- v16 session machinery -->
+<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:none">v18</div>
+<div id="diceResumeBanner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99990;background:#16a34a;color:#fff;padding:8px 14px;border-radius:0 0 12px 12px;font-size:13px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.25)">&#128260; Сессия найдена: комната <span id="diceBannerCode"></span>
+<button id="diceBannerResume" style="background:#fff;color:#16a34a;border:none;border-radius:8px;padding:4px 10px;font-weight:700;cursor:pointer;margin-left:6px">Продолжить</button>
+<button id="diceBannerDismiss" style="background:none;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:8px;padding:4px 10px;cursor:pointer;margin-left:6px">Нет</button></div>
+<div class="modal-overlay" id="diceSessionModal" style="display:none;z-index:99999">
+  <div class="modal" style="max-width:340px;text-align:center">
+    <h3 style="margin-top:0">&#128260; Найдена незавершённая сессия</h3>
+    <p id="diceSessionInfo" style="font-size:14px;margin:8px 0 16px"></p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button id="diceResumeBtn" style="padding:10px;border-radius:10px;border:none;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;font-size:14px">&#9654; Продолжить сессию</button>
+      <button id="diceReenterBtn" style="padding:10px;border-radius:10px;border:1px solid rgba(180,160,130,.4);background:rgba(255,252,245,.8);color:#5a4a32;cursor:pointer;font-size:14px">&#9998; Ввести код заново</button>
+      <button id="diceResetBtn" style="padding:10px;border-radius:10px;border:1px solid rgba(220,80,80,.4);background:rgba(255,245,245,.8);color:#a33;cursor:pointer;font-size:14px">&#128465; Сбросить сессию</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var SKEY='diceSession_v14', SNAPKEY='diceSnapshot_v14';
+  var resumePending=false, retryTimer=null, retryCount=0;
+  function store(k,v){
+    try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){}
+    try{ sessionStorage.setItem(k, JSON.stringify(v)); }catch(e2){}
+  }
+  function load(k){
+    var o=null, s=null;
+    try{ o=JSON.parse(localStorage.getItem(k)); }catch(e){ o=null; }
+    try{ s=JSON.parse(sessionStorage.getItem(k)); }catch(e2){ s=null; }
+    if (s && (!o || (s.ts||0) >= (o.ts||0))) return s;
+    return o;
+  }
+  function sdel(k){ try{ localStorage.removeItem(k); }catch(e){} try{ sessionStorage.removeItem(k); }catch(e2){} }
+  function hideAll(){
+    var m=document.getElementById('diceSessionModal'); if(m) m.style.display='none';
+    var b=document.getElementById('diceResumeBanner'); if(b) b.style.display='none';
+  }
+  window.diceSaveSession=function(){
+    try{
+      store(SKEY, {roomCode:roomCode, isHost:isHost, nickname:myNickname, spectator:!!spectatorMode, beginner:!!beginnerMode, ts:Date.now()});
+      console.log('[dice-restore] session saved:', roomCode, isHost?'host':'client');
+    }catch(e){ console.log('[dice-restore] session save err', e); }
+  };
+  window.diceClearAll=function(){ sdel(SKEY); sdel(SNAPKEY); hideAll(); console.log('[dice-restore] session cleared'); };
+  window.diceClearSnapshot=function(){ sdel(SNAPKEY); };
+  window.diceSaveSnapshot=function(){
+    try{
+      if(!isHost || !gameStarted) return;
+      var snap={
+        gameStarted:true, ts:Date.now(), roomCode:roomCode,
+        winSum:winSum, autoFinish:autoFinish,
+        gamePlayers:players.map(function(p){return {name:p.name,color:p.color,pos:p.pos,sum:p.sum,skip:p.skip,finished:p.finished,isBot:p.isBot,health:p.health||100};}),
+        currentPlayer:currentPlayer, gameOver:gameOver,
+        doublesInRow:doublesInRow, inPoliceMode:inPoliceMode, policeAttempts:policeAttempts,
+        abilities:abilities, actionsLeft:actionsLeft, freeRollPending:freeRollPending,
+        mines:mines, reconfiguredMines:reconfiguredMines, eliminated:Array.from(eliminated),
+        beginnerModes:onlineBeginnerModes,
+        pendingStartAbilities:pendingStartAbilities, inventory:inventory, plus1Bonus:plus1Bonus,
+        tokenPlusPending:tokenPlusPending, doubleStepPending:doubleStepPending,
+        partyTurns:partyTurns, surrenderCount:surrenderCount,
+        shieldCiphers:shieldCiphers, shieldGuessMem:shieldGuessMem,
+        partyStats:{start:partyStats.start,turns:partyStats.turns,players:partyStats.players},
+        logHistory:onlineLogHistory, logSeq:onlineLogSeq
+      };
+      store(SNAPKEY, snap);
+    }catch(e){ console.log('[dice-restore] snapshot err', e); }
+  };
+  window.diceRestoreParty=function(snap){
+    try{
+      if (snap.logHistory) onlineLogHistory = snap.logHistory;
+      if (snap.logSeq) onlineLogSeq = snap.logSeq;
+      winSum=snap.winSum||2000; autoFinish=snap.autoFinish!==false;
+      finishPenalty=0; policePenalty=Math.floor(winSum*0.1);
+      playerCount=snap.gamePlayers.length;
+      players=snap.gamePlayers.map(function(p){return {name:p.name,color:p.color,pos:p.pos,sum:p.sum,skip:!!p.skip,finished:!!p.finished,isBot:!!p.isBot,health:p.health||100};});
+      currentPlayer=snap.currentPlayer||0; gameOver=!!snap.gameOver; gameStarted=true;
+      doublesInRow=snap.doublesInRow||{}; inPoliceMode=snap.inPoliceMode||{}; policeAttempts=snap.policeAttempts||{};
+      abilities=snap.abilities||{};
+      actionsLeft=(typeof snap.actionsLeft==='number')?snap.actionsLeft:ACTIONS_PER_TURN;
+      freeRollPending=!!snap.freeRollPending; mines=snap.mines||{}; reconfiguredMines=snap.reconfiguredMines||{};
+      eliminated=new Set(snap.eliminated||[]);
+      if(snap.beginnerModes) onlineBeginnerModes=snap.beginnerModes;
+      pendingStartAbilities=snap.pendingStartAbilities||{}; inventory=snap.inventory||{}; plus1Bonus=snap.plus1Bonus||{};
+      tokenPlusPending=snap.tokenPlusPending||{}; doubleStepPending=snap.doubleStepPending||{};
+      partyTurns=snap.partyTurns||0; surrenderCount=snap.surrenderCount||0;
+      if(snap.shieldCiphers){ for(var k in shieldCiphers) delete shieldCiphers[k]; Object.assign(shieldCiphers, snap.shieldCiphers); }
+      if(snap.shieldGuessMem){ for(var k2 in shieldGuessMem) delete shieldGuessMem[k2]; Object.assign(shieldGuessMem, snap.shieldGuessMem); }
+      if(snap.partyStats){ partyStats.start=snap.partyStats.start||Date.now(); partyStats.turns=snap.partyStats.turns||0; partyStats.players=snap.partyStats.players||{}; }
+      resultsShown=false; minePlacingMode=false; influencePending=false; startAbilityPending=false;
+      document.getElementById('settingsOverlay').style.display='none';
+      document.getElementById('onlineOverlay').style.display='none';
+      document.getElementById('startScreen').style.display='none';
+      document.getElementById('gameControls').style.display='block';
+      document.getElementById('chatPanel').classList.add('show');
+      document.getElementById('voicePanel').style.display='block';
+      renderMines(); renderOnlinePlayers(); updateUI();
+      console.log('[dice-restore] party restored, current player:', currentPlayer);
+    }catch(e){ console.log('[dice-restore] restore err', e); }
+  };
+  window.diceStopJoinRetry=function(){ if(retryTimer){ clearInterval(retryTimer); retryTimer=null; } };
+  window.diceResumeAfterConnect=function(){
+    if(!resumePending) return;
+    resumePending=false;
+    console.log('[dice-restore] connected, resuming as', isHost?'host':'client');
+    try{
+      if(isHost){
+        var snap=load(SNAPKEY);
+        if(snap && snap.gameStarted && snap.roomCode===roomCode){
+          window.diceRestoreParty(snap);
+          setTimeout(function(){ try{ broadcastGameState('gameState'); }catch(e){} }, 500);
+          if(isCurrentBot() && !gameOver) setTimeout(function(){ try{ botInfluenceOrRoll(); }catch(e){} }, 3000);
+          setOnlineStatus('Сессия восстановлена — партия продолжается', false, true);
+        } else {
+          setOnlineStatus('Комната восстановлена. Код: ' + roomCode, false, true);
+        }
+      } else {
+        retryCount=0;
+        window.diceStopJoinRetry();
+        retryTimer=setInterval(function(){
+          retryCount++;
+          if(retryCount>6){
+            window.diceStopJoinRetry();
+            setOnlineStatus('Хост комнаты ' + roomCode + ' не отвечает — сессия сброшена. Создайте новую игру.', true, false);
+            window.diceClearAll();
+            return;
+          }
+          try{
+            if(mqttClient && mqttClient.connected){
+              mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'join', nickname:myNickname, clientId:mqttClient.options.clientId, beginnerMode:beginnerMode, rejoin:true}));
+              setOnlineStatus('Ищем хоста комнаты ' + roomCode + '... (попытка ' + retryCount + '/6)', false, false);
+            }
+          }catch(e){}
+        }, 4000);
+      }
+    }catch(e){ console.log('[dice-restore] resume err', e); }
+  };
+  function resumeFromSession(){
+    var s=load(SKEY); if(!s || !s.roomCode) return;
+    hideAll();
+    try{
+      roomCode=s.roomCode; isHost=!!s.isHost; myNickname=s.nickname||'Игрок';
+      spectatorMode=!!s.spectator; beginnerMode=!!s.beginner;
+      var ht=document.getElementById('hostTgl'); if(ht) ht.classList.toggle('on', isHost);
+      var st=document.getElementById('spectatorTgl'); if(st) st.classList.toggle('on', spectatorMode);
+      var bt=document.getElementById('beginnerOnlineTgl'); if(bt) bt.classList.toggle('on', beginnerMode);
+      var hf=document.getElementById('hostFields'); if(hf) hf.style.display=isHost?'block':'none';
+      var cf=document.getElementById('clientFields'); if(cf) cf.style.display=isHost?'none':'block';
+      var ni=document.getElementById('nicknameInput'); if(ni) ni.value=myNickname;
+      var oo=document.getElementById('onlineOverlay'); if(oo) oo.style.display='flex';
+      resumePending=true; onlineMode = true;
+      setOnlineStatus('Восстанавливаем сессию: комната ' + roomCode + '...', false, false);
+      if(typeof mqtt==='undefined'){ setOnlineStatus('Библиотека MQTT не загрузилась — подождите или обновите страницу', true, false); return; }
+      connectMQTT();
+    }catch(e){ console.log('[dice-restore] resumeFromSession err', e); }
+  }
+  var s=load(SKEY);
+  if(s && s.roomCode && (Date.now()-(s.ts||0) < 1000*60*60*6)){
+    var role = s.isHost ? (s.spectator?'хост-зритель':'хост') : 'игрок';
+    var info=document.getElementById('diceSessionInfo');
+    if(info) info.innerHTML='Комната: <b>'+s.roomCode+'</b><br>Ник: <b>'+(s.nickname||'—')+'</b><br>Роль: <b>'+role+'</b>';
+    var m=document.getElementById('diceSessionModal'); if(m) m.style.display='flex';
+    var bc=document.getElementById('diceBannerCode'); if(bc) bc.textContent=s.roomCode;
+    var bn=document.getElementById('diceResumeBanner'); if(bn) bn.style.display='block';
+    var rb=document.getElementById('diceResumeBtn'); if(rb) rb.addEventListener('click', resumeFromSession);
+    var bb=document.getElementById('diceBannerResume'); if(bb) bb.addEventListener('click', resumeFromSession);
+    var bd=document.getElementById('diceBannerDismiss'); if(bd) bd.addEventListener('click', hideAll);
+    var eb=document.getElementById('diceReenterBtn'); if(eb) eb.addEventListener('click', function(){
+      sdel(SKEY); sdel(SNAPKEY); hideAll();
+      var oo=document.getElementById('onlineOverlay'); if(oo) oo.style.display='flex';
+      var ni=document.getElementById('nicknameInput'); if(ni && s.nickname) ni.value=s.nickname;
+    });
+    var rs=document.getElementById('diceResetBtn'); if(rs) rs.addEventListener('click', function(){ sdel(SKEY); sdel(SNAPKEY); hideAll(); });
+    console.log('[dice-restore] session found at load:', s.roomCode, role);
+  }
+  setInterval(function(){ try{ window.diceSaveSnapshot(); }catch(e){} }, 5000);
+})();
+</script>
+<div class="ver-badge">v18</div>
 </body>
 </html>
