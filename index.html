@@ -372,6 +372,8 @@
   .shop-item .shop-desc { font-size:11px; color:#7a6b55; margin-top:1px; }
   .shop-item .shop-price { font-weight:800; font-size:13px; color:#8b5cf6; flex:none; }
   .shop-item .shop-owned { font-size:11px; color:#22c55e; font-weight:700; flex:none; }
+  .shop-cat-title { font-size:12px; font-weight:800; color:#8b5cf6; margin:10px 0 3px; letter-spacing:.3px; border-top:1px dashed rgba(139,92,246,.3); padding-top:8px; }
+  .shop-cat-title:first-child { border-top:none; margin-top:2px; padding-top:0; }
 
 
   .badge-inv { background:rgba(139,92,246,.18); color:#6d28d9; }
@@ -515,7 +517,7 @@
 <div class="modal-overlay" id="onlineOverlay" style="display:none">
     <div class="modal" style="max-width:380px;position:relative">
       <button class="close-x" id="onlineCloseX" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
-      <h2>&#127760; Онлайн-игра <span id="onlineVerTag" style="font-size:12px;color:#999;font-weight:400;vertical-align:middle">v34</span></h2>
+      <h2>&#127760; Онлайн-игра <span id="onlineVerTag" style="font-size:12px;color:#999;font-weight:400;vertical-align:middle">v35</span></h2>
       <div id="onlineFields">
         <div class="field">
           <label>Ваш никнейм</label>
@@ -706,6 +708,7 @@
 <li><b>Налог применён во время защиты</b> — инициатору сразу назначается зеркальный Налог той же суммы.</li>
 <li><b>Зеркальный Налог идёт напрямую</b> — Фин. Ловкость инициатора его не блокирует, агрессия бьёт по агрессору; 📈 Вклад инициатора, как обычно, поглощает списания.</li>
 <li><b>Расход</b> — после 3 ходов защиты. Свои Налоги и Налоги на других игроков Ревизор не отменяет — только Налоги против владельца.</li>
+<li><b>Сброс накопления</b> — после отражения Налога накопление инициатора обнуляется: его следующий Налог снова начинается со 100 очков.</li>
 </ul></div></details>
         <details><summary>🛒 Магазин способностей</summary><div class="r-body"><p>В свой ход, до броска кубиков, игрок может открыть магазин и купить способности за очки. Каждая покупка — это компромисс: очки идут в зачёт победы или тратятся на тактику.</p>
         <table style="width:100%;font-size:13px;border-collapse:collapse;margin:8px 0">
@@ -720,7 +723,7 @@
           <tr><td style="padding:4px">💴 Налог</td><td style="padding:4px">200</td><td style="padding:4px">Снимать по 100 очков у соперников 3 хода</td></tr>
           <tr><td style="padding:4px">↩️ Возврат</td><td style="padding:4px">200</td><td style="padding:4px">Отправить соперника на Старт (без бонуса за круг)</td></tr>
           <tr><td style="padding:4px">❄️ Заморозка</td><td style="padding:4px">180</td><td style="padding:4px">Заморозить соперника — пропуск хода</td></tr>
-          <tr><td style="padding:4px">🧾 Ревизор</td><td style="padding:4px">300</td><td style="padding:4px">3 хода защиты: Налог против вас снимается, инициатор платит ту же сумму — зеркально, 3 хода</td></tr>
+          <tr><td style="padding:4px">🧾 Ревизор</td><td style="padding:4px">300</td><td style="padding:4px">3 хода защиты: Налог против вас снимается, инициатор платит ту же сумму — зеркально, 3 хода; накопление обнуляется</td></tr>
           <tr><td style="padding:4px">💳 Фин. Ловкость 2.0</td><td style="padding:4px">350</td><td style="padding:4px">Активация: 3 хода иммунитета к Налогу + регенерация +200 по истечении. Пока на панели перехватывает Налог: не действует и даёт +150</td></tr>
           <tr><td style="padding:4px">🎯 Точный шаг</td><td style="padding:4px">250</td><td style="padding:4px">В свой ход до броска: перемещение на 1–3 клетки по выбору (расходует действие)</td></tr>
           <tr><td style="padding:4px">📈 Вклад</td><td style="padding:4px">200</td><td style="padding:4px">+200 к вкладу (до 1000). Поглощает Налог и телепорт-наказание</td></tr>
@@ -786,7 +789,9 @@
       <div class="rules">
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
-        <ul><li><b>🛒 Магазин: сортировка по применению (v34)</b><br>Способности сгруппированы: 🛡 Защита и спасение, ⚔️ Атака на соперников, 💸 Экономика и давление, 🎯 Точность хода. Шапка магазина с крестиком закреплена — окно всегда можно закрыть; ширина подобрана под список.</li><li><b>🧾 Ревизор — ответ на Налог (v33)</b><br>Новая способность в магазине за 300 очков: 3 хода защиты — любой Налог против владельца снимается, инициатор начинает платить ту же сумму зеркально 3 хода.</li>
+        <ul><li><b>🧾 Ревизор: сброс накопления + фикс окна магазина (v35)</b><br>После отражения Налога Ревизором накопление инициатора обнуляется — следующий Налог снова начинается со 100 очков. Окно магазина: ограничение высоты 88vh, ширина 640 px, крестик всегда на виду, прокрутка только у списка товаров.</li>
+        <li><b>🛒 Магазин: широкое окно без ползунка (v34)</b><br>Окно магазина стало шире (до 760 px) и без внутреннего ползунка. Способности сгруппированы по применению: 🛡 Защита и спасение, ⚔️ Атака на соперников, 💸 Экономика и давление, 🎯 Точность хода.</li>
+        <li><b>🧾 Ревизор — ответ на Налог (v33)</b><br>Новая способность в магазине за 300 очков: 3 хода защиты — любой Налог против владельца снимается, инициатор начинает платить ту же сумму зеркально 3 хода.</li>
   <li><b>📖 Правила — низкий порог входа (v32)</b><br>Вкладка правил переработана: сверху «Суть за минуту» со шпаргалками, базовые правила открыты, остальные темы собраны в раскрывающиеся блоки по шести группам. Три раздела о Полиции объединены в один.</li><li><b>🎭 Лимит отмены броска (v31)</b><br>Отменить бросок в выборе дистанции можно не более одного раза за ход — счётчик обнуляется в начале хода, на кнопке отмены виден остаток.</li><li><b>🤖 Запуск бота после телепорта (v29)</b><br>Исправлено зависание хода после выбора телепорта на Финише: после передачи хода боту он теперь запускается автоматически. Восстановлены исправления пропущенных запятых (источник ошибки «Unexpected identifier 'precise'»).</li><li><b>🎭 Выбор дистанции — в центре поля (v26)</b><br>Окно выбора дистанции больше не полноэкранное: панель появляется в центре игрового поля, клетки пути не перекрываются. Исправлены две синтаксические ошибки, ломавшие загрузку файла (лишняя скобка в логике Финиша и дублированное объявление функции отрисовки мин), зона центральных панелей пересчитана под сетку 13×13, победа и телепорт-наказание привязаны к верному индексу Финиша.</li><li><b>🗺 Поле расширено до 48 клеток (v25)</b><br>Поле теперь 13×13 — 48 клеток. 📰 Новости и 🎰 Банкомат переехали на отдельные клетки (не числовые): числа 23 и 29 снова дают очки, добавлены числа 37–42. Числовых клеток стало 42.</li><li><b>🚔 Случайный бонус за Полицию удалён (v24)</b><br>Очки за проход мимо Полиции (+100) больше не начисляются — награды только за решения и события.</li><li><b>🎯 Девять новых механик (v24)</b><br>🎭 Выбор пары кубиков (дистанция — 1-й, 2-й или сумма; тумблер в настройках), 📰 Новости (клетка 23), 🎰 Банкомат (клетка 29), 📈 Вклад (200 очков — поглощает Налог и телепорт-наказание), 🪤 Ловушка (180 — цель −100 HP, остальные −25), 🎯 Точный шаг (250 — ход на 1–3 клетки), ⭐ Серия удачных ходов (×1.1…×2.0 к числовым клеткам), 🔊 Звуковой слой. Правила и магазин обновлены.</li><li><b>📜 Правила приведены в соответствие (v23)</b><br>Устаревшие формулировки исправлены: в списке способностей Старт «+100 очков» заменён на 💳 Фин. Ловкость 2.0, в описании Возврата теперь «не получает Фин. Ловкость», в «Очках за случайные действия» добавлен пункт «🏁 Пройденный круг — +300».</li><li><b>💳 Фин. Ловкость 2.0 на Старте и бонус за круг (v22)</b><br>Кнопка «+100 очков» на клетке Старт заменена на Фин. Ловкость 2.0: активация даёт 3 хода иммунитета к Налогу и регенерацию +200 по истечении (кнопка «Навык +100» удалена из игры). За каждый пройденный круг от Старта до Старта начисляется +300 очков — в свой ход; телепорты и Возврат кругом не считаются.</li>
 <li><b>🎙 Починен голосовой чат (v22)</b><br>Голосовые пакеты WebRTC больше не теряются: сигналы (offer/answer/ICE) теперь маршрутизируются в голосовой обработчик сразу, до общего парсинга сообщений. Поздние участники комнаты автоматически подключаются к уже идущему разговору.</li>
 <li><b>👁 Режим наблюдателя (v21)</b><br>Боты могут занять все места: выберите число игроков и столько же ботов — партия одних ботов запустится сама (первый ход через 1,5 секунды), вы наблюдаете с полем и журналом. Управление ходами ботов заблокировано.</li>
@@ -897,11 +902,11 @@
 
 
 <div class="modal-overlay" id="shopModal" style="display:none">
-  <div class="modal" style="max-width:min(640px,94vw);max-height:88vh;display:flex;flex-direction:column;position:relative">
-    <button class="close-x" onclick="document.getElementById('shopModal').style.display='none'" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1;z-index:2">&times;</button>
+  <div class="modal" style="max-width:min(640px,94vw);max-height:88vh;overflow:hidden;position:relative">
+    <button class="close-x" onclick="document.getElementById('shopModal').style.display='none'" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
     <h2>🛒 Магазин способностей</h2>
     <p style="font-size:12px;color:#6a5d4a;margin-bottom:8px">Покупайте способности за очки. Каждая покупка отдаляет вас от цели победы — выбирайте с умом!</p>
-    <div id="shopContent" style="flex:1;min-height:0;overflow-y:auto">
+    <div id="shopContent" style="max-height:calc(88vh - 120px);overflow-y:auto"></div>
   </div>
 </div>
 
@@ -1089,6 +1094,8 @@ function useInvItem(pi, itemId, botPick){
       if (!abilities[pi]) initAbilities(pi);
       abilities[pi].taxAmount = taxSum; abilities[pi].taxTurns = 3; abilities[pi].taxFrom = i;
       log('🧾 Ревизор '+players[i].name+' отразил Налог: '+p.name+' теперь платит -'+taxSum+' очков/ход 3 хода!', 'tax');
+      abilities[pi].taxLevel = 0;
+      log('🧾 Ревизор обнулил накопление Налога от '+p.name+' — следующий Налог начнётся со 100 очков!', 'tax');
     });
     log('\u{1F4B4} '+p.name+' применил Налог: -'+taxSum+' очков/ход у соперников 3 хода (уровень '+abilities[pi].taxLevel+')!', 'tax');
   } else if (itemId === 'mine'){
@@ -1122,7 +1129,9 @@ function useInvItem(pi, itemId, botPick){
       abilities[pi].taxTurns = 0; abilities[pi].taxAmount = 0;
       if (!abilities[atk]) initAbilities(atk);
       abilities[atk].taxAmount = amt; abilities[atk].taxTurns = 3; abilities[atk].taxFrom = pi;
+      abilities[atk].taxLevel = 0;
       log('🧾 '+p.name+' применил Ревизора: Налог от '+players[atk].name+' перехвачен и отражён — теперь он платит -'+amt+' очков/ход 3 хода!', 'tax');
+      log('🧾 Ревизор обнулил накопление Налога от '+players[atk].name+' — следующий Налог начнётся со 100 очков!', 'tax');
     } else {
       log('🧾 '+p.name+' активировал Ревизора: 3 хода защиты — Налоги против вас будут отражены зеркально!', 'tax');
     }
@@ -2818,6 +2827,8 @@ function applyTax(pi){
     const amt = 100 * Math.pow(2, (abilities[pi].taxLevel || 1) - 1);
     abilities[pi].taxAmount = amt; abilities[pi].taxTurns = 3; abilities[pi].taxFrom = i;
     log('🧾 Ревизор '+pl.name+' отразил Налог: '+p.name+' теперь платит -'+amt+' очков/ход 3 хода!', 'tax');
+    abilities[pi].taxLevel = 0;
+    log('🧾 Ревизор обнулил накопление Налога от '+p.name+' — следующий Налог начнётся со 100 очков!', 'tax');
   });
   closeModal();
   afterInfluence(pi);
@@ -3244,21 +3255,21 @@ document.getElementById('surrenderBtn').addEventListener('click', function(e){
 
 // ===== SHOP =====
 const SHOP_ITEMS = [
-  {id:'sapper', icon:'🛡', name:'Сапёр', desc:'Защита от одной мины: обезвредить, оставить или перенастроить. Одноразовый — расходуется', price:150},
-  {id:'protect', icon:'🛡', name:'Защита', desc:'Блокирует Возврат/Заморозку до 2 раз. Шифр — одно число 1–6: угадан — защита снята; не угадан — блок, +100 владельцу, при исчерпании — ещё +100', price:250},
-  {id:'token', icon:'🗝', name:'Жетон освобождения', desc:'Мгновенный выход из Полиции (после трёх дублей), без попыток', price:100},
-  {id:'firstaid', icon:'🧰', name:'Аптечка', desc:'Восстанавливает 25 HP в свой ход до броска', price:130},
-  {id:'moveToken', icon:'🎟', name:'Жетон хода', desc:'Копится: +1 к броску (до 2 за ход) или двойной шаг (2 шт.)', price:80},
-  {id:'mine', icon:'💣', name:'Мина', desc:'Наступивший теряет 50 HP (Сапёр спасает)', price:100},
-  {id:'block', icon:'💰', name:'Блокировка', desc:'Лишить соперников очков на 3 хода', price:250},
-  {id:'tax', icon:'💴', name:'Налог', desc:'Снимать по 100 очков у соперников 3 хода', price:200},
-  {id:'return', icon:'↩️', name:'Возврат', desc:'Отправить соперника на Старт', price:200},
-  {id:'freeze', icon:'❄️', name:'Заморозка', desc:'Заморозить соперника — пропуск хода', price:180},
-  {id:'precise', icon:'🎯', name:'Точный шаг', desc:'Ход на 1–3 клетки по выбору в свой ход до броска (расходует действие)', price:250},
-  {id:'deposit', icon:'📈', name:'Вклад', desc:'+200 к вкладу (до 1000). Поглощает Налог и телепорт-наказание', price:200},
-  {id:'trap', icon:'🪤', name:'Ловушка', desc:'Мина-ловушка: цель теряет 100 HP, наступивший не-цель — 25 HP. Сапёр спасает', price:180},
-  {id:'revizor', icon:'🧾', name:'Ревизор', desc:'Активация: 3 хода защиты от Налога. Налог против вас снимается, инициатор сам платит ту же сумму — зеркально, 3 хода', price:300},
-  {id:'finance', icon:'💳', name:'Финансовая Ловкость 2.0', desc:'Активация: 3 хода иммунитета к Налогу + регенерация +200 по истечении. Пока на панели перехватывает Налог: не действует и даёт +150', price:350}
+  {id:'sapper', cat:'def', icon:'🛡', name:'Сапёр', desc:'Защита от одной мины: обезвредить, оставить или перенастроить. Одноразовый — расходуется', price:150},
+  {id:'protect', cat:'def', icon:'🛡', name:'Защита', desc:'Блокирует Возврат/Заморозку до 2 раз. Шифр — одно число 1–6: угадан — защита снята; не угадан — блок, +100 владельцу, при исчерпании — ещё +100', price:250},
+  {id:'token', cat:'def', icon:'🗝', name:'Жетон освобождения', desc:'Мгновенный выход из Полиции (после трёх дублей), без попыток', price:100},
+  {id:'firstaid', cat:'def', icon:'🧰', name:'Аптечка', desc:'Восстанавливает 25 HP в свой ход до броска', price:130},
+  {id:'moveToken', cat:'move', icon:'🎟', name:'Жетон хода', desc:'Копится: +1 к броску (до 2 за ход) или двойной шаг (2 шт.)', price:80},
+  {id:'mine', cat:'atk', icon:'💣', name:'Мина', desc:'Наступивший теряет 50 HP (Сапёр спасает)', price:100},
+  {id:'block', cat:'eco', icon:'💰', name:'Блокировка', desc:'Лишить соперников очков на 3 хода', price:250},
+  {id:'tax', cat:'eco', icon:'💴', name:'Налог', desc:'Снимать по 100 очков у соперников 3 хода', price:200},
+  {id:'return', cat:'atk', icon:'↩️', name:'Возврат', desc:'Отправить соперника на Старт', price:200},
+  {id:'freeze', cat:'atk', icon:'❄️', name:'Заморозка', desc:'Заморозить соперника — пропуск хода', price:180},
+  {id:'precise', cat:'move', icon:'🎯', name:'Точный шаг', desc:'Ход на 1–3 клетки по выбору в свой ход до броска (расходует действие)', price:250},
+  {id:'deposit', cat:'eco', icon:'📈', name:'Вклад', desc:'+200 к вкладу (до 1000). Поглощает Налог и телепорт-наказание', price:200},
+  {id:'trap', cat:'atk', icon:'🪤', name:'Ловушка', desc:'Мина-ловушка: цель теряет 100 HP, наступивший не-цель — 25 HP. Сапёр спасает', price:180},
+  {id:'revizor', cat:'eco', icon:'🧾', name:'Ревизор', desc:'Активация: 3 хода защиты от Налога. Налог против вас снимается, инициатор сам платит ту же сумму — зеркально, 3 хода. После отражения накопление Налога инициатора обнуляется', price:300},
+  {id:'finance', cat:'def', icon:'💳', name:'Финансовая Ловкость 2.0', desc:'Активация: 3 хода иммунитета к Налогу + регенерация +200 по истечении. Пока на панели перехватывает Налог: не действует и даёт +150', price:350}
 ];
 
 function showShop(){
@@ -3270,16 +3281,17 @@ function showShop(){
   if (!abilities[pi]) initAbilities(pi);
   const modal = document.getElementById('shopModal');
   const content = document.getElementById('shopContent');
-  const SHOP_CATS = [
-    ['🛡 Защита и спасение', ['sapper','protect','token','firstaid','finance']],
-    ['⚔️ Атака на соперников', ['mine','trap','return','freeze']],
-    ['💸 Экономика и давление', ['block','tax','deposit','revizor']],
-    ['🎯 Точность хода', ['moveToken','precise']]
-  ];
   let html = '<div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#4a3d2e">Ваши очки: <span style="color:#8b5cf6">'+p.sum+'</span> / '+winSum+'</div>';
-  SHOP_CATS.forEach(cat=>{
-    const items = SHOP_ITEMS.filter(function(it){ return cat[1].indexOf(it.id) !== -1; });
-    html += '<div style="margin:10px 0 4px;font-size:13px;font-weight:800;color:#7c3aed;border-bottom:1px dashed rgba(139,92,246,.4);padding-bottom:3px">'+cat[0]+'</div>';
+  const CATS = [
+    {key:'def', title:'🛡 Защита и спасение'},
+    {key:'atk', title:'⚔️ Атака на соперников'},
+    {key:'eco', title:'💸 Экономика и давление'},
+    {key:'move', title:'🎯 Точность хода'}
+  ];
+  CATS.forEach(cat=>{
+    const items = SHOP_ITEMS.filter(it=>it.cat===cat.key);
+    if (!items.length) return;
+    html += '<div class="shop-cat-title">'+cat.title+'</div>';
     items.forEach(item=>{
       const owned = (item.id === 'sapper' && abilities[pi].sapper) ||
                     (item.id === 'protect' && abilities[pi].protect) ||
@@ -4526,7 +4538,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 <!-- v16 session machinery -->
-<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:none">v34</div>
+<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:none">v35</div>
 <div id="diceResumeBanner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99990;background:#16a34a;color:#fff;padding:8px 14px;border-radius:0 0 12px 12px;font-size:13px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.25)">&#128260; Сессия найдена: комната <span id="diceBannerCode"></span>
 <button id="diceBannerResume" style="background:#fff;color:#16a34a;border:none;border-radius:8px;padding:4px 10px;font-weight:700;cursor:pointer;margin-left:6px">Продолжить</button>
 <button id="diceBannerDismiss" style="background:none;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:8px;padding:4px 10px;cursor:pointer;margin-left:6px">Нет</button></div>
@@ -4701,6 +4713,6 @@ document.addEventListener('DOMContentLoaded', function(){
   setInterval(function(){ try{ window.diceSaveSnapshot(); }catch(e){} }, 5000);
 })();
 </script>
-<div class="ver-badge">v34</div>
+<div class="ver-badge">v35</div>
 </body>
 </html>
