@@ -3964,10 +3964,14 @@ document.getElementById('settingsCloseX').addEventListener('click', function(){
 // Online modal
 document.getElementById('onlineBtn').addEventListener('click', function(){
   document.getElementById('onlineOverlay').style.display = 'flex';
-  onlineMode = true;
 });
 document.getElementById('onlineCloseX').addEventListener('click', function(){
   document.getElementById('onlineOverlay').style.display = 'none';
+  // Если реальной онлайн-игры нет — снимаем залипший онлайн-режим
+  if (!(mqttClient && mqttClient.connected)){
+    onlineMode = false;
+    updateUI();
+  }
 });
 
 document.getElementById('hostTgl').addEventListener('click', function(){
@@ -4001,6 +4005,7 @@ document.getElementById('onlineConnectBtn').addEventListener('click', function()
   if (nick.length < 2){ setOnlineStatus('Введите никнейм (минимум 2 символа)', true, false); return; }
   myNickname = nick;
   if (typeof mqtt === 'undefined'){ setOnlineStatus('Библиотека MQTT не загрузилась. Проверьте интернет, обновите страницу (F5) или попробуйте другую сеть.', true, false); return; }
+  onlineMode = true;
   if (isHost){
     if (roomCode){
       if (mqttClient && mqttClient.connected && onlinePlayers.length >= 2){ hostStartOnlineGame(); }
@@ -4034,6 +4039,7 @@ document.getElementById('voiceBtn').addEventListener('click', toggleVoice);
 
 // Override roll for online
 document.getElementById('rollBtn').addEventListener('click', function(e){
+  if (onlineMode && !mqttClient){ onlineMode = false; updateUI(); } // защита от залипшего режима
   if (onlineMode){
     if (spectatorMode && isHost){ e.preventDefault(); e.stopPropagation(); return; }
     if (isHost){
@@ -4052,6 +4058,7 @@ document.getElementById('rollBtn').addEventListener('click', function(e){
 
 // Override release for online
 document.getElementById('releaseBtn').addEventListener('click', function(e){
+  if (onlineMode && !mqttClient){ onlineMode = false; updateUI(); } // защита от залипшего режима
   if (onlineMode){
     if (spectatorMode && isHost){ e.preventDefault(); e.stopPropagation(); return; }
     if (isHost){ useReleaseToken(); setTimeout(onlineSync, 200); }
