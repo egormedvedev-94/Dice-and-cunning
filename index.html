@@ -432,6 +432,12 @@
     .rules .r-sub{font-weight:700;color:#8a5a2b;margin:12px 0 4px;font-size:14px}
     .rules .r-body>p:first-child,.rules .r-body>ul:first-child{margin-top:0}
   </style>
+<style>
+.contract-panel{margin:8px 0;padding:8px 12px;background:rgba(255,255,255,.65);border:1px dashed #b09a6a;border-radius:10px;font-size:13px;color:#4a3d2e;display:none}
+.contract-panel b{color:#8b5cf6}
+.activity-toast{position:fixed;top:64px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;font-weight:700;z-index:9999;box-shadow:0 4px 14px rgba(0,0,0,.25);animation:actToast 2.6s ease forwards;pointer-events:none}
+@keyframes actToast{0%{opacity:0;transform:translate(-50%,-10px)}12%{opacity:1;transform:translate(-50%,0)}80%{opacity:1}100%{opacity:0}}
+</style>
 <script>
   // Загрузка MQTT: цепочка CDN — jsDelivr, затем unpkg (резерв на случай блокировок)
   (function(){
@@ -517,7 +523,7 @@
 <div class="modal-overlay" id="onlineOverlay" style="display:none">
     <div class="modal" style="max-width:380px;position:relative">
       <button class="close-x" id="onlineCloseX" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
-      <h2>&#127760; Онлайн-игра <span id="onlineVerTag" style="font-size:12px;color:#999;font-weight:400;vertical-align:middle">v38</span></h2>
+      <h2>&#127760; Онлайн-игра <span id="onlineVerTag" style="font-size:12px;color:#999;font-weight:400;vertical-align:middle">v40</span></h2>
       <div id="onlineFields">
         <div class="field">
           <label>Ваш никнейм</label>
@@ -602,6 +608,7 @@
             <button class="btn" id="tokenPlusBtn" style="display:none;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;font-weight:700">🎟 +1 к броску</button>
             <button class="btn" id="doubleStepBtn" style="display:none;background:linear-gradient(135deg,#f59e0b,#b45309);color:#fff;font-weight:700">⏩ Двойной шаг</button>
             <div class="inv-panel" id="invPanel"></div>
+            <div class="contract-panel" id="contractPanel"></div>
             <button class="btn release-btn" id="releaseBtn" style="display:none">&#128274; Использовать жетон освобождения</button>
             <button class="btn" id="endTurnBtn" style="display:none;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;font-weight:700">&#9193; Завершить ход</button>
             <button class="btn" id="surrenderBtn" style="display:none;background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;font-weight:700">&#127987; Сдаться</button>
@@ -710,7 +717,7 @@
 <li><b>Расход</b> — после 3 ходов защиты. Свои Налоги и Налоги на других игроков Ревизор не отменяет — только Налоги против владельца.</li>
 <li><b>Сброс накопления</b> — при отражении Налога накопление инициатора обнуляется: его следующий Налог снова начнётся со 100 очков.</li>
 </ul></div></details>
-        <details><summary>🛒 Магазин способностей</summary><div class="r-body"><p>В свой ход, до броска кубиков, игрок может открыть магазин и купить способности за очки. Каждая покупка — это компромисс: очки идут в зачёт победы или тратятся на тактику.</p>
+        <details><summary>🛒 Магазин способностей</summary><div class="r-body"><p>В свой ход, до броска кубиков, игрок может открыть магазин и купить способности за очки. Каждая покупка — это компромисс: очки идут в зачёт победы или тратятся на тактику. 🪞 Витрина: каждые 5 ходов одна случайная способность продаётся за полцены. Купите способность в свой ход — и получите +50 очков за инициативу, а контракты и достижения компенсируют цену: тактика приближает к победе, а не отдаляет.</p>
         <table style="width:100%;font-size:13px;border-collapse:collapse;margin:8px 0">
           <tr style="font-weight:700;color:#4a3d2e"><td style="padding:4px">Навык</td><td style="padding:4px">Цена</td><td style="padding:4px">Эффект</td></tr>
           <tr><td style="padding:4px">🛡 Сапёр</td><td style="padding:4px">150</td><td style="padding:4px">Защита от одной мины: обезвредить, оставить на поле или перенастроить. Одноразовый — расходуется (урон 25 HP)</td></tr>
@@ -750,8 +757,10 @@
           <li><b>💣 Прошли мину соперника</b> — +150 очков. Если при ходе фишка пересекла клетку с миной, но не наступила на неё.</li>
           <li><b>🛡 Защита сработала</b> — +100 очков. Если соперник не угадал шифр Защиты, владелец получает бонус; при исчерпании лимита (2 блока) — разово ещё +100. Если сумма уже достигла цели — очки не начисляются.</li>
           <li><b>💥 Соперник подорвался на вашей мине</b> — +100 очков. Если этот подрыв выбил игрока (0 HP) — ещё +200 очков (итого +300).</li>
+          <li><b>⚡ Очки за инициативу</b> — +50 очков. Первый раз за ход, когда игрок тратит очко действия на покупку в магазине или активацию способности с панели.</li>
         </ul></div></details>
-        <details><summary>⭐ Серия удачных ходов</summary><div class="r-body"><p>Каждый ход без попадания в Полицию и без подрыва добавляет +0.1 к множителю числовых клеток (до ×2.0). Попадание в Полицию, подрыв на мине или ловушке обнуляют серию. Тренд 📰 удваивает следующую числовую клетку.</p></div></details>
+        <details><summary>⭐ Серия удачных ходов</summary><div class="r-body"><p>Каждый ход без попадания в Полицию и без подрыва добавляет +0.1 к множителю числовых клеток (до ×2.0). Попадание в Полицию, подрыв на мине или ловушке обнуляют серию. Тренд 📰 удваивает следующую числовую клетку. Ход, в котором игрок потратил очко действия на покупку или активацию способности, дополнительно даёт +0.05 к множителю (счётчик «инициативы» </p></div></details>
+        <details><summary>🏆 Награды за активность</summary><div class="r-body"><p>Активность вознаграждается очками: тактика приближает к победе, а не отдаляет от неё.</p><p><b>⚡ Очки за инициативу — +50.</b> Первый раз за ход, когда игрок тратит очко действия на покупку в магазине или активацию способности с панели. Эти очки также добавляют +0.05 к множителю серии удачных ходов.</p><p><b>📜 Контракты.</b> В начале партии игрок получает одно случайное задание (панель в блоке «Ход»): купить способность, активировать способность, сделать ставку в 🎰 Банкомате, установить мину, заблокировать Возврат или Заморозку Защитой, выйти из Полиции дублем. Выполнение приносит +150…+200 очков. Новый контракт выдаётся при попадании на Старт своим ходом.</p><p><b>🏆 Разовые достижения.</b> Первая покупка +100, первая мина +100, первый Налог +100, первая перенастройка мины Сапёром +150, взлом шифра Защиты +100. Каждое — один раз за партию.</p><p><b>🪞 Витрина магазина.</b> Каждые 5 ходов одна случайная способность продаётся за полцены — скидка действует для всех до следующей ротации.</p></div></details>
         </div>
         <div class="r-group"><h3>⚙️ Дополнительно</h3>
         <details><summary>🎭 Выбор пары кубиков и отмена броска</summary><div class="r-body"><p>Тумблер в настройках (⚙). При двух разных кубиках (не дубль) игрок-человек выбирает дистанцию: первый кубик, второй кубик или их сумма. Жетоны «+1» добавляются к выбранной дистанции как обычно. Боты идут на сумму. Бросок можно отменить — очко действия возвращается, но не более 1 отмены за ход: счётчик обнуляется в начале каждого хода. Панель выбора появляется под панелью «Игроки» — клетки пути остаются видимыми и доступными.</p></div></details>
@@ -789,7 +798,7 @@
       <div class="rules">
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
-        <ul><li><b>💴 Единый Налог и 🧾 Ревизор у ботов (v38)</b><br>Налог на игроке теперь один: новое наложение — даже от третьего игрока — удваивает сумму (100 → 200 → 400) и обнуляет таймер, вместо создания отдельного налога. Ревизор отражает общую сумму каждому инициатору. Боты под Налогом покупают и активируют Ревизора: Налог снимается, инициатор платит зеркально; на сложном уровне — упреждающе, при чужом накоплении от 200.</li><li><b>🔐 Админ-панель — закрытый доступ (v38)</b><br>Прямой доступ по ссылке удалён: панель не открывается из адресной строки. Вход — только секретный доступ создателя с подтверждением кода на почту (Web3Forms); первичная настройка ключа — в самой панели.</li><li><b>💴 Налог — по выбору цели (v36)</b><br>Налог налагается на выбранного соперника через окно выбора (как у Возврата и Заморозки); бот выбирает соперника с наибольшей суммой. 🧾 Ревизор при отражении обнуляет накопление Налога — следующий Налог инициатора снова со 100 очков. Окно магазина: ширина 640 px, высота до 88vh, крестик закреплён, прокручивается только список.</li>
+        <ul><li><b>🪞 Витрина, 📊 превью Налога и 🤖 пояснения ботов (v40)</b><br>Каждые 5 ходов одна способность в магазине продаётся за полцены (скидка общая — и для людей, и для ботов). В карточке Налога появилось превью вычислений: −300 / −600 / −1200 за циклы. Покупки ботов объясняются в журнале — игрок видит, зачем бот тратит очки, и перенимает логику.</li><li><b>🏆 Награды за активность (v39)</b><br>Контракты: задание в начале партии и на Старте (покупка, активация, Банкомат, мина, Защита, Полиция-дубль) с наградой +150…+200. Разовые достижения: первая покупка, первая мина, первый Налог, перенастройка Сапёром, взлом шифра. +50 очков за инициативу в свой ход и +0.05 к серии за активное действие. Очки за активность отображаются в деталях партии.</li><li><b>💴 Единый Налог и 🧾 Ревизор у ботов (v38)</b><br>Налог на игроке теперь один: новое наложение — даже от третьего игрока — удваивает сумму (100 → 200 → 400) и обнуляет таймер, вместо создания отдельного налога. Ревизор отражает общую сумму каждому инициатору. Боты под Налогом покупают и активируют Ревизора: Налог снимается, инициатор платит зеркально; на сложном уровне — упреждающе, при чужом накоплении от 200.</li><li><b>🔐 Админ-панель — закрытый доступ (v38)</b><br>Прямой доступ по ссылке удалён: панель не открывается из адресной строки. Вход — только секретный доступ создателя с подтверждением кода на почту (Web3Forms); первичная настройка ключа — в самой панели.</li><li><b>💴 Налог — по выбору цели (v36)</b><br>Налог налагается на выбранного соперника через окно выбора (как у Возврата и Заморозки); бот выбирает соперника с наибольшей суммой. 🧾 Ревизор при отражении обнуляет накопление Налога — следующий Налог инициатора снова со 100 очков. Окно магазина: ширина 640 px, высота до 88vh, крестик закреплён, прокручивается только список.</li>
         <li><b>🛒 Магазин: широкое окно без ползунка (v34)</b><br>Окно магазина стало шире (до 760 px) и без внутреннего ползунка. Способности сгруппированы по применению: 🛡 Защита и спасение, ⚔️ Атака на соперников, 💸 Экономика и давление, 🎯 Точность хода.</li>
         <li><b>🧾 Ревизор — ответ на Налог (v33)</b><br>Новая способность в магазине за 300 очков: 3 хода защиты — любой Налог против владельца снимается, инициатор начинает платить ту же сумму зеркально 3 хода.</li>
   <li><b>📖 Правила — низкий порог входа (v32)</b><br>Вкладка правил переработана: сверху «Суть за минуту» со шпаргалками, базовые правила открыты, остальные темы собраны в раскрывающиеся блоки по шести группам. Три раздела о Полиции объединены в один.</li><li><b>🎭 Лимит отмены броска (v31)</b><br>Отменить бросок в выборе дистанции можно не более одного раза за ход — счётчик обнуляется в начале хода, на кнопке отмены виден остаток.</li><li><b>🤖 Запуск бота после телепорта (v29)</b><br>Исправлено зависание хода после выбора телепорта на Финише: после передачи хода боту он теперь запускается автоматически. Восстановлены исправления пропущенных запятых (источник ошибки «Unexpected identifier 'precise'»).</li><li><b>🎭 Выбор дистанции — в центре поля (v26)</b><br>Окно выбора дистанции больше не полноэкранное: панель появляется в центре игрового поля, клетки пути не перекрываются. Исправлены две синтаксические ошибки, ломавшие загрузку файла (лишняя скобка в логике Финиша и дублированное объявление функции отрисовки мин), зона центральных панелей пересчитана под сетку 13×13, победа и телепорт-наказание привязаны к верному индексу Финиша.</li><li><b>🗺 Поле расширено до 48 клеток (v25)</b><br>Поле теперь 13×13 — 48 клеток. 📰 Новости и 🎰 Банкомат переехали на отдельные клетки (не числовые): числа 23 и 29 снова дают очки, добавлены числа 37–42. Числовых клеток стало 42.</li><li><b>🚔 Случайный бонус за Полицию удалён (v24)</b><br>Очки за проход мимо Полиции (+100) больше не начисляются — награды только за решения и события.</li><li><b>🎯 Девять новых механик (v24)</b><br>🎭 Выбор пары кубиков (дистанция — 1-й, 2-й или сумма; тумблер в настройках), 📰 Новости (клетка 23), 🎰 Банкомат (клетка 29), 📈 Вклад (200 очков — поглощает Налог и телепорт-наказание), 🪤 Ловушка (180 — цель −100 HP, остальные −25), 🎯 Точный шаг (250 — ход на 1–3 клетки), ⭐ Серия удачных ходов (×1.1…×2.0 к числовым клеткам), 🔊 Звуковой слой. Правила и магазин обновлены.</li><li><b>📜 Правила приведены в соответствие (v23)</b><br>Устаревшие формулировки исправлены: в списке способностей Старт «+100 очков» заменён на 💳 Фин. Ловкость 2.0, в описании Возврата теперь «не получает Фин. Ловкость», в «Очках за случайные действия» добавлен пункт «🏁 Пройденный круг — +300».</li><li><b>💳 Фин. Ловкость 2.0 на Старте и бонус за круг (v22)</b><br>Кнопка «+100 очков» на клетке Старт заменена на Фин. Ловкость 2.0: активация даёт 3 хода иммунитета к Налогу и регенерацию +200 по истечении (кнопка «Навык +100» удалена из игры). За каждый пройденный круг от Старта до Старта начисляется +300 очков — в свой ход; телепорты и Возврат кругом не считаются.</li>
@@ -905,7 +914,7 @@
   <div class="modal" style="max-width:min(640px,94vw);max-height:88vh;overflow:hidden;display:flex;flex-direction:column;position:relative">
     <button class="close-x" onclick="document.getElementById('shopModal').style.display='none'" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
     <h2>🛒 Магазин способностей</h2>
-    <p style="font-size:12px;color:#6a5d4a;margin-bottom:8px">Покупайте способности за очки. Каждая покупка отдаляет вас от цели победы — выбирайте с умом!</p>
+    <p style="font-size:12px;color:#6a5d4a;margin-bottom:8px">Покупайте способности за очки. Покупка в свой ход даёт +50 очков за инициативу, а контракты и достижения компенсируют цену — тактика приближает к победе!</p>
     <div id="shopContent" style="overflow-y:auto"></div>
   </div>
 </div>
@@ -1002,6 +1011,99 @@ const ACTIONS_PER_TURN = 2;
 let actionsLeft = ACTIONS_PER_TURN;
 let freeRollPending = false;
 function spendAction(){ if (actionsLeft > 0) actionsLeft--; }
+/* ===== v39: Награды за активность ===== */
+let activityEarned = {}, boughtEver = {}, activeThisTurn = {}, streakExtra = {}, ACH = {};
+let contracts = {};
+const CONTRACT_POOL = [
+  {key:'buy', label:'Купи любую способность в магазине', bonus:150},
+  {key:'activate', label:'Активируй способность с панели', bonus:150},
+  {key:'atm', label:'Сделай ставку в 🎰 Банкомате', bonus:200},
+  {key:'mine', label:'Установи мину на числовую клетку', bonus:150},
+  {key:'shield', label:'Заблокируй Возврат или Заморозку Защитой', bonus:200},
+  {key:'freed', label:'Выйди из Полиции дублем', bonus:150}
+];
+function markActive(pi){
+  if (!players[pi] || eliminated.has(pi) || players[pi].isBot) return;
+  if (activeThisTurn[pi]) return;
+  activeThisTurn[pi] = true;
+  if (players[pi].sum < winSum){
+    players[pi].sum += 50;
+    pst(pi,'act',50);
+    log('⚡ '+players[pi].name+': +50 очков за инициативу (сумма '+players[pi].sum+')','win');
+  }
+  streakExtra[pi] = (streakExtra[pi]||0) + 1;
+}
+function awardActivity(pi, amt, label){
+  if (!players[pi] || eliminated.has(pi) || players[pi].isBot) return;
+  if (players[pi].sum < winSum) players[pi].sum += amt;
+  activityEarned[pi] = (activityEarned[pi]||0) + amt;
+  pst(pi,'act',amt);
+  log('🏆 '+players[pi].name+': '+label+' — +'+amt+' очков за активность!','win');
+  activityToast('🏆 '+label+' — +'+amt);
+}
+function completeContract(pi, key){
+  const c = contracts[pi];
+  if (!c || c.done || c.key !== key) return;
+  c.done = true; contracts[pi] = null;
+  awardActivity(pi, c.bonus, 'КОНТРАКТ: '+c.label);
+  renderContract();
+}
+function issueContract(pi){
+  if (!players[pi] || players[pi].isBot) return;
+  if (contracts[pi] && !contracts[pi].done) return;
+  const pool = CONTRACT_POOL;
+  contracts[pi] = Object.assign({}, pool[Math.floor(Math.random()*pool.length)], {done:false});
+  renderContract();
+}
+function resetActivityState(){
+  activityEarned = {}; boughtEver = {}; activeThisTurn = {}; streakExtra = {}; ACH = {}; contracts = {};
+  showcase = {key:null, from:-1};
+  players.forEach((p,i)=>{ if (!p.isBot) issueContract(i); });
+}
+function renderContract(){
+  const el = document.getElementById('contractPanel'); if (!el) return;
+  if (!players || !players.length){ el.style.display='none'; return; }
+  let pi = currentPlayer;
+  if (typeof onlineMode !== 'undefined' && onlineMode && typeof myPlayerId !== 'undefined' && myPlayerId !== null) pi = myPlayerId;
+  const c = players[pi] && !players[pi].isBot ? contracts[pi] : null;
+  if (!c){ el.style.display='none'; return; }
+  el.style.display='block';
+  el.innerHTML = '<b>📜 Контракт</b><div>'+c.label+'</div><div style="font-size:11px;color:#8a7a5a">Награда: +'+c.bonus+' очков</div>';
+}
+function activityToast(text){
+  const t = document.createElement('div');
+  t.className = 'activity-toast';
+  t.textContent = text;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.remove(); }, 2600);
+}
+/* ===== v40: Витрина, превью Налога, пояснения ботов ===== */
+let showcase = {key:null, from:-1};
+const SHOWCASE_EVERY = 5;
+function showcaseRefresh(){
+  if (!partyTurns || partyTurns % SHOWCASE_EVERY !== 1) return;
+  const keys = SHOP_ITEMS.map(i=>i.id);
+  let k = keys[Math.floor(Math.random()*keys.length)];
+  if (k === showcase.key) k = keys[(keys.indexOf(k)+1) % keys.length];
+  showcase = {key:k, from:partyTurns};
+  const it = SHOP_ITEMS.find(i=>i.id===k);
+  log('🪞 Витрина магазина: «'+it.name+'» — скидка 50%!', 'win');
+}
+function showcasePrice(itemId){
+  if (showcase.key !== itemId) return null;
+  const it = SHOP_ITEMS.find(i=>i.id===itemId);
+  return it ? Math.ceil(it.price/2) : null;
+}
+function botBuyReason(itemId){
+  return {token:'готовится к Полиции', firstaid:'восстанавливает здоровье',
+    revizor:'отражает чужой Налог', sapper:'обезвреживает чужие мины',
+    mine:'минирует путь соперников', freeze:'замораживает близкого к победе',
+    return:'возвращает соперника на Старт', protect:'защищается от Возврата/Заморозки',
+    tax:'давит Налогом на соперников', block:'блокирует очки соперников',
+    moveToken:'копит жетоны для рывка', trap:'ставит ловушку на цель',
+    deposit:'строит вклад и экономику', precise:'готовит точный рывок',
+    finance:'страховка от Налога'}[itemId] || 'укрепляет позицию';
+}
 let influencePending = false;
 let startAbilityPending = false;
 // Player abilities: sapper, protect, token, frozen, taxBlockTurns, taxTurns, taxAmount
@@ -1020,7 +1122,7 @@ const INV_META = {
   precise:{icon:'\u{1F3AF}', name:'Точный шаг'}, trap:{icon:'\u{1FAE0}', name:'Ловушка'}
 };
 function invRivals(pi){ return players.map((pl,i)=>({pl,i})).filter(({i})=> i!==pi && !eliminated.has(i) && !pl_finished_check(i)); }
-function invConsume(pi, itemId){ const k = (inventory[pi]||[]).indexOf(itemId); if (k !== -1) inventory[pi].splice(k, 1);  if (pi === currentPlayer) spendAction(); }
+function invConsume(pi, itemId){ const k = (inventory[pi]||[]).indexOf(itemId); if (k !== -1) inventory[pi].splice(k, 1);  if (pi === currentPlayer) spendAction(); markActive(pi); completeContract(pi,'activate'); }
 function invCanAct(){
   if (actionsLeft <= 0) return false;
   if (!gameStarted || gameOver || players.length === 0 || rolling) return false;
@@ -1169,6 +1271,8 @@ function invPlaceMine(pi, cellIdx){
   invConsume(pi, 'mine');
   mines[cellIdx] = pi;
   pst(pi,'mineset',1);
+  markActive(pi); completeContract(pi,'mine');
+  ACH[pi]=ACH[pi]||{}; if(!ACH[pi].mine){ACH[pi].mine=1; awardActivity(pi,100,'Первая мина');}
   log(players[pi].name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
   renderMines();
   updateUI();
@@ -1221,7 +1325,7 @@ function shieldOpenModal(title, sub, cb, cancelCb){
 function shieldSpend(){ if (typeof actionsLeft !== 'undefined' && actionsLeft > 0) actionsLeft--; }
 function shieldRefund(){ if (typeof actionsLeft !== 'undefined' && typeof ACTIONS_PER_TURN !== 'undefined' && actionsLeft < ACTIONS_PER_TURN) actionsLeft++; }
 function shieldConsumeOnly(pi, itemId){ const arr = inventory[pi] || []; const k = arr.indexOf(itemId); if (k !== -1) arr.splice(k, 1); }
-function shieldAwardPoints(pi, amt){ if (players[pi] && players[pi].sum < winSum) players[pi].sum += amt; }
+function shieldAwardPoints(pi, amt){ if (players[pi] && players[pi].sum < winSum) players[pi].sum += amt; completeContract(pi,'shield'); }
 function shieldMyIdx(){ return (typeof onlineMode !== 'undefined' && onlineMode && typeof myPlayerId !== 'undefined' && myPlayerId !== null) ? myPlayerId : 0; }
 function shieldGrant(pi){
   abilities[pi].protectBlocks = 0;
@@ -1256,6 +1360,7 @@ function shieldResolve(pi, t, g){
   const c = shieldCiphers[t];
   if (c && g && g === c){
     pst(pi,'scrk',1);
+    ACH[pi]=ACH[pi]||{}; if(!ACH[pi].cipher){ACH[pi].cipher=1; awardActivity(pi,100,'Взлом шифра Защиты');}
     abilities[t].protect = false; abilities[t].protectBlocks = 0; delete shieldCiphers[t];
     log('🔓 ' + players[pi].name + ' угадал шифр — Защита ' + players[t].name + ' снята, способность сработает', 'protect');
     updateUI();
@@ -1480,7 +1585,7 @@ function resetAllAbilities(pi){
   abilities[pi].taxLevel = 0;
   abilities[pi].revizorActive = 0;
   abilities[pi].taxFrom = undefined;
-  streaks[pi] = 0; savings[pi] = 0;
+  streaks[pi] = 0; streakExtra[pi] = 0; savings[pi] = 0;
   renderMines();
   if (had.length > 0) log(players[pi].name+': Полиция сбросила: '+had.join(', '), 'pen');
 
@@ -1507,6 +1612,7 @@ function makePlayers(){
   botShopBought = false;
   abilities = {};
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; pairCancels[i]=0; initAbilities(i); });
+  try{ resetActivityState(); }catch(e){}
   mines = {}; reconfiguredMines = {}; mineTraps = {}; savings = {}; streaks = {}; newsBoost = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; partyStatsReset(); surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
 }
 
@@ -1706,7 +1812,7 @@ function updateTurn(){
   }
 }
 
-function updateUI(){ renderInvPanel(); updatePieces(); updatePlayers(); updateTurn(); }
+function updateUI(){ renderContract(); renderInvPanel(); updatePieces(); updatePlayers(); updateTurn(); }
 
 function updateSettingsSummary(){
   const s = document.getElementById('settingsSummary');
@@ -1796,7 +1902,7 @@ function tryMineExplode(pi, pos){
       if (beginnerMode && !shownHints.has('sapperChoice') && !p.isBot) showBeginnerHint('sapperChoice', '🛡 Выбор Сапёра', 'У вас Сапёр — урона не будет. Выберите: обезвредить мину, оставить её на поле или перенастроить против владельца (урон 25 HP). Сапёр расходуется в любом случае.');
     } else {
       players[pi].health = Math.max(0, (players[pi].health||100) - dmg);
-      streaks[pi] = 0; if (soundOn) sndMine();
+      streaks[pi] = 0; streakExtra[pi] = 0; if (soundOn) sndMine();
       pst(pi,'expl',1); pst(pi,'exdmg',dmg);
       log('💥 '+p.name+' наступил на мину (установлена '+players[mineOwner].name+') — −'+dmg+' HP ('+players[pi].health+'/100)!', 'pen');
       if (players[mineOwner] && !eliminated.has(mineOwner) && players[mineOwner].sum < winSum){
@@ -1855,7 +1961,7 @@ function movePlayerLogic(p, pi, steps){
   if (val === "Полиция"){
     p.skip = true;
     pst(pi,'polhit',1);
-    streaks[pi] = 0;
+    streaks[pi] = 0; streakExtra[pi] = 0;
     log(p.name+' попал в Полицию: пропуск следующего хода (способности, мины и 🗝 жетон сохранены)', 'pen');
     if (beginnerMode && !p.isBot && !shownHints.has('policeDirect')) showBeginnerHint('policeDirect', '🚔 Полиция', 'Прямое попадание — пропуск следующего хода. Способности, мины и жетон освобождения сохраняются: после пропуска вы ходите свободно, жетон не тратится.');
   } else if (val === "Финиш"){
@@ -1949,6 +2055,7 @@ function handleStartCell(pi){
     log('🏁 '+p.name+' прошёл круг от Старт до Старт: +300 очков (сумма '+p.sum+')', 'win');
   }
   log(p.name+' попал на Старт' + (noBonus ? ' (после Возврата — без бонуса за круг)' : '') + ' — выбор способности!', 'win');
+  issueContract(pi);
   if (p.isBot){
     botChooseStartAbility(pi, noBonus);
   } else {
@@ -2047,6 +2154,7 @@ function sapperChoose(opt){
     mines[cellIdx] = pi;
     reconfiguredMines[cellIdx] = true;
     renderMines();
+    ACH[pi]=ACH[pi]||{}; if(!ACH[pi].reconf){ACH[pi].reconf=1; awardActivity(pi,150,'Первая перенастройка мины');}
   }
   updateUI();
   if (!gameOver){
@@ -2091,9 +2199,14 @@ function useReleaseToken(){
 function nextTurn(){
   shieldRolledThisTurn = false;
     actionsLeft = ACTIONS_PER_TURN; freeRollPending = false; botShopBought = false;
+  activeThisTurn = {};
   if (gameOver) return;
   partyTurns++;
+  showcaseRefresh();
   try{ partyStats.tick(); }catch(e){}
+  if (beginnerMode && players[currentPlayer] && !players[currentPlayer].isBot && !shownHints.has('shopTip') && players[currentPlayer].sum >= 400 && !boughtEver[currentPlayer]){
+    showBeginnerHint('shopTip','🛒 Магазин','У вас накопилась сумма, а панель пуста. Покупка в свой ход даёт +50 очков за инициативу, а контракты и достижения компенсируют цену — способности приближают к победе, а не отдаляют.');
+  }
   let idx = currentPlayer;
   for (let k=0;k<players.length;k++){
     idx = (idx+1) % players.length;
@@ -2248,6 +2361,7 @@ function doRoll(){
           p.sum += 200;
           pst(pi,'freed',1);
           log('\u{1F513} '+p.name+': выход из Полиции дублем! +200 очков!', 'win');
+          completeContract(pi,'freed');
         }
         movePlayer(p, pi, steps);
         rolling = false;
@@ -2375,7 +2489,7 @@ function tryTrapExplode(pi, pos){
   }
   const isTarget = (pi === t.target);
   const dmg = isTarget ? 100 : 25;
-  streaks[pi] = 0;
+  streaks[pi] = 0; streakExtra[pi] = 0;
   if (soundOn) sndMine();
   players[pi].health = Math.max(0, (players[pi].health || 100) - dmg);
   pst(pi,'expl',1); pst(pi,'exdmg',dmg);
@@ -2391,7 +2505,7 @@ function tryTrapExplode(pi, pos){
 }
 
 /* ===== ⭐ Серия удачных ходов (v24) ===== */
-function getStreakMult(pi){ return Math.min(2.0, 1 + 0.1 * (streaks[pi] || 0)); }
+function getStreakMult(pi){ return Math.min(2.0, 1 + 0.1 * (streaks[pi] || 0) + 0.05 * (streakExtra[pi] || 0)); }
 function streakBump(pi){
   if (!players[pi] || eliminated.has(pi)) return;
   streaks[pi] = Math.min(10, (streaks[pi] || 0) + 1);
@@ -2432,6 +2546,7 @@ function atmCell(pi){
   const p = players[pi];
   if (p.sum < 100){ log('🎰 '+p.name+' у Банкомата, но очков меньше 100 — ставка невозможна.', 'pen'); return; }
   p.sum -= 100;
+  completeContract(pi,'atm');
   const r = Math.random();
   if (r < 0.35){ p.sum += 200; if (soundOn) sndCoin(); log('🎰 БАНКОМАТ: '+p.name+' выиграл +200! (ставка 100, сумма '+p.sum+')', 'win'); }
   else if (r < 0.60){ p.sum += 500; if (soundOn) sndCoin(); log('🎰 БАНКОМАТ: ДЖЕКПОТ! '+p.name+' выиграл +500! (сумма '+p.sum+')', 'win'); }
@@ -2796,6 +2911,7 @@ function applyTaxTo(pi, targetIdx){
   const p = players[pi];
   if (!abilities[pi]) initAbilities(pi);
   invConsume(pi, 'tax');
+  ACH[pi] = ACH[pi]||{}; if (!ACH[pi].tax){ ACH[pi].tax = 1; awardActivity(pi,100,'Первый Налог'); }
   abilities[pi].taxLevel = (abilities[pi].taxLevel || 0) + 1;
   pst(pi,'taxon',1);
   const taxSum = 100 * Math.pow(2, abilities[pi].taxLevel - 1);
@@ -2896,6 +3012,8 @@ function placeMine(pi, cellIdx){
   });
   mines[cellIdx] = pi;
   pst(pi,'mineset',1);
+  markActive(pi); completeContract(pi,'mine');
+  ACH[pi]=ACH[pi]||{}; if(!ACH[pi].mine){ACH[pi].mine=1; awardActivity(pi,100,'Первая мина');}
   log(players[pi].name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
   renderMines();
   afterInfluence(pi);
@@ -3317,6 +3435,11 @@ function showShop(){
   const modal = document.getElementById('shopModal');
   const content = document.getElementById('shopContent');
   let html = '<div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#4a3d2e">Ваши очки: <span style="color:#8b5cf6">'+p.sum+'</span> / '+winSum+'</div>';
+  if (showcase.key){
+    const it = SHOP_ITEMS.find(i=>i.id===showcase.key);
+    const left = SHOWCASE_EVERY - ((partyTurns - showcase.from) % SHOWCASE_EVERY);
+    html += '<div style="margin-bottom:6px;padding:6px 10px;background:rgba(22,163,74,.12);border-radius:8px;font-size:12px;color:#166534">🪞 Витрина: «'+it.name+'» — <b>'+Math.ceil(it.price/2)+' очков</b> вместо '+it.price+' (ещё '+left+' ход.)</div>';
+  }
   const CATS = [
     {key:'def', title:'🛡 Защита и спасение'},
     {key:'atk', title:'⚔️ Атака на соперников'},
@@ -3332,14 +3455,19 @@ function showShop(){
                     (item.id === 'protect' && abilities[pi].protect) ||
                     (item.id === 'token' && abilities[pi].token) ||
                     false;
-      const canAfford = p.sum >= item.price;
+      const eff = showcasePrice(item.id);
+      const realPrice = eff || item.price;
+      const canAfford = p.sum >= realPrice;
       const disabled = owned || !canAfford;
       html += '<div class="shop-item' + (disabled ? ' disabled' : '') + '"' +
         (disabled ? '' : ' onclick="buyAbility(\''+item.id+'\', '+pi+')"') + '>' +
         '<div class="shop-ico">'+item.icon+'</div>' +
         '<div class="shop-info"><div class="shop-name">'+item.name+'</div>' +
-        '<div class="shop-desc">'+item.desc+'</div></div>' +
-        (owned ? '<div class="shop-owned">✓ есть</div>' : '<div class="shop-price">'+item.price+' очков</div>') +
+        '<div class="shop-desc">'+item.desc+'</div>' +
+        (item.id==='tax' ? '<div class="shop-desc" style="color:#b91c1c">Превью: −100 −100 −100 = <b>−300</b> у соперника за 3 хода; повторная активация: −200 −200 −200 = <b>−600</b>, далее −1200.</div>' : '') + '</div>' +
+        (owned ? '<div class="shop-owned">✓ есть</div>' :
+        (eff ? '<div class="shop-price"><s style="opacity:.55">'+item.price+'</s> <b style="color:#16a34a">'+eff+'</b> очков <span style="font-size:11px">🪞</span></div>'
+             : '<div class="shop-price">'+item.price+' очков</div>')) +
         '</div>';
     });
   });
@@ -3352,16 +3480,20 @@ function buyAbility(itemId, pi){
   if (!abilities[pi]) initAbilities(pi);
   const item = SHOP_ITEMS.find(i => i.id === itemId);
   if (!item) return;
-  if (p.sum < item.price) return;
-  p.sum -= item.price;
-  pst(pi,'buys',1); pst(pi,'spent',item.price);
+  const eff = showcasePrice(itemId) || item.price;
+  if (p.sum < eff) return;
+  p.sum -= eff;
+  pst(pi,'buys',1); pst(pi,'spent',eff);
   spendAction();
-  log('🛒 '+p.name+' купил «'+item.name+'» за '+item.price+' очков (сумма '+p.sum+')', 'win');
+  log('🛒 '+p.name+' купил «'+item.name+'» за '+eff+' очков'+(eff < item.price ? ' (🪞 витрина −50%)' : '')+' (сумма '+p.sum+')', 'win');
+  if (p.isBot) log('🤖 '+p.name+' — '+botBuyReason(itemId)+'.', 'win');
+  boughtEver[pi] = true; markActive(pi); completeContract(pi,'buy');
+  ACH[pi] = ACH[pi]||{}; if (!ACH[pi].purch){ ACH[pi].purch = 1; awardActivity(pi,100,'Первая покупка'); }
   if (itemId === 'sapper'){ abilities[pi].sapper = true; abilities[pi].sapperUses = 1; }
   else if (itemId === 'protect'){ abilities[pi].protect = true; shieldGrant(pi); }
   else if (itemId === 'token'){ abilities[pi].token = true; }
   else if (itemId === 'firstaid'){
-    if ((p.health||100) >= 100){ p.sum += item.price; log('🧰 У '+p.name+' полное здоровье — покупка Аптечки отменена.'); pst(pi,'buys',-1); pst(pi,'spent',-item.price); actionsLeft = Math.min(ACTIONS_PER_TURN, actionsLeft + 1); }
+    if ((p.health||100) >= 100){ p.sum += eff; log('🧰 У '+p.name+' полное здоровье — покупка Аптечки отменена.'); pst(pi,'buys',-1); pst(pi,'spent',-eff); actionsLeft = Math.min(ACTIONS_PER_TURN, actionsLeft + 1); }
     else { p.health = Math.min(100, (p.health||100) + 25); log('🧰 '+p.name+' восстановил 25 HP ('+p.health+'/100)!', 'win'); pst(pi,'heal',25); }
   }
   else if (itemId === 'moveToken'){ plus1Bonus[pi] = (plus1Bonus[pi] || 0) + 1; log('🎟 '+p.name+' пополнил копилку: жетонов хода — '+plus1Bonus[pi]+'!'); }
@@ -3392,6 +3524,8 @@ function placeMineShop(pi, cellIdx){
   document.querySelectorAll('.mine-target').forEach(c=>{ c.classList.remove('mine-target'); c.onclick = null; });
   mines[cellIdx] = pi;
   pst(pi,'mineset',1);
+  markActive(pi); completeContract(pi,'mine');
+  ACH[pi]=ACH[pi]||{}; if(!ACH[pi].mine){ACH[pi].mine=1; awardActivity(pi,100,'Первая мина');}
   log('💣 '+players[pi].name+' установил мину на клетке '+cellIdx+' (значение '+PATH_VALUES[cellIdx]+')', 'pen');
   renderMines();
   updateUI();
@@ -3473,7 +3607,7 @@ function showResults(winnerIdx){
     + '<tbody>'+rows+'</tbody></table>';
   const statsBlock = (function(){ try{
    const dur = partyStats.start ? Math.max(1, Math.round((Date.now()-partyStats.start)/60000))+' мин' : '—';
-   const L = [['rolls','🎲 Бросков'],['doubles','🎲 Дублей'],['tokens','🎟 Жетонов потрачено'],['dsteps','⏩ Двойных шагов'],['buys','🛒 Покупок'],['spent','💸 Потрачено очков'],['mineset','💣 Мин поставлено'],['expl','💥 Подрывов на моих минах'],['exdmg','💔 Нанесено урона минами'],['kobonus','🏆 Выбитий миной'],['passpol','🚔 Прошёл мимо Полиции'],['passmine','💣 Прошёл мимо мин'],['polhit','🚔 Попаданий в Полицию'],['pen','⚖️ Штрафов Полиции'],['pensum','⚖️ Выплачено штрафов'],['freed','🎲 Выходов дублем'],['skippol','⏸ Пропусков (Полиция)'],['skipfrz','❄️ Пропусков (Заморозка)'],['taxon','💴 Налогов активировано'],['taxpaid','💴 Налогов выплачено'],['taxsum','💴 Очков уплачено налогами'],['blkon','💰 Блокировок'],['ret','↩️ Возвратов'],['frz','❄️ Заморозок'],['sblk','🛡 Блоков Защитой'],['scrk','🔓 Взломов шифра'],['start','🏁 Попаданий на Старт'],['infl','🎯 Попаданий на «Влияние»'],['fshort','🏁 Недоборов на Финише'],['finon','💳 Активаций Ловкости'],['fintake','💳 Перехватов налога'],['finreg','💳 Регенераций']];
+   const L = [['rolls','🎲 Бросков'],['doubles','🎲 Дублей'],['tokens','🎟 Жетонов потрачено'],['dsteps','⏩ Двойных шагов'],['buys','🛒 Покупок'],['spent','💸 Потрачено очков'],['mineset','💣 Мин поставлено'],['expl','💥 Подрывов на моих минах'],['exdmg','💔 Нанесено урона минами'],['kobonus','🏆 Выбитий миной'],['passpol','🚔 Прошёл мимо Полиции'],['passmine','💣 Прошёл мимо мин'],['polhit','🚔 Попаданий в Полицию'],['pen','⚖️ Штрафов Полиции'],['pensum','⚖️ Выплачено штрафов'],['freed','🎲 Выходов дублем'],['skippol','⏸ Пропусков (Полиция)'],['skipfrz','❄️ Пропусков (Заморозка)'],['taxon','💴 Налогов активировано'],['taxpaid','💴 Налогов выплачено'],['taxsum','💴 Очков уплачено налогами'],['blkon','💰 Блокировок'],['ret','↩️ Возвратов'],['frz','❄️ Заморозок'],['sblk','🛡 Блоков Защитой'],['scrk','🔓 Взломов шифра'],['start','🏁 Попаданий на Старт'],['infl','🎯 Попаданий на «Влияние»'],['fshort','🏁 Недоборов на Финише'],['finon','💳 Активаций Ловкости'],['fintake','💳 Перехватов налога'],['finreg','💳 Регенераций'],['act','🏆 Очков за активность']];
    const cards = players.map(function(pl,i){
      const st = partyStats.players[i] || {};
      let rows = '';
@@ -3747,6 +3881,7 @@ function startOnlineGame(data){
   currentPlayer = 0;
   doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {}; botShopBought = false;
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; pairCancels[i]=0; initAbilities(i); });
+  try{ resetActivityState(); }catch(e){}
   mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; partyStatsReset(); surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
   gameStarted = true; gameOver = false;
   lockSettings();
@@ -3771,6 +3906,7 @@ function hostStartOnlineGame(){
   currentPlayer = 0;
   doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {}; botShopBought = false;
   players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; pairCancels[i]=0; initAbilities(i); });
+  try{ resetActivityState(); }catch(e){}
   mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {}; partyTurns = 0; partyStatsReset(); surrenderCount = 0; resultsShown = false;
   gameStarted = true; gameOver = false;
   lockSettings();
@@ -4585,7 +4721,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 <!-- v16 session machinery -->
-<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:auto;cursor:pointer" onclick="handleVerBadgeClick()">v38</div>
+<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:auto;cursor:pointer" onclick="handleVerBadgeClick()">v40</div>
 <div id="diceResumeBanner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99990;background:#16a34a;color:#fff;padding:8px 14px;border-radius:0 0 12px 12px;font-size:13px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.25)">&#128260; Сессия найдена: комната <span id="diceBannerCode"></span>
 <button id="diceBannerResume" style="background:#fff;color:#16a34a;border:none;border-radius:8px;padding:4px 10px;font-weight:700;cursor:pointer;margin-left:6px">Продолжить</button>
 <button id="diceBannerDismiss" style="background:none;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:8px;padding:4px 10px;cursor:pointer;margin-left:6px">Нет</button></div>
@@ -4760,6 +4896,6 @@ document.addEventListener('DOMContentLoaded', function(){
   setInterval(function(){ try{ window.diceSaveSnapshot(); }catch(e){} }, 5000);
 })();
 </script>
-<div class="ver-badge">v38</div>
+<div class="ver-badge">v40</div>
 </body>
 </html>
