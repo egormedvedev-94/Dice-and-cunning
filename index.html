@@ -514,10 +514,7 @@
         <span>🎓 Режим новичка (контекстные подсказки для вас)</span>
         <div class="tgl" id="beginnerTgl"></div>
       </div>
-      <div class="field switch">
-        <span>💳 Кредитная экономика (магазин за кредиты)</span>
-        <div class="tgl" id="econTgl"></div>
-      </div>
+      <div class="field switch"><span>💳 Кредитная экономика (магазин за кредиты)</span><div class="tgl" id="econTgl"></div></div>
       <div class="locknote" id="lockNote">Настройки зафиксированы до «Сброса»</div>
       <div class="settings-status ok" id="settingsStatus" style="margin:12px 0">Настройки можно менять</div>
     </div>
@@ -546,10 +543,7 @@
             <span>🎓 Режим новичка (контекстные подсказки для вас)</span>
             <div class="tgl" id="beginnerOnlineTgl"></div>
           </div>
-          <div class="field switch">
-            <span>💳 Кредитная экономика (магазин за кредиты)</span>
-            <div class="tgl" id="econOnlineTgl"></div>
-          </div>
+          <div class="field switch"><span>💳 Кредитная экономика (магазин за кредиты)</span><div class="tgl" id="econOnlineTgl"></div></div>
           <div class="code-display" id="roomCodeDisplay" style="display:none"></div>
         </div>
         <div class="field" id="joinFields">
@@ -770,8 +764,8 @@
         <details><summary>⭐ Серия удачных ходов</summary><div class="r-body"><p>Каждый ход без попадания в Полицию и без подрыва добавляет +0.1 к множителю числовых клеток (до ×2.0). Попадание в Полицию, подрыв на мине или ловушке обнуляют серию. Тренд 📰 удваивает следующую числовую клетку. Ход, в котором игрок потратил очко действия на покупку или активацию способности, дополнительно даёт +0.05 к множителю (счётчик «инициативы» </p></div></details>
         <details><summary>🏆 Награды за активность</summary><div class="r-body"><p>Активность вознаграждается кредитами — валютой магазина: тактика приближает к победе, а не отдаляет от неё.</p><p><b>⚡ Инициатива — +10 кр.</b> Первый раз за ход, когда игрок тратит очко действия на покупку в магазине или активацию способности с панели. Эти кредиты также добавляют +0.05 к множителю серии удачных ходов.</p><p><b>📜 Контракты.</b> В начале партии игрок получает одно случайное задание (панель в блоке «Ход»): купить способность, активировать способность, сделать ставку в 🎰 Банкомате, установить мину, заблокировать Возврат или Заморозку Защитой, выйти из Полиции дублем. Выполнение приносит +30…+40 кр. Новый контракт выдаётся при попадании на Старт своим ходом.</p><p><b>🏆 Разовые достижения.</b> Первая покупка +20 кр., первая мина +20 кр., первый Налог +20 кр., первая перенастройка мины Сапёром +30 кр., взлом шифра Защиты +20 кр. Каждое — один раз за партию.</p><p><b>🪞 Витрина магазина.</b> Каждые 5 ходов одна случайная способность продаётся за полцены — скидка действует для всех до следующей ротации.</p></div></details>
         </div>
-        <details><summary>⚖️ Режим экономики</summary><div class="r-body"><p>В настройках (⚙) и в окне онлайн-игры (🌐) — тумблер «💳 Кредитная экономика». Выбор сохраняется между партиями; в онлайн-игре режим задаёт хост и действует для всех участников. Переключить режим можно только между партиями.</p><p><b>Классическая система:</b> покупки тратят очки из суммы. Цены: Жетон хода 80, Жетон 100, Мина 100, Аптечка 130, Заморозка и Ловушка 180, Налог/Возврат/Вклад 200, Сапёр 150, Блокировка и Точный шаг 250, Ревизор 300, Фин. Ловкость 350. Инициатива — +50 очков, награды за активность — очками (если сумма ещё не достигнута).</p><p><b>Кредитная система:</b> отдельный кошелёк — старт 40 кр., +3 кр. за каждый ход, доходы за круг, Старт, подрывы, Защиту, взлом шифра, Полицию-дубль и инициативу (+10 кр.). Покупки не трогают очки победы; Налог, Штраф Полиции и Блокировка бьют только по сумме.</p></div></details>
-        <details><summary>💳 Кредиты — валюта магазина</summary><div class="r-body"><p>Кредиты — отдельный кошелёк для покупок: очки победы при покупках не тратятся. Налог, Штраф Полиции и Блокировка на кредиты не влияют — они бьют только по сумме.</p><p><b>Заработок:</b> +3 кр. за каждый ход партии (всем живым игрокам), +15 за пройденный круг и за попадание на Старт своим ходом, +15 за подрыв соперника на вашей мине (+25 — если подрыв выбил игрока), +20 за успешный блок Защитой, +12 за взлом шифра Защиты, +10 за выход из Полиции дублем, +10 за инициативу в свой ход.</p><p><b>Контракты</b> платят +30…+40 кр., <b>разовые достижения</b> — +20…+30 кр. Старт — 40 кр. у каждого.</p><p><b>Цены магазина:</b> Жетон хода 25, Мина и Жетон освобождения 30, Аптечка 35, Заморозка и Ловушка 45, Налог/Возврат/Вклад 50, Сапёр и Точный шаг 60, Защита и Блокировка 65, Ревизор 75, Фин. Ловкость 85. За партию набирается 300–450 кр. — хватает на 4–6 покупок.</p></div></details>\n        <div class="r-group"><h3>⚙️ Дополнительно</h3>
+        <details><summary>⚖️ Режим экономики</summary><div class="r-body"><p>В настройках (⚙) и в окне онлайн-игры (🌐) — тумблер «💳 Кредитная экономика». Выбор сохраняется между партиями; в онлайн-игре режим задаёт хост. Переключать можно только между партиями.</p><p><b>Классическая система:</b> покупки тратят очки из суммы. Цены: Жетон хода 80, Жетон 100, Мина 100, Аптечка 130, Заморозка и Ловушка 180, Налог/Возврат/Вклад 200, Сапёр 150, Блокировка и Точный шаг 250, Ревизор 300, Фин. Ловкость 350. Инициатива — +50 очков, награды за активность — очками (пока сумма не достигнута).</p><p><b>Кредитная система:</b> отдельный кошелёк — старт 40 кр., +3 кр. за каждый ход, доходы за круг, Старт, подрывы, Защиту, взлом шифра, Полицию-дубль и инициативу (+10 кр.). Покупки не трогают очки победы; Налог, Штраф Полиции и Блокировка бьют только по сумме.</p></div></details>
+<details><summary>💳 Кредиты — валюта магазина</summary><div class="r-body"><p>Кредиты — отдельный кошелёк для покупок: очки победы при покупках не тратятся. Налог, Штраф Полиции и Блокировка на кредиты не влияют — они бьют только по сумме.</p><p><b>Заработок:</b> +3 кр. за каждый ход партии (всем живым игрокам), +15 за пройденный круг и за попадание на Старт своим ходом, +15 за подрыв соперника на вашей мине (+25 — если подрыв выбил игрока), +20 за успешный блок Защитой, +12 за взлом шифра Защиты, +10 за выход из Полиции дублем, +10 за инициативу в свой ход.</p><p><b>Контракты</b> платят +30…+40 кр., <b>разовые достижения</b> — +20…+30 кр. Старт — 40 кр. у каждого.</p><p><b>Цены магазина:</b> Жетон хода 25, Мина и Жетон освобождения 30, Аптечка 35, Заморозка и Ловушка 45, Налог/Возврат/Вклад 50, Сапёр и Точный шаг 60, Защита и Блокировка 65, Ревизор 75, Фин. Ловкость 85. За партию набирается 300–450 кр. — хватает на 4–6 покупок.</p></div></details>\n        <div class="r-group"><h3>⚙️ Дополнительно</h3>
         <details><summary>🎭 Выбор пары кубиков и отмена броска</summary><div class="r-body"><p>Тумблер в настройках (⚙). При двух разных кубиках (не дубль) игрок-человек выбирает дистанцию: первый кубик, второй кубик или их сумма. Жетоны «+1» добавляются к выбранной дистанции как обычно. Боты идут на сумму. Бросок можно отменить — очко действия возвращается, но не более 1 отмены за ход: счётчик обнуляется в начале каждого хода. Панель выбора появляется под панелью «Игроки» — клетки пути остаются видимыми и доступными.</p></div></details>
         <details><summary>🤖 Боты в игре</summary><div class="r-body"><p>В окне настроек (значок ⚙️) выберите, сколько ботов добавить — 0, 1, 2 или 3. Ботов может быть столько же, сколько игроков: все места могут занять боты — включится режим наблюдателя, первый ход бота запустится автоматически, а кнопки хода у ботов заблокированы. Боты занимают последние места в списке и ходят по очереди автоматически; ноль ботов — обычная партия по кругу. Доступны два уровня сложности, общие для всех ботов.<br><b>Сложный бот</b> играет в магазин по своей стратегии: покупает 🗝 Жетон освобождения при задержании, 🧰 Аптечку при ранениях (75 HP и меньше), ❄️ Заморозку или ↩️ Возврат, когда соперник близок к победе, 🛡 Сапёра, если на поле есть чужие мины, 💣 Мину «на будущее» и 🛡 Защиту в опасной ситуации. Лёгкий бот ставит шифр и угадывает чужой случайно; сложный бот запоминает свои неудачные попытки и не повторяет их, а свой шифр меняет после первой атаки на него. При большом запасе очков — 💴 Налог или 💰 Блокировка. Бот отвечает на Налог 🧾 Ревизором: купит его, если под Налогом, и активирует — Налог снимется, инициатор заплатит зеркально. На сложном уровне бот может взять Ревизора и упреждающе, если чьё-то накопление Налога достигло 200. Бот играет на кредиты с резервом 15 кр. и делает максимум одну покупку за ход.</p></div></details>
         <details><summary>Блокировка настроек</summary><div class="r-body"><p>После нажатия «Начать игру» настройки блокируются. Чтобы изменить их — нажмите «Сброс».</p></div></details>
@@ -807,8 +801,8 @@
       <div class="rules">
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
-        <ul><li><b>⚖️ Режим экономики на выбор (v42)</b>Тумблер «💳 Кредитная экономика» в настройках (⚙) и в окне онлайн-игры (🌐): классическая система — магазин за очки по прежним ценам (80–350), инициатива и награды за активность — очками; кредитная — отдельный кошелёк (старт 40 кр., +3 кр. за ход, пониженные цены, покупки не трогают очки победы). Выбор сохраняется между партиями, в онлайне режим задаёт хост. Заодно починена цена Фин. Ловкости в кредитном режиме (350 → 85).</li>
-<li><b>💳 Кредиты — валюта тактики (v41)</b><br>У магазина отдельный кошелёк: кредиты. Старт — 40 кр. и +3 кр. за каждый ход; доход за круг (+15), Старт (+15), подрывы (+15/+25), Защиту (+20), взлом шифра (+12), выход из Полиции дублем (+10), инициативу (+10); контракты платят +30…+40 кр., достижения +20…+30 кр. Очки победы при покупках больше не тратятся, цены снижены в 3–4 раза, боты перешли на кредитный бюджет с резервом 15 кр.</li><li><b>🪞 Витрина, 📊 превью Налога и 🤖 пояснения ботов (v40)</b><br>Каждые 5 ходов одна способность в магазине продаётся за полцены (скидка общая — и для людей, и для ботов). В карточке Налога появилось превью вычислений: −300 / −600 / −1200 за циклы. Покупки ботов объясняются в журнале — игрок видит, зачем бот тратит очки, и перенимает логику.</li><li><b>🏆 Награды за активность (v39)</b><br>Контракты: задание в начале партии и на Старте (покупка, активация, Банкомат, мина, Защита, Полиция-дубль) с наградой +150…+200. Разовые достижения: первая покупка, первая мина, первый Налог, перенастройка Сапёром, взлом шифра. +50 очков за инициативу в свой ход и +0.05 к серии за активное действие. Очки за активность отображаются в деталях партии.</li><li><b>💴 Единый Налог и 🧾 Ревизор у ботов (v38)</b><br>Налог на игроке теперь один: новое наложение — даже от третьего игрока — удваивает сумму (100 → 200 → 400) и обнуляет таймер, вместо создания отдельного налога. Ревизор отражает общую сумму каждому инициатору. Боты под Налогом покупают и активируют Ревизора: Налог снимается, инициатор платит зеркально; на сложном уровне — упреждающе, при чужом накоплении от 200.</li><li><b>🔐 Админ-панель — закрытый доступ (v38)</b><br>Прямой доступ по ссылке удалён: панель не открывается из адресной строки. Вход — только секретный доступ создателя с подтверждением кода на почту (Web3Forms); первичная настройка ключа — в самой панели.</li><li><b>💴 Налог — по выбору цели (v36)</b><br>Налог налагается на выбранного соперника через окно выбора (как у Возврата и Заморозки); бот выбирает соперника с наибольшей суммой. 🧾 Ревизор при отражении обнуляет накопление Налога — следующий Налог инициатора снова со 100 очков. Окно магазина: ширина 640 px, высота до 88vh, крестик закреплён, прокручивается только список.</li>
+        <ul><li><b>⚖️ Режим экономики на выбор (v42)</b><br>Тумблер «💳 Кредитная экономика» в настройках (⚙) и в окне онлайн-игры (🌐): классическая система — магазин за очки по прежним ценам (80–350), инициатива и награды за активность — очками; кредитная — отдельный кошелёк (старт 40 кр., +3 кр. за ход, пониженные цены, покупки не трогают очки победы). Выбор сохраняется между партиями, в онлайне режим задаёт хост. Заодно починена цена Фин. Ловкости в кредитном режиме (350 → 85).</li>
+        <li><b>💳 Кредиты — валюта тактики (v41)</b><br>У магазина отдельный кошелёк: кредиты. Старт — 40 кр. и +3 кр. за каждый ход; доход за круг (+15), Старт (+15), подрывы (+15/+25), Защиту (+20), взлом шифра (+12), выход из Полиции дублем (+10), инициативу (+10); контракты платят +30…+40 кр., достижения +20…+30 кр. Очки победы при покупках больше не тратятся, цены снижены в 3–4 раза, боты перешли на кредитный бюджет с резервом 15 кр.</li><li><b>🪞 Витрина, 📊 превью Налога и 🤖 пояснения ботов (v40)</b><br>Каждые 5 ходов одна способность в магазине продаётся за полцены (скидка общая — и для людей, и для ботов). В карточке Налога появилось превью вычислений: −300 / −600 / −1200 за циклы. Покупки ботов объясняются в журнале — игрок видит, зачем бот тратит очки, и перенимает логику.</li><li><b>🏆 Награды за активность (v39)</b><br>Контракты: задание в начале партии и на Старте (покупка, активация, Банкомат, мина, Защита, Полиция-дубль) с наградой +150…+200. Разовые достижения: первая покупка, первая мина, первый Налог, перенастройка Сапёром, взлом шифра. +50 очков за инициативу в свой ход и +0.05 к серии за активное действие. Очки за активность отображаются в деталях партии.</li><li><b>💴 Единый Налог и 🧾 Ревизор у ботов (v38)</b><br>Налог на игроке теперь один: новое наложение — даже от третьего игрока — удваивает сумму (100 → 200 → 400) и обнуляет таймер, вместо создания отдельного налога. Ревизор отражает общую сумму каждому инициатору. Боты под Налогом покупают и активируют Ревизора: Налог снимается, инициатор платит зеркально; на сложном уровне — упреждающе, при чужом накоплении от 200.</li><li><b>🔐 Админ-панель — закрытый доступ (v38)</b><br>Прямой доступ по ссылке удалён: панель не открывается из адресной строки. Вход — только секретный доступ создателя с подтверждением кода на почту (Web3Forms); первичная настройка ключа — в самой панели.</li><li><b>💴 Налог — по выбору цели (v36)</b><br>Налог налагается на выбранного соперника через окно выбора (как у Возврата и Заморозки); бот выбирает соперника с наибольшей суммой. 🧾 Ревизор при отражении обнуляет накопление Налога — следующий Налог инициатора снова со 100 очков. Окно магазина: ширина 640 px, высота до 88vh, крестик закреплён, прокручивается только список.</li>
         <li><b>🛒 Магазин: широкое окно без ползунка (v34)</b><br>Окно магазина стало шире (до 760 px) и без внутреннего ползунка. Способности сгруппированы по применению: 🛡 Защита и спасение, ⚔️ Атака на соперников, 💸 Экономика и давление, 🎯 Точность хода.</li>
         <li><b>🧾 Ревизор — ответ на Налог (v33)</b><br>Новая способность в магазине за 300 очков: 3 хода защиты — любой Налог против владельца снимается, инициатор начинает платить ту же сумму зеркально 3 хода.</li>
   <li><b>📖 Правила — низкий порог входа (v32)</b><br>Вкладка правил переработана: сверху «Суть за минуту» со шпаргалками, базовые правила открыты, остальные темы собраны в раскрывающиеся блоки по шести группам. Три раздела о Полиции объединены в один.</li><li><b>🎭 Лимит отмены броска (v31)</b><br>Отменить бросок в выборе дистанции можно не более одного раза за ход — счётчик обнуляется в начале хода, на кнопке отмены виден остаток.</li><li><b>🤖 Запуск бота после телепорта (v29)</b><br>Исправлено зависание хода после выбора телепорта на Финише: после передачи хода боту он теперь запускается автоматически. Восстановлены исправления пропущенных запятых (источник ошибки «Unexpected identifier 'precise'»).</li><li><b>🎭 Выбор дистанции — в центре поля (v26)</b><br>Окно выбора дистанции больше не полноэкранное: панель появляется в центре игрового поля, клетки пути не перекрываются. Исправлены две синтаксические ошибки, ломавшие загрузку файла (лишняя скобка в логике Финиша и дублированное объявление функции отрисовки мин), зона центральных панелей пересчитана под сетку 13×13, победа и телепорт-наказание привязаны к верному индексу Финиша.</li><li><b>🗺 Поле расширено до 48 клеток (v25)</b><br>Поле теперь 13×13 — 48 клеток. 📰 Новости и 🎰 Банкомат переехали на отдельные клетки (не числовые): числа 23 и 29 снова дают очки, добавлены числа 37–42. Числовых клеток стало 42.</li><li><b>🚔 Случайный бонус за Полицию удалён (v24)</b><br>Очки за проход мимо Полиции (+100) больше не начисляются — награды только за решения и события.</li><li><b>🎯 Девять новых механик (v24)</b><br>🎭 Выбор пары кубиков (дистанция — 1-й, 2-й или сумма; тумблер в настройках), 📰 Новости (клетка 23), 🎰 Банкомат (клетка 29), 📈 Вклад (200 очков — поглощает Налог и телепорт-наказание), 🪤 Ловушка (180 — цель −100 HP, остальные −25), 🎯 Точный шаг (250 — ход на 1–3 клетки), ⭐ Серия удачных ходов (×1.1…×2.0 к числовым клеткам), 🔊 Звуковой слой. Правила и магазин обновлены.</li><li><b>📜 Правила приведены в соответствие (v23)</b><br>Устаревшие формулировки исправлены: в списке способностей Старт «+100 очков» заменён на 💳 Фин. Ловкость 2.0, в описании Возврата теперь «не получает Фин. Ловкость», в «Очках за случайные действия» добавлен пункт «🏁 Пройденный круг — +300».</li><li><b>💳 Фин. Ловкость 2.0 на Старте и бонус за круг (v22)</b><br>Кнопка «+100 очков» на клетке Старт заменена на Фин. Ловкость 2.0: активация даёт 3 хода иммунитета к Налогу и регенерацию +200 по истечении (кнопка «Навык +100» удалена из игры). За каждый пройденный круг от Старта до Старта начисляется +300 очков — в свой ход; телепорты и Возврат кругом не считаются.</li>
@@ -924,7 +918,7 @@
   <div class="modal" style="max-width:min(640px,94vw);max-height:88vh;overflow:hidden;display:flex;flex-direction:column;position:relative">
     <button class="close-x" onclick="document.getElementById('shopModal').style.display='none'" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
     <h2>🛒 Магазин способностей</h2>
-    <p style="font-size:12px;color:#6a5d4a;margin-bottom:8px">Покупайте способности: в кредитном режиме тратятся кредиты, в классическом — очки из суммы. Покупка в свой ход приносит награду за инициативу, а контракты и достижения пополняют кошелёк — тактика приближает к победе!</p>
+    <p style="font-size:12px;color:#6a5d4a;margin-bottom:8px">Покупайте способности: в кредитном режиме — за кредиты (очки победы не трогаются), в классическом — за очки из суммы. Покупка в свой ход даёт бонус за инициативу, а контракты и достижения приносят награду.</p>
     <div id="shopContent" style="overflow-y:auto"></div>
   </div>
 </div>
@@ -1036,36 +1030,19 @@ function markActive(pi){
   if (!players[pi] || eliminated.has(pi) || players[pi].isBot) return;
   if (activeThisTurn[pi]) return;
   activeThisTurn[pi] = true;
-  if (econCred){
-    players[pi].cred = (players[pi].cred||0) + 10;
-    pst(pi,'act',10);
-    log('⚡ '+players[pi].name+': +10 кредитов за инициативу!','win');
-  } else {
-    if (players[pi].sum < winSum){
-      players[pi].sum += 50;
-      pst(pi,'act',50);
-      log('⚡ '+players[pi].name+': +50 очков за инициативу!','win');
-    }
-  }
+  if (econCred) { players[pi].cred = (players[pi].cred||0) + 10; pst(pi,'act',10); log('⚡ '+players[pi].name+': +10 кредитов за инициативу!','win'); }
+  else if (players[pi].sum < winSum) { players[pi].sum = (players[pi].sum||0) + 50; pst(pi,'act',50); log('⚡ '+players[pi].name+': +50 очков за инициативу!','win'); }
   streakExtra[pi] = (streakExtra[pi]||0) + 1;
 }
 function awardActivity(pi, amt, label){
   if (!players[pi] || eliminated.has(pi) || players[pi].isBot) return;
-  if (econCred){
-    const cr = Math.round(amt/5);
-    players[pi].cred = (players[pi].cred||0) + cr;
-    activityEarned[pi] = (activityEarned[pi]||0) + cr;
-    pst(pi,'act',cr);
-    log('🏆 '+players[pi].name+': '+label+' — +'+cr+' кредитов за активность!','win');
-    activityToast('🏆 '+label+' — +'+cr+' кр.');
-  } else {
-    if (players[pi].sum >= winSum) return;
-    players[pi].sum += amt;
-    activityEarned[pi] = (activityEarned[pi]||0) + amt;
-    pst(pi,'act',amt);
-    log('🏆 '+players[pi].name+': '+label+' — +'+amt+' очков за активность!','win');
-    activityToast('🏆 '+label+' — +'+amt+' очк.');
-  }
+  if (!econCred && (players[pi].sum||0) >= winSum) return;
+  const cr = econCred ? Math.round(amt/5) : amt;
+  if (econCred) players[pi].cred = (players[pi].cred||0) + cr; else players[pi].sum = (players[pi].sum||0) + cr;
+  activityEarned[pi] = (activityEarned[pi]||0) + cr;
+  pst(pi,'act',cr);
+  log('🏆 '+players[pi].name+': '+label+' — +'+cr+(econCred?' кредитов':' очков')+' за активность!','win');
+  activityToast('🏆 '+label+' — +'+cr+(econCred?' кр.':' очк.'));
 }
 function completeContract(pi, key){
   const c = contracts[pi];
@@ -1094,7 +1071,7 @@ function renderContract(){
   const c = players[pi] && !players[pi].isBot ? contracts[pi] : null;
   if (!c){ el.style.display='none'; return; }
   el.style.display='block';
-  el.innerHTML = '<b>📜 Контракт</b><div>'+c.label+'</div><div style="font-size:11px;color:#8a7a5a">Награда: +'+(econCred?(c.bonus/5):c.bonus)+(econCred?' кр.':' очк.')+'</div>';
+  el.innerHTML = '<b>📜 Контракт</b><div>'+c.label+'</div><div style="font-size:11px;color:#8a7a5a">Награда: +'+(c.bonus/5)+(econCred?' кр.':' очк.')+'</div>';
 }
 function activityToast(text){
   const t = document.createElement('div');
@@ -1135,14 +1112,14 @@ let startAbilityPending = false;
 // Player abilities: sapper, protect, token, frozen, taxBlockTurns, taxTurns, taxAmount
 let abilities = {};
 let beginnerMode = false;
-let econCred = (function(){ try { return (localStorage.getItem('kub_econ')||'1')==='1'; } catch(e){ return true; } })();
-const PTS_PRICES = {sapper:150, shield:250, token:100, firstaid:130, moveToken:80, mine:100, block:250, tax:200, 'return':200, deposit:200, freeze:180, precise:250, trap:180, revizor:300, finance:350};
-function itemCost(itemId){ if (!econCred) return PTS_PRICES[itemId] || 0; const it = (typeof SHOP_ITEMS !== 'undefined') ? SHOP_ITEMS.find(function(i){ return i.id === itemId; }) : null; return it ? it.price : 0; }
+let econCred = (localStorage.getItem('kub_econ')||'1')==='1';
+const PTS_PRICES = {sapper:150,protect:250,token:100,firstaid:130,moveToken:80,mine:100,block:250,tax:200,return:200,freeze:180,precise:250,deposit:200,trap:180,revizor:300,finance:350};
+function ptsBase(id){ const it=SHOP_ITEMS.find(i=>i.id===id); if(!it) return 0; return econCred?it.price:(PTS_PRICES[id]!=null?PTS_PRICES[id]:it.price); }
+function itemCost(id){ const it=SHOP_ITEMS.find(i=>i.id===id); if(!it) return null; const base=ptsBase(id); return showcasePrice(id) ? Math.ceil(base/2) : base; }
 function walletOf(p){ return econCred ? (p.cred||0) : (p.sum||0); }
-function payWallet(p, c){ if (econCred) p.cred = (p.cred||0) - c; else p.sum = (p.sum||0) - c; }
-function refundWallet(p, a){ if (econCred) p.cred = (p.cred||0) + a; else p.sum = (p.sum||0) + a; }
-function curSuf(){ return econCred ? ' кр.' : ' очк.'; }
-function effPrice(itemId){ const it = (typeof SHOP_ITEMS !== 'undefined') ? SHOP_ITEMS.find(function(i){ return i.id === itemId; }) : null; if (!it) return 0; if (econCred) return showcasePrice(itemId) || it.price; const base = PTS_PRICES[itemId] || 0; return (showcase.key === itemId) ? Math.ceil(base/2) : base; }
+function payWallet(p,c){ if(econCred){ p.cred=(p.cred||0)-c; } else { p.sum=(p.sum||0)-c; } }
+function refundWallet(p,a){ if(econCred){ p.cred=(p.cred||0)+a; } else { p.sum=(p.sum||0)+a; } }
+function curSuf(){ return econCred?' кр.':' очк.'; }
 let shopAbilities = {};
 let pendingStartAbilities = {}; // {pi: 'noBonus' | 'none'} - controls what happens when player lands on Start
 let inventory = {}; // {pi: [itemId,...]} — панель способностей
@@ -1359,7 +1336,7 @@ function shieldOpenModal(title, sub, cb, cancelCb){
 function shieldSpend(){ if (typeof actionsLeft !== 'undefined' && actionsLeft > 0) actionsLeft--; }
 function shieldRefund(){ if (typeof actionsLeft !== 'undefined' && typeof ACTIONS_PER_TURN !== 'undefined' && actionsLeft < ACTIONS_PER_TURN) actionsLeft++; }
 function shieldConsumeOnly(pi, itemId){ const arr = inventory[pi] || []; const k = arr.indexOf(itemId); if (k !== -1) arr.splice(k, 1); }
-function shieldAwardPoints(pi, amt){ if (players[pi] && players[pi].sum < winSum) players[pi].sum += amt; if (players[pi] && econCred) players[pi].cred = (players[pi].cred||0) + Math.round(amt/5); completeContract(pi,'shield'); }
+function shieldAwardPoints(pi, amt){ if (players[pi] && players[pi].sum < winSum) players[pi].sum += amt; if (players[pi]) if (econCred) players[pi].cred = (players[pi].cred||0) + Math.round(amt/5); else if (players[pi].sum < winSum) players[pi].sum += Math.round(amt/5); completeContract(pi,'shield'); }
 function shieldMyIdx(){ return (typeof onlineMode !== 'undefined' && onlineMode && typeof myPlayerId !== 'undefined' && myPlayerId !== null) ? myPlayerId : 0; }
 function shieldGrant(pi){
   abilities[pi].protectBlocks = 0;
@@ -1763,7 +1740,7 @@ function updatePlayers(){
     const hpColor = hp > 60 ? '#22c55e' : (hp > 30 ? '#f59e0b' : '#ef4444');
     row.innerHTML = '<div class="dot" style="background:'+p.color+'"></div>'+
       '<div class="nm">'+p.name+(i===currentPlayer && !gameOver?' — ход':'')+badges+'</div>'+
-      '<div class="sc">'+p.sum+' / '+winSum+'</div>'+(econCred ? '<div style="font-size:12px;color:#166534">💳 '+(p.cred||0)+' кр.</div>' : '')+
+      '<div class="sc">'+p.sum+' / '+winSum+'</div>'+(econCred?'<div style="font-size:12px;color:#166534">💳 '+(p.cred||0)+' кр.</div>':'')+
       '<div class="hpbar"><div class="hpfill" style="width:'+hpPct+'%;background:'+hpColor+'"></div></div>'+
       '<div class="hptext">❤️ '+hp+' / 100 HP</div>';
     box.appendChild(row);
@@ -1856,7 +1833,8 @@ function updateSettingsSummary(){
     'Сумма для победы: <b>'+winSum+'</b><br>'+
     'Штраф Полиции: <b>'+policePenalty+' (10% от '+winSum+')</b> — за три дубля подряд<br>'+
         'Автопереход: <b>'+(autoFinish?'вкл':'выкл')+'</b><br>'+
-    'Режим: <b>'+(botMode?botCount+' бот'+(botCount===1?'':'(ов)')+', сложность: '+botDifficulty:'Обычная партия')+'</b><br>Экономика: <b>'+(econCred?'кредиты':'классика')+'</b>';
+    'Экономика: <b>'+(econCred?'кредиты':'классика')+'</b><br>'+
+    'Режим: <b>'+(botMode?botCount+' бот'+(botCount===1?'':'(ов)')+', сложность: '+botDifficulty:'Обычная партия')+'</b>';
 }
 
 function lockSettings(){
@@ -2244,8 +2222,8 @@ function nextTurn(){
   for (let q=0;q<players.length;q++){ if (players[q] && !eliminated.has(q) && econCred) players[q].cred = (players[q].cred||0) + 3; }
   showcaseRefresh();
   try{ partyStats.tick(); }catch(e){}
-  if (beginnerMode && players[currentPlayer] && !players[currentPlayer].isBot && !shownHints.has('shopTip') && walletOf(players[currentPlayer]) >= 100 && !boughtEver[currentPlayer]){
-    showBeginnerHint('shopTip','🛒 Магазин','У вас накопились средства, а магазин ещё не тронут. Покупка в свой ход приносит награду за инициативу — способности приближают к победе, а не отдаляют.');
+  if (beginnerMode && players[currentPlayer] && !players[currentPlayer].isBot && !shownHints.has('shopTip') && walletOf(players[currentPlayer]) >= 100 && econCred && !boughtEver[currentPlayer]){
+    showBeginnerHint('shopTip','🛒 Магазин','У вас накопились кредиты, а магазин ещё не тронут. Покупка в свой ход даёт +10 кр. за инициативу, а контракты и достижения пополняют кошелёк — способности приближают к победе, а не отдаляют.');
   }
   let idx = currentPlayer;
   for (let k=0;k<players.length;k++){
@@ -3105,7 +3083,7 @@ function botShopThink(pi){
   if (myMines < 2 && ok(30)) return 'mine';
   if (leaderDist <= 400 && !ab.protect && ok(65)) return 'protect';
   if (walletOf(p) >= (econCred?150:650) && ok(65)) return dist > 400 ? 'tax' : 'block';
-  if (!inPoliceMode[pi] && (plus1Bonus[pi] || 0) === 0 && walletOf(p) >= (econCred?80:530) && dist > 60 && ok(25)) return 'moveToken';
+  if (!inPoliceMode[pi] && (plus1Bonus[pi] || 0) === 0 && walletOf(p) >= (econCred?60:530) && dist > 60 && ok(25)) return 'moveToken';
   return null;
 }
 
@@ -3119,9 +3097,9 @@ function botTokensAndRoll(pi){
       if (sid){ buyAbility(sid, pi); return; }
     } catch(e){ log('🤖 решение о покупке не принято — ход продолжается'); }
   }
-  if (botDifficulty === 'hard' && actionsLeft > 0 && (plus1Bonus[pi] || 0) === 0 && walletOf(p) >= (econCred?60:510) && dist > 60 && !eliminated.has(pi)){
+  if (botDifficulty === 'hard' && actionsLeft > 0 && (plus1Bonus[pi] || 0) === 0 && walletOf(p) >= (econCred?60:530) && dist > 60 && !eliminated.has(pi)){
     payWallet(p, itemCost('moveToken')); plus1Bonus[pi] = 1; spendAction();
-    log('🤖 '+p.name+' купил 🎟 Жетон хода (−25 кр.).');
+    log('🤖 '+p.name+' купил 🎟 Жетон хода (−'+itemCost('moveToken')+curSuf()+').');
     updateUI();
     if (actionsLeft <= 0 && !freeRollPending){
       if (!gameOver) nextTurn();
@@ -3321,18 +3299,11 @@ document.getElementById('sndBtn').addEventListener('click', function(){
   this.querySelector('.hdr-ico').textContent = soundOn ? '\u{1F50A}' : '\u{1F507}';
 });
 if (!soundOn) document.getElementById('sndBtn').querySelector('.hdr-ico').textContent = '\u{1F507}';
-(function(){ const a=document.getElementById('econTgl'), b=document.getElementById('econOnlineTgl'); if(a) a.classList.toggle('on', econCred); if(b) b.classList.toggle('on', econCred); })();
 
-document.getElementById('econTgl').addEventListener('click', function(){
-  if (gameStarted) return;
-  econCred = !econCred;
-  try { localStorage.setItem('kub_econ', econCred?'1':'0'); } catch(e){}
-  this.classList.toggle('on', econCred);
-  const ot = document.getElementById('econOnlineTgl');
-  if (ot) ot.classList.toggle('on', econCred);
-  updateSettingsSummary();
-});
-
+(function(){
+  var t1=document.getElementById('econTgl'); if(t1){ t1.classList.toggle('on',econCred); t1.addEventListener('click',function(){ if(gameStarted) return; econCred=!econCred; localStorage.setItem('kub_econ',econCred?'1':'0'); t1.classList.toggle('on',econCred); var t2=document.getElementById('econOnlineTgl'); if(t2) t2.classList.toggle('on',econCred); updateSettingsSummary(); }); }
+  var t2=document.getElementById('econOnlineTgl'); if(t2){ t2.classList.toggle('on',econCred); t2.addEventListener('click',function(){ if(gameStarted) return; econCred=!econCred; localStorage.setItem('kub_econ',econCred?'1':'0'); t2.classList.toggle('on',econCred); var t1=document.getElementById('econTgl'); if(t1) t1.classList.toggle('on',econCred); updateSettingsSummary(); }); }
+})();
 document.getElementById('beginnerTgl').addEventListener('click', function(){
   if (gameStarted) return;
   beginnerMode = !beginnerMode;
@@ -3485,11 +3456,11 @@ function showShop(){
   if (!abilities[pi]) initAbilities(pi);
   const modal = document.getElementById('shopModal');
   const content = document.getElementById('shopContent');
-  let html = '<div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#4a3d2e">'+(econCred ? ('Ваши кредиты: <span style="color:#16a34a">'+(p.cred||0)+'</span> · Очки: <span style="color:#8b5cf6">'+p.sum+'</span> / '+winSum) : ('Ваши очки: <span style="color:#8b5cf6">'+p.sum+'</span> / '+winSum))+'</div>';
+  let html = '<div style="margin-bottom:8px;font-size:13px;font-weight:700;color:#4a3d2e">'+(econCred?'Ваши кредиты: <span style="color:#16a34a">'+(p.cred||0)+'</span> · Очки: <span style="color:#8b5cf6">'+p.sum+'</span>':'Ваши очки: <span style="color:#8b5cf6">'+p.sum+'</span>')+' / '+winSum+'</div>';
   if (showcase.key){
     const it = SHOP_ITEMS.find(i=>i.id===showcase.key);
     const left = SHOWCASE_EVERY - ((partyTurns - showcase.from) % SHOWCASE_EVERY);
-    html += '<div style="margin-bottom:6px;padding:6px 10px;background:rgba(22,163,74,.12);border-radius:8px;font-size:12px;color:#166534">🪞 Витрина: «'+it.name+'» — <b>'+Math.ceil(effPrice(it.id)/2)+curSuf()+'</b> вместо '+itemCost(it.id)+' (ещё '+left+' ход.)</div>';
+    html += '<div style="margin-bottom:6px;padding:6px 10px;background:rgba(22,163,74,.12);border-radius:8px;font-size:12px;color:#166534">🪞 Витрина: «'+it.name+'» — <b>'+Math.ceil(ptsBase(it.id)/2)+curSuf()+'</b> вместо '+ptsBase(it.id)+' (ещё '+left+' ход.)</div>';
   }
   const CATS = [
     {key:'def', title:'🛡 Защита и спасение'},
@@ -3506,9 +3477,8 @@ function showShop(){
                     (item.id === 'protect' && abilities[pi].protect) ||
                     (item.id === 'token' && abilities[pi].token) ||
                     false;
-      const eff = effPrice(item.id);
-      const disc = eff < itemCost(item.id);
-      const realPrice = effPrice(item.id);
+      const eff = showcasePrice(item.id) ? Math.ceil(ptsBase(item.id)/2) : 0;
+      const realPrice = eff || itemCost(item.id);
       const canAfford = walletOf(p) >= realPrice;
       const disabled = owned || !canAfford;
       html += '<div class="shop-item' + (disabled ? ' disabled' : '') + '"' +
@@ -3518,8 +3488,8 @@ function showShop(){
         '<div class="shop-desc">'+item.desc+'</div>' +
         (item.id==='tax' ? '<div class="shop-desc" style="color:#b91c1c">Превью: −100 −100 −100 = <b>−300</b> у соперника за 3 хода; повторная активация: −200 −200 −200 = <b>−600</b>, далее −1200.</div>' : '') + '</div>' +
         (owned ? '<div class="shop-owned">✓ есть</div>' :
-        (disc ? '<div class="shop-price"><s style="opacity:.55">'+itemCost(item.id)+'</s> <b style="color:#16a34a">'+eff+'</b>'+curSuf()+' <span style="font-size:11px">🪞</span></div>'
-             : '<div class="shop-price">'+itemCost(item.id)+curSuf()+'</div>')) +
+        (eff ? '<div class="shop-price"><s style="opacity:.55">'+ptsBase(item.id)+'</s> <b style="color:#16a34a">'+eff+'</b>'+curSuf()+' <span style="font-size:11px">🪞</span></div>'
+             : '<div class="shop-price">'+realPrice+curSuf()+'</div>')) +
         '</div>';
     });
   });
@@ -3532,12 +3502,13 @@ function buyAbility(itemId, pi){
   if (!abilities[pi]) initAbilities(pi);
   const item = SHOP_ITEMS.find(i => i.id === itemId);
   if (!item) return;
-  const eff = effPrice(itemId);
+  const base = econCred ? item.price : (PTS_PRICES[itemId]!=null?PTS_PRICES[itemId]:item.price);
+  const eff = itemCost(itemId) || base;
   if (walletOf(p) < eff) return;
   payWallet(p, eff);
   pst(pi,'buys',1); pst(pi,'spent',eff);
   spendAction();
-  log('🛒 '+p.name+' купил «'+item.name+'» за '+eff+curSuf()+(eff < itemCost(itemId) ? ' (🪞 витрина −50%)' : '')+' (кошелёк: '+(econCred?p.cred:p.sum)+')', 'win');
+  log('🛒 '+p.name+' купил «'+item.name+'» за '+eff+curSuf()+(eff < base ? ' (🪞 витрина −50%)' : '')+' (кошелёк: '+walletOf(p)+')', 'win');
   if (p.isBot) log('🤖 '+p.name+' — '+botBuyReason(itemId)+'.', 'win');
   boughtEver[pi] = true; markActive(pi); completeContract(pi,'buy');
   ACH[pi] = ACH[pi]||{}; if (!ACH[pi].purch){ ACH[pi].purch = 1; awardActivity(pi,100,'Первая покупка'); }
@@ -3920,6 +3891,7 @@ function renderSpectatorStatus(){
 }
 
 function startOnlineGame(data){
+  if (data.econCred!==undefined) econCred = data.econCred;
   winSum = data.winSum || 2000;
   finishPenalty = 0;
   policePenalty = Math.floor((data.winSum || 2000) * 0.1);
@@ -3981,10 +3953,11 @@ function broadcastGameState(msgType){
   try { if (typeof diceSaveSnapshot === 'function') diceSaveSnapshot(); } catch(e){}
   mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({
     type: msgType,
+    econCred: econCred,
     players: onlinePlayers.map(p=>({id: p.id, nickname: p.nickname})),
     winSum: winSum, finishPenalty: finishPenalty, policePenalty: policePenalty, autoFinish: autoFinish,
     currentPlayer: currentPlayer, gameOver: gameOver, gameStarted: gameStarted,
-    econCred: econCred, gamePlayers: players.map(p=>({name:p.name, color:p.color, pos:p.pos, sum:p.sum, skip:p.skip, finished:p.finished, isBot:p.isBot, cred:p.cred||0, health:p.health||100})),
+    gamePlayers: players.map(p=>({name:p.name, color:p.color, pos:p.pos, sum:p.sum, skip:p.skip, finished:p.finished, isBot:p.isBot, cred:p.cred||0, health:p.health||100})),
     doublesInRow: doublesInRow, inPoliceMode: inPoliceMode, policeAttempts: policeAttempts,
     abilities: abilities, actionsLeft: actionsLeft, freeRollPending: freeRollPending, mines: mines, reconfiguredMines: reconfiguredMines, eliminated: Array.from(eliminated),
     beginnerModes: onlineBeginnerModes,
@@ -3995,8 +3968,7 @@ function broadcastGameState(msgType){
 function applyOnlineState(data){
   const prevPositions = players.map(function(p){ return p ? p.pos : null; });
   if (data.gamePlayers){
-    if (data.econCred !== undefined) econCred = data.econCred;
-  players = data.gamePlayers.map(p=>({name:p.name, color:p.color, pos:p.pos, sum:p.sum, skip:p.skip, finished:p.finished, isBot:p.isBot, cred:p.cred||0, health:p.health||100}));
+    players = data.gamePlayers.map(p=>({name:p.name, color:p.color, pos:p.pos, sum:p.sum, skip:p.skip, finished:p.finished, isBot:p.isBot, cred:p.cred||0, health:p.health||100}));
   }
   currentPlayer = data.currentPlayer || 0;
   gameOver = data.gameOver || false;
@@ -4201,16 +4173,6 @@ document.getElementById('hostTgl').addEventListener('click', function(){
 document.getElementById('spectatorTgl').addEventListener('click', function(){
   spectatorMode = !spectatorMode;
   this.classList.toggle('on', spectatorMode);
-});
-
-document.getElementById('econOnlineTgl').addEventListener('click', function(){
-  if (gameStarted) return;
-  econCred = !econCred;
-  try { localStorage.setItem('kub_econ', econCred?'1':'0'); } catch(e){}
-  this.classList.toggle('on', econCred);
-  const st = document.getElementById('econTgl');
-  if (st) st.classList.toggle('on', econCred);
-  updateSettingsSummary();
 });
 
 document.getElementById('beginnerOnlineTgl').addEventListener('click', function(){
@@ -4786,7 +4748,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 <!-- v16 session machinery -->
-<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:auto;cursor:pointer" onclick="handleVerBadgeClick()">v40</div>
+<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:auto;cursor:pointer" onclick="handleVerBadgeClick()">v42</div>
 <div id="diceResumeBanner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99990;background:#16a34a;color:#fff;padding:8px 14px;border-radius:0 0 12px 12px;font-size:13px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.25)">&#128260; Сессия найдена: комната <span id="diceBannerCode"></span>
 <button id="diceBannerResume" style="background:#fff;color:#16a34a;border:none;border-radius:8px;padding:4px 10px;font-weight:700;cursor:pointer;margin-left:6px">Продолжить</button>
 <button id="diceBannerDismiss" style="background:none;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:8px;padding:4px 10px;cursor:pointer;margin-left:6px">Нет</button></div>
@@ -4835,7 +4797,7 @@ document.addEventListener('DOMContentLoaded', function(){
       var snap={
         gameStarted:true, ts:Date.now(), roomCode:roomCode,
         winSum:winSum, autoFinish:autoFinish,
-        econCred:econCred, gamePlayers:players.map(function(p){return {name:p.name,color:p.color,pos:p.pos,sum:p.sum,skip:p.skip,finished:p.finished,isBot:p.isBot,cred:p.cred||0, health:p.health||100};}),
+        gamePlayers:players.map(function(p){return {name:p.name,color:p.color,pos:p.pos,sum:p.sum,skip:p.skip,finished:p.finished,isBot:p.isBot,cred:p.cred||0, health:p.health||100};}),
         currentPlayer:currentPlayer, gameOver:gameOver,
         doublesInRow:doublesInRow, inPoliceMode:inPoliceMode, policeAttempts:policeAttempts,
         abilities:abilities, actionsLeft:actionsLeft, freeRollPending:freeRollPending,
@@ -4856,9 +4818,9 @@ document.addEventListener('DOMContentLoaded', function(){
       if (snap.logHistory) onlineLogHistory = snap.logHistory;
       if (snap.logSeq) onlineLogSeq = snap.logSeq;
       winSum=snap.winSum||2000; autoFinish=snap.autoFinish!==false;
+      if (snap.econCred!==undefined) econCred=snap.econCred;
       finishPenalty=0; policePenalty=Math.floor(winSum*0.1);
       playerCount=snap.gamePlayers.length;
-      if (snap.econCred !== undefined) econCred = snap.econCred;
       players=snap.gamePlayers.map(function(p){return {name:p.name,color:p.color,pos:p.pos,sum:p.sum,skip:!!p.skip,finished:!!p.finished,isBot:!!p.isBot,cred:p.cred||0, health:p.health||100};});
       currentPlayer=snap.currentPlayer||0; gameOver=!!snap.gameOver; gameStarted=true;
       doublesInRow=snap.doublesInRow||{}; inPoliceMode=snap.inPoliceMode||{}; policeAttempts=snap.policeAttempts||{};
