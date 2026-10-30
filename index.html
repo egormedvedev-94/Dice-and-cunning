@@ -4316,4 +4316,1389 @@ function showResults(winnerIdx){
     const st = (r === 0) ? '🏆 победа' : (elim ? '🏳 выбыл' : (p.finished ? '🏁 на Финише' : '—'));
     rows += '<tr>'
       + '<td style="padding:4px 6px;font-weight:700">'+(r+1)+'</td>'
-      + '<td style="padding:4px 6px"><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:'+p.color+';margin-right:6px;vertical-align:middle">
+      + '<td style="padding:4px 6px"><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:'+p.color+';margin-right:6px;vertical-align:middle"></span>'+p.name+(p.isBot?' 🤖':'')+'</td>'
+      + '<td style="padding:4px 6px;text-align:right;font-weight:700">'+p.sum+'</td>'
+      + '<td style="padding:4px 6px;text-align:right">'+(elim ? '—' : (p.health||0)+' HP')+'</td>'
+      + '<td style="padding:4px 6px;font-size:12px">'+st+'</td>'
+      + '</tr>';
+  });
+  const tbl = '<table style="width:100%;border-collapse:collapse;font-size:13px;color:#4a4030">'
+    + '<thead><tr><th style="text-align:left;padding:4px 6px;border-bottom:2px solid #e8dcc8">#</th>'
+    + '<th style="text-align:left;padding:4px 6px;border-bottom:2px solid #e8dcc8">Игрок</th>'
+    + '<th style="text-align:right;padding:4px 6px;border-bottom:2px solid #e8dcc8">Очки</th>'
+    + '<th style="text-align:right;padding:4px 6px;border-bottom:2px solid #e8dcc8">HP</th>'
+    + '<th style="text-align:left;padding:4px 6px;border-bottom:2px solid #e8dcc8">Итог</th></tr></thead>'
+    + '<tbody>'+rows+'</tbody></table>';
+  const statsBlock = (function(){ try{
+   const dur = partyStats.start ? Math.max(1, Math.round((Date.now()-partyStats.start)/60000))+' мин' : '—';
+   const L = [['rolls','🎲 Бросков'],['doubles','🎲 Дублей'],['tokens','🎟 Жетонов потрачено'],['dsteps','⏩ Двойных шагов'],['buys','🛒 Покупок'],['spent','💸 Потрачено очков'],['mineset','💣 Мин поставлено'],['expl','💥 Подрывов на моих минах'],['exdmg','💔 Нанесено урона минами'],['kobonus','🏆 Выбитий миной'],['passpol','🚔 Прошёл мимо Полиции'],['passmine','💣 Прошёл мимо мин'],['polhit','🚔 Попаданий в Полицию'],['pen','⚖️ Штрафов Полиции'],['pensum','⚖️ Выплачено штрафов'],['freed','🎲 Выходов дублем'],['skippol','⏸ Пропусков (Полиция)'],['skipfrz','❄️ Пропусков (Заморозка)'],['taxon','💴 Налогов активировано'],['taxpaid','💴 Налогов выплачено'],['taxsum','💴 Очков уплачено налогами'],['blkon','💰 Блокировок'],['ret','↩️ Возвратов'],['frz','❄️ Заморозок'],['sblk','🛡 Блоков Защитой'],['scrk','🔓 Взломов шифра'],['start','🏁 Попаданий на Старт'],['infl','🎯 Попаданий на «Влияние»'],['fshort','🏁 Недоборов на Финише'],['finon','💳 Активаций Ловкости'],['fintake','💳 Перехватов налога'],['finreg','💳 Регенераций'],['act', econCred?'🏆 Кредитов за активность':'🏆 Очков за активность']];
+   const cards = players.map(function(pl,i){
+     const st = partyStats.players[i] || {};
+     let rows = '';
+     for (const l of L){ if(st[l[0]]) rows += '<div style="display:flex;justify-content:space-between;gap:12px"><span>'+l[1]+'</span><b>'+st[l[0]]+'</b></div>'; }
+     if (st.heal) rows += '<div style="display:flex;justify-content:space-between;gap:12px"><span>❤️ Вылечено HP</span><b>'+st.heal+'</b></div>';
+     if(!rows) return '';
+     return '<details style="margin:6px 0;border:1px solid #e5dccb;border-radius:10px;padding:8px 12px;background:#fffdf8"><summary style="cursor:pointer;font-weight:700">'+pl.name+' — '+pl.sum+' очков</summary><div style="margin-top:5px;font-size:12.5px;line-height:1.6">'+rows+'</div></details>';
+   }).join('');
+   return '<div style="margin-top:14px"><div style="font-weight:700;margin-bottom:4px">📋 Детали партии</div><div style="font-size:13px;color:#6a5d4a;margin-bottom:6px">Длительность: <b>'+dur+'</b> · Ходов: <b>'+(partyStats.turns||0)+'</b></div>'+(cards||'<div style="font-size:13px;color:#6a5d4a">Показатели за партию не накопились</div>')+'</div>';
+ }catch(err){ return ''; } })();
+ const summary = '<div style="margin-top:10px;font-size:13px;color:#6a5d4a">Ходов: <b>'+partyTurns+'</b> · Выбыло: <b>'+eliminated.size+'</b> · Сдались: <b>'+surrenderCount+'</b> · Цель: <b>'+winSum+'</b></div>' + metaResultsLine() + statsBlock + buildNominations();
+  document.getElementById('resultsBody').innerHTML = tbl + summary;
+  document.getElementById('resultsAgainBtn').style.display = (onlineMode && !isHost) ? 'none' : '';
+  resultsShown = true;
+  document.getElementById('resultsModal').style.display = 'flex';
+}
+
+function playAgain(){
+  document.getElementById('resultsModal').style.display = 'none';
+  resultsShown = false;
+  try { if (typeof diceClearSnapshot === 'function') diceClearSnapshot(); } catch(e){}
+  reset();
+  if (onlineMode && isHost){
+    document.getElementById('onlineOverlay').style.display = 'flex';
+    if (mqttClient) setTimeout(onlineSync, 300);
+  }
+}
+
+// ===== ONLINE MULTIPLAYER (MQTT + EMQX) =====
+let onlineMode = false;
+let isHost = false;
+let spectatorMode = false;
+let myNickname = '';
+let roomCode = '';
+let mqttClient = null;
+  let onlineLogHistory = [];
+  let onlineLogSeq = 0;
+  let clientLogSeq = 0;
+let myPlayerId = 0;
+let onlinePlayers = [];
+let voiceStream = null;
+let voicePCs = {};
+let voiceOn = false;
+const STUN_SERVERS = {iceServers: [{urls: 'stun:stun.l.google.com:19302'}, {urls: 'stun:stun2.l.google.com:19302'}]};
+
+function genRoomCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i=0;i<5;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+function setOnlineStatus(text, isErr, isOk){
+  const el = document.getElementById('onlineStatus');
+  if (!el) return;
+  el.textContent = text;
+  el.style.display = text ? 'block' : 'none';
+  el.className = 'online-status' + (isErr?' err':'') + (isOk?' ok':'');
+}
+
+function connectMQTT(){
+  if (mqttClient){ try{ mqttClient.end(true); }catch(e){} mqttClient = null; }
+  const clientId = 'dice_' + Math.random().toString(16).substr(2,8);
+  try {
+    mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', {
+      clientId: clientId, keepalive: 30, reconnectPeriod: 2000, connectTimeout: 8000
+    });
+  } catch(e){
+    setOnlineStatus('Ошибка: ' + e.message, true, false);
+    return;
+  }
+
+  mqttClient.on('connect', ()=>{
+    if (isHost){
+      mqttClient.subscribe('dice/' + roomCode + '/join');
+      mqttClient.subscribe('dice/' + roomCode + '/voice');
+      setOnlineStatus('Комната создана. Код: ' + roomCode, false, true);
+      document.getElementById('roomCodeDisplay').textContent = roomCode;
+      document.getElementById('roomCodeDisplay').style.display = 'block';
+      document.getElementById('onlineConnectBtn').textContent = 'Ожидание игроков...';
+      document.getElementById('onlineConnectBtn').disabled = true;
+      if (spectatorMode){
+        myPlayerId = -1;
+        onlinePlayers = [];
+      } else {
+        myPlayerId = 0;
+        onlinePlayers = [{id: 0, nickname: myNickname, connected: true}];
+      onlineBeginnerModes = {0: beginnerMode};
+      }
+      renderOnlinePlayers();
+      renderSpectatorStatus();
+      try { if (typeof diceResumeAfterConnect === 'function') diceResumeAfterConnect(); } catch(e){}
+    } else {
+      mqttClient.subscribe('dice/' + roomCode + '/state');
+      mqttClient.subscribe('dice/' + roomCode + '/voice');
+      mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'join', nickname: myNickname, clientId: mqttClient.options.clientId, beginnerMode: beginnerMode}));
+      setOnlineStatus('Подключение к комнате ' + roomCode + '...', false, false);
+      try { if (typeof diceResumeAfterConnect === 'function') diceResumeAfterConnect(); } catch(e){}
+    }
+  });
+
+  mqttClient.on('message', (topic, message)=>{
+    if (topic.endsWith('/voice')){
+      try { handleVoiceSignal(JSON.parse(message.toString())); } catch(e2){}
+      return;
+    }
+    try {
+      const data = JSON.parse(message.toString());
+      handleMQTTMessage(topic, data);
+    } catch(e){}
+  });
+
+  mqttClient.on('error', (err)=>{ setOnlineStatus('Ошибка сети: ' + err.message, true, false); });
+  mqttClient.on('reconnect', ()=>{ setOnlineStatus('Переподключение...', false, false); });
+}
+
+function handleMQTTMessage(topic, data){
+  if (topic.endsWith('/join') && isHost){
+    if (data.type === 'join'){
+      let existing = onlinePlayers.find(p => p.nickname === data.nickname);
+      if (!existing && gameStarted){
+        const gi = players.findIndex(p => p.name === data.nickname);
+        if (gi >= 0){
+          existing = {id: gi, nickname: data.nickname};
+          onlinePlayers.push({id: gi, nickname: data.nickname, connected: true, clientId: data.clientId});
+        }
+      }
+      if (existing){
+        existing.connected = true;
+        existing.clientId = data.clientId;
+        onlineBeginnerModes[existing.id] = data.beginnerMode || false;
+        mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({
+          type: 'joined', playerId: existing.id, rejoined: true,
+          players: onlinePlayers.map(p=>({nickname: p.nickname, id: p.id}))
+        }));
+        setOnlineStatus('Игрок "' + data.nickname + '" вернулся в комнату', false, true);
+        renderOnlinePlayers();
+        renderSpectatorStatus();
+        if (gameStarted) setTimeout(onlineSync, 400);
+        return;
+      }
+      if (gameStarted){
+        mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({
+          type: 'joinRefused', reason: 'Партия уже идёт — подключиться нельзя'
+        }));
+        return;
+      }
+      const newId = onlinePlayers.length;
+      onlinePlayers.push({id: newId, nickname: data.nickname, connected: true, clientId: data.clientId});
+      onlineBeginnerModes[newId] = data.beginnerMode || false;
+      mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({
+        type: 'joined', playerId: newId,
+        players: onlinePlayers.map(p=>({nickname: p.nickname, id: p.id}))
+      }));
+      setOnlineStatus('Игрок "' + data.nickname + '" подключился! Всего: ' + onlinePlayers.length, false, true);
+      renderOnlinePlayers();
+      voiceEnsurePeers();
+      renderSpectatorStatus();
+      if (onlinePlayers.length >= 2 && !spectatorMode){
+        document.getElementById('onlineConnectBtn').textContent = '\u25B6 Начать онлайн-игру (' + onlinePlayers.length + ' игр.)';
+        document.getElementById('onlineConnectBtn').disabled = false;
+      }
+    } else if (data.type === 'shieldCipherSet' && isHost){ shieldCiphers[data.playerId] = data.cipher; } else if (data.type === 'shieldGuess' && isHost){ if (shieldPending && shieldPending.playerId === data.playerId){ if (data.cancelled || !data.guess){ shieldPending = null; log('🔓 Попытка взлома отменена — способность осталась на панели', 'protect'); updateUI(); } else { shieldResolve(shieldPending.attacker, shieldPending.target, data.guess); } } } else if (data.type === 'chat'){
+      mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'chat', nickname: data.nickname, text: data.text, msgId: data.msgId}));
+      addChatMessage(data.nickname, data.text, false, false, data.msgId);
+    } else if (data.type === 'roll' && data.playerId === currentPlayer && !rolling){
+      doRoll(); setTimeout(onlineSync, 700);
+    } else if (data.type === 'surrender' && data.playerId === currentPlayer){
+      surrender(data.playerId); setTimeout(onlineSync, 300);
+    } else if (data.type === 'endTurn' && data.playerId === currentPlayer){
+      if (actionsLeft < ACTIONS_PER_TURN || freeRollPending){ nextTurn(); updateUI(); if (!gameOver && isCurrentBot()) setTimeout(botInfluenceOrRoll, 1200); setTimeout(onlineSync, 300); }
+    } else if (data.type === 'tokenPlus' && data.playerId === currentPlayer){
+      toggleTokenPlus(data.playerId); setTimeout(onlineSync, 300);
+    } else if (data.type === 'tokDouble' && data.playerId === currentPlayer){
+      toggleDoubleStep(data.playerId); setTimeout(onlineSync, 300);
+    } else if (data.type === 'release' && data.playerId === currentPlayer){
+      useReleaseToken(); setTimeout(onlineSync, 200);
+    } else if (data.type === 'startChoice' && data.playerId === currentPlayer){
+      startChooseOrig(data.ability, data.playerId); setTimeout(onlineSync, 300);
+    } else if (data.type === 'influenceChoose' && data.playerId === currentPlayer){
+      influenceChooseOrig(data.ability, data.playerId); setTimeout(onlineSync, 300);
+    } else if (data.type === 'applyReturn' && data.playerId === currentPlayer){
+      applyReturnOrig(data.playerId, data.targetIdx); setTimeout(onlineSync, 300);
+    } else if (data.type === 'applyFreeze' && data.playerId === currentPlayer){
+      applyFreezeOrig(data.playerId, data.targetIdx); setTimeout(onlineSync, 300);
+    } else if (data.type === 'placeMine' && data.playerId === currentPlayer){
+      const ci = data.cellIdx;
+      if (typeof PATH_VALUES[ci] === 'number' && !(ci in mines)){ minePlacingMode = true; placeMineOrig(data.playerId, ci); }
+      setTimeout(onlineSync, 300);
+    } else if (data.type === 'buyAbility' && data.playerId === currentPlayer){
+      buyAbilityOrig(data.itemId, data.playerId); setTimeout(onlineSync, 300);
+    } else if (data.type === 'useInv' && data.playerId === currentPlayer){
+      if (data.itemId !== 'mine') useInvItemOrig(data.playerId, data.itemId);
+      setTimeout(onlineSync, 300);
+    } else if (data.type === 'invMine' && data.playerId === currentPlayer){
+      const ci = data.cellIdx;
+      if (typeof PATH_VALUES[ci] === 'number' && !(ci in mines)){ minePlacingMode = true; invPlaceMineOrig(data.playerId, ci); }
+      setTimeout(onlineSync, 300);
+    } else if (data.type === 'invTarget' && data.playerId === currentPlayer){
+      invApplyTargetOrig(data.playerId, data.targetIdx, data.itemId); setTimeout(onlineSync, 300);
+    }
+  } else if (topic.endsWith('/state') && !isHost){
+    if (data.type === 'joined' && data.playerId !== undefined){
+      myPlayerId = data.playerId;
+      onlinePlayers = data.players.map(p=>({id: p.id, nickname: p.nickname, connected: true}));
+      setTimeout(voiceEnsurePeers, 1500);
+      if (data.rejoined){
+        setOnlineStatus('Вы вернулись в комнату ' + roomCode + ' — восстанавливаем партию...', false, true);
+        try { if (typeof diceStopJoinRetry === 'function') diceStopJoinRetry(); } catch(e){}
+      } else {
+        setOnlineStatus('Подключён как игрок ' + (myPlayerId+1) + ' (' + myNickname + ')', false, true);
+      }
+      renderOnlinePlayers();
+    } else if (data.type === 'joinRefused'){
+      setOnlineStatus(data.reason || 'Подключение отклонено', true, false);
+      try { if (typeof diceStopJoinRetry === 'function') diceStopJoinRetry(); } catch(e){}
+    } else if (data.type === 'gameStart'){
+      if (gameStarted && data.gamePlayers && data.gamePlayers.length){
+        applyOnlineState(data);
+      } else {
+        onlinePlayers = data.players.map(p=>({id: p.id, nickname: p.nickname, connected: true}));
+        startOnlineGame(data);
+      }
+    } else if (data.type === 'gameState'){
+      applyOnlineState(data);
+    } else if (data.type === 'shieldCipherReq' && !isHost && data.forPlayerId === myPlayerId){ shieldOpenModal('🛡 Защита активирована — установите шифр', 'Выберите число от 1 до 6 — это ваш шифр, его увидите только вы.', function(ab){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldCipherSet', playerId: myPlayerId, cipher: ab})); }, null); } else if (data.type === 'shieldGuessReq' && !isHost && data.forPlayerId === myPlayerId){ shieldOpenModal('🔒 Попытка взлома Защиты', 'Угадайте шифр — одно число от 1 до 6, одна попытка. Не угадаете — атака заблокирована, способность останется на панели, а соперник получит +' + SHIELD_BONUS + ' очков.', function(g){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldGuess', playerId: myPlayerId, guess: g})); }, function(){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'shieldGuess', playerId: myPlayerId, guess: null, cancelled: true})); }); } else if (data.type === 'chat'){
+      addChatMessage(data.nickname, data.text, data.nickname === myNickname, false, data.msgId);
+    } else if (data.type === 'logMsg'){
+      const le = data.entry;
+      if (le && le.seq > clientLogSeq){ clientLogSeq = le.seq; log(le.text, le.cls); }
+    }
+  }
+}
+
+function renderOnlinePlayers(){
+  const el = document.getElementById('onlinePlayers');
+  if (!el) return;
+  let html_str = '';
+  if (spectatorMode && isHost){
+    html_str += '<div style="font-weight:700;margin-bottom:4px;color:#8e44ad">\u{1F441} ' + myNickname + ' (\u0437\u0440\u0438\u0442\u0435\u043B\u044C-\u0445\u043E\u0441\u0442)</div>';
+  }
+  if (onlinePlayers.length === 0 && !(spectatorMode && isHost)){ el.innerHTML = ''; return; }
+  if (onlinePlayers.length > 0){
+    html_str += '<div style="font-weight:700;margin-bottom:4px">\u0418\u0433\u0440\u043E\u043A\u0438 (' + onlinePlayers.length + '):</div>';
+    html_str += onlinePlayers.map(p=>'<div>' + (p.id===myPlayerId?'\u2192 ':'') + (p.id+1) + '. ' + p.nickname + (onlineBeginnerModes[p.id]?' <span class="badge badge-beginner" style="font-size:9px">\u{1F393} новичок</span>':'') + '</div>').join('');
+  }
+  el.innerHTML = html_str;
+}
+
+function renderSpectatorStatus(){
+  const startBtn = document.getElementById('onlineStartBtn');
+  if (!startBtn) return;
+  if (isHost){
+    startBtn.style.display = 'inline-block';
+    startBtn.textContent = onlinePlayers.length >= 2 ? '\u25B6 \u041D\u0430\u0447\u0430\u0442\u044C \u0438\u0433\u0440\u0443 (' + onlinePlayers.length + ' \u0438\u0433\u0440.)' : '\u041E\u0436\u0438\u0434\u0430\u043D\u0438\u0435 \u0438\u0433\u0440\u043E\u043A\u043E\u0432...';
+    startBtn.disabled = onlinePlayers.length < 2;
+  }
+}
+
+function startOnlineGame(data){
+  if (data.econCred!==undefined) econCred = data.econCred;
+  winSum = data.winSum || 2000;
+  finishPenalty = 0;
+  policePenalty = Math.floor((data.winSum || 2000) * 0.1);
+
+  autoFinish = data.autoFinish !== false;
+  if (data.bossMode !== undefined) bossMode = data.bossMode;
+  bossIdx = -1; bossTurnsLeft = 0;
+  if (data.mileMode !== undefined) mileMode = data.mileMode;
+  if (data.secretMode !== undefined) secretMode = data.secretMode;
+  if (data.pathMode !== undefined) pathMode = data.pathMode;
+  if (data.ruinMode !== undefined) ruinMode = data.ruinMode;
+  if (data.giftMode !== undefined) giftMode = data.giftMode;
+  if (data.keyMode !== undefined) keyMode = data.keyMode;
+  try{ if (window.syncModeTabs) window.syncModeTabs(); }catch(e){}
+  if (data.contracts && data.contracts.length){
+    contracts = {};
+    data.contracts.forEach(function(c,i){ contracts[i] = c ? Object.assign({}, (CONTRACT_POOL.find(function(q){return q.key===c.k;})||CONTRACT_POOL[0]), {done:false, bonus:c.b, turnOnly:!!c.t}) : null; });
+    renderContract();
+  }
+  if (data.pathVals && data.pathVals.length) { PATH_VALUES = data.pathVals.slice(); finishIdx = (data.finishIdx !== undefined) ? data.finishIdx : PATH_VALUES.length - 1; finHP = (data.finHP !== undefined) ? data.finHP : 3; }
+  playerCount = data.players.length;
+  players = [];
+  for (let i=0;i<data.players.length;i++){
+    players.push({name: data.players[i].nickname, color: PLAYER_COLORS[i], pos: 0, sum: 0, skip: false, finished: false, isBot: false, glory:0, lead:0, gross:0, gifts:0, keys:0, trapUnlocked:false});
+  players.forEach(function(p){ p.mile=0; p.misT=null; p.misProg=0; p.misDone=false; p.glory=0; p.lead=0; p.gross=0; p.gifts=0; p.keys=0; });
+  }
+  currentPlayer = 0;
+  doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {}; botShopBought = false;
+  players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; pairCancels[i]=0; initAbilities(i); });
+  players.forEach(p=>{ p.cred = econCred?40:0; });
+  try{ resetActivityState(); }catch(e){}
+  mines = {}; reconfiguredMines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; partyTurns = 0; partyStatsReset(); surrenderCount = 0; resultsShown = false; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {};
+  try{ const _mpi = players.findIndex(pl=>!pl.isBot); if(_mpi>=0) metaGrantAbilities(_mpi); }catch(e){}
+  gameStarted = true; gameOver = false;
+  lockSettings();
+  document.getElementById('settingsOverlay').style.display = 'none';
+  document.getElementById('onlineOverlay').style.display = 'none';
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('gameControls').style.display = 'block';
+  document.getElementById('chatPanel').classList.add('show');
+  document.getElementById('voicePanel').style.display = 'block';
+  log('\u041E\u043D\u043B\u0430\u0439\u043D-\u0438\u0433\u0440\u0430 \u043D\u0430\u0447\u0430\u043B\u0430\u0441\u044C! \u0418\u0433\u0440\u043E\u043A\u043E\u0432: ' + players.length + '. \u0426\u0435\u043B\u044C: ' + winSum);
+  addChatMessage('', '\u041E\u043D\u043B\u0430\u0439\u043D-\u0438\u0433\u0440\u0430 \u043D\u0430\u0447\u0430\u043B\u0430\u0441\u044C! \u0418\u0433\u0440\u043E\u043A\u043E\u0432: ' + players.length, false, true);
+  updateUI();
+}
+
+function hostStartOnlineGame(){
+  if (onlinePlayers.length < 2) return;
+  readSettings();
+  players = [];
+  for (let i=0;i<onlinePlayers.length;i++){
+    players.push({name: onlinePlayers[i].nickname, color: PLAYER_COLORS[i], pos: 0, sum: 0, skip: false, finished: false, isBot: false, cred: econCred?40:0, health: 100});
+  }
+  currentPlayer = 0;
+  doublesInRow = {}; inPoliceMode = {}; policeAttempts = {}; abilities = {}; botShopBought = false;
+  players.forEach((p,i)=>{ doublesInRow[i]=0; inPoliceMode[i]=false; policeAttempts[i]=0; pairCancels[i]=0; initAbilities(i); });
+  players.forEach(p=>{ p.cred = econCred?40:0; });
+  try{ resetActivityState(); }catch(e){}
+  mines = {}; eliminated = new Set(); minePlacingMode = false; influencePending = false; startAbilityPending = false; shopAbilities = {}; pendingStartAbilities = {}; inventory = {}; plus1Bonus = {}; tokenPlusPending = {}; doubleStepPending = {}; partyTurns = 0; partyStatsReset(); surrenderCount = 0; resultsShown = false;
+  try{ const _mpi = players.findIndex(pl=>!pl.isBot); if(_mpi>=0) metaGrantAbilities(_mpi); }catch(e){}
+  gameStarted = true; gameOver = false;
+  lockSettings();
+  document.getElementById('settingsOverlay').style.display = 'none';
+    document.getElementById('onlineOverlay').style.display = 'none';
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('gameControls').style.display = 'block';
+  document.getElementById('chatPanel').classList.add('show');
+  document.getElementById('voicePanel').style.display = 'block';
+  players.forEach(function(p){ p.glory=0; p.lead=0; p.gross=0; p.gifts=0; p.keys=0; });
+  keysOnBoard = []; giftIdx = -1; giftKind = -1; giftTimer = 0;
+  PATH_VALUES = PATH_ORIGINAL.slice(); finHP = FINISH_HP; finishIdx = PATH_VALUES.length - 1;
+  seedKeys();
+  buildBoard();
+  assignMissions();
+  broadcastGameState('gameStart');
+  log('\u041E\u043D\u043B\u0430\u0439\u043D-\u0438\u0433\u0440\u0430 \u043D\u0430\u0447\u0430\u043B\u0430\u0441\u044C! \u0418\u0433\u0440\u043E\u043A\u043E\u0432: ' + players.length + '. \u0426\u0435\u043B\u044C: ' + winSum);
+  addChatMessage('', '\u041E\u043D\u043B\u0430\u0439\u043D-\u0438\u0433\u0440\u0430 \u043D\u0430\u0447\u0430\u043B\u0430\u0441\u044C! \u0418\u0433\u0440\u043E\u043A\u043E\u0432: ' + players.length, false, true);
+  updateUI();
+}
+
+function broadcastGameState(msgType){
+  if (!isHost || !mqttClient) return;
+  try { if (typeof diceSaveSnapshot === 'function') diceSaveSnapshot(); } catch(e){}
+  mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({
+    type: msgType,
+    econCred: econCred,
+    players: onlinePlayers.map(p=>({id: p.id, nickname: p.nickname})),
+    winSum: winSum, finishPenalty: finishPenalty, policePenalty: policePenalty, autoFinish: autoFinish, bossMode: bossMode, bossIdx: bossIdx, bossTurnsLeft: bossTurnsLeft, mileMode: mileMode, secretMode: secretMode, mile: players.map(p=>p.mile||0), misT: players.map(p=>p.misT?p.misT.k:''), misProg: players.map(p=>p.misProg||0),
+    pathMode: pathMode, ruinMode: ruinMode, giftMode: giftMode, keyMode: keyMode, finHP: finHP, finishIdx: finishIdx, pathVals: PATH_VALUES.slice(), giftIdx: giftIdx, giftKind: giftKind, keyCells: keysOnBoard.slice(), nomMode: nomMode,
+    contracts: players.map(function(p,i){ return (contracts[i] && !contracts[i].done) ? {k:contracts[i].key, b:contracts[i].bonus, t:contracts[i].turnOnly?1:0} : null; }),
+    glory: players.map(p=>p.glory||0), lead: players.map(p=>p.lead||0), gross: players.map(p=>p.gross||0), gifts: players.map(p=>p.gifts||0), keys: players.map(p=>p.keys||0),
+    currentPlayer: currentPlayer, gameOver: gameOver, gameStarted: gameStarted,
+    gamePlayers: players.map(p=>({name:p.name, color:p.color, pos:p.pos, sum:p.sum, skip:p.skip, finished:p.finished, isBot:p.isBot, cred:p.cred||0, health:p.health||100, glory:p.glory||0, lead:p.lead||0, gross:p.gross||0, gifts:p.gifts||0, keys:p.keys||0, mile:p.mile||0, misT:p.misT?p.misT.k:'', misProg:p.misProg||0})),
+    doublesInRow: doublesInRow, inPoliceMode: inPoliceMode, policeAttempts: policeAttempts,
+    abilities: abilities, actionsLeft: actionsLeft, freeRollPending: freeRollPending, mines: mines, reconfiguredMines: reconfiguredMines, eliminated: Array.from(eliminated),
+    beginnerModes: onlineBeginnerModes,
+    pendingStartAbilities: pendingStartAbilities, mineTraps: mineTraps, savings: savings, streaks: streaks, newsBoost: newsBoost, pairChoiceOn: pairChoiceOn, inventory: inventory, plus1Bonus: plus1Bonus, tokenPlusPending: tokenPlusPending, doubleStepPending: doubleStepPending, partyTurns: partyTurns, surrenderCount: surrenderCount, logTail: onlineLogHistory.slice(-50), logSeq: onlineLogSeq
+  }));
+}
+
+function applyOnlineState(data){
+  const prevPositions = players.map(function(p){ return p ? p.pos : null; });
+  if (data.gamePlayers){
+    players = data.gamePlayers.map(p=>({name:p.name, color:p.color, pos:p.pos, sum:p.sum, skip:p.skip, finished:p.finished, isBot:p.isBot, cred:p.cred||0, health:p.health||100}));
+  }
+  currentPlayer = data.currentPlayer || 0;
+  gameOver = data.gameOver || false;
+  gameStarted = data.gameStarted || false;
+  doublesInRow = data.doublesInRow || {};
+  inPoliceMode = data.inPoliceMode || {};
+  policeAttempts = data.policeAttempts || {};
+  abilities = data.abilities || {};
+  actionsLeft = (typeof data.actionsLeft === 'number') ? data.actionsLeft : ACTIONS_PER_TURN;
+  freeRollPending = data.freeRollPending || false;
+  mines = data.mines || {};
+  if (data.reconfiguredMines) reconfiguredMines = data.reconfiguredMines;
+  eliminated = new Set(data.eliminated || []);
+  if (data.bossMode !== undefined) bossMode = data.bossMode;
+  if (data.bossIdx !== undefined) bossIdx = data.bossIdx;
+  if (data.bossTurnsLeft !== undefined) bossTurnsLeft = data.bossTurnsLeft;
+  if (data.mileMode !== undefined) mileMode = data.mileMode;
+  if (data.secretMode !== undefined) secretMode = data.secretMode;
+  if (data.mile) players.forEach(function(p,i){ p.mile = data.mile[i]||0; });
+  if (data.misT) players.forEach(function(p,i){ p.misT = misDef(data.misT[i]); p.misProg = data.misProg ? (data.misProg[i]||0) : 0; });
+  if (data.pathMode !== undefined) pathMode = data.pathMode;
+  if (data.ruinMode !== undefined) ruinMode = data.ruinMode;
+  if (data.giftMode !== undefined) giftMode = data.giftMode;
+  if (data.keyMode !== undefined) keyMode = data.keyMode;
+  try{ if (window.syncModeTabs) window.syncModeTabs(); }catch(e){}
+  if (data.contracts && data.contracts.length){
+    contracts = {};
+    data.contracts.forEach(function(c,i){ contracts[i] = c ? Object.assign({}, (CONTRACT_POOL.find(function(q){return q.key===c.k;})||CONTRACT_POOL[0]), {done:false, bonus:c.b, turnOnly:!!c.t}) : null; });
+    renderContract();
+  }
+  if (data.finHP !== undefined) finHP = data.finHP;
+  if (data.finishIdx !== undefined) finishIdx = data.finishIdx;
+  if (data.pathVals && data.pathVals.length === PATH_VALUES.length) PATH_VALUES = data.pathVals.slice();
+  if (data.giftIdx !== undefined) giftIdx = data.giftIdx;
+  if (data.giftKind !== undefined) giftKind = data.giftKind;
+  if (data.keyCells) keysOnBoard = data.keyCells.slice();
+  if (data.glory) players.forEach(function(p,i){ p.glory = data.glory[i]||0; });
+  if (data.lead) players.forEach(function(p,i){ p.lead = data.lead[i]||0; });
+  if (data.gross) players.forEach(function(p,i){ p.gross = data.gross[i]||0; });
+  if (data.gifts) players.forEach(function(p,i){ p.gifts = data.gifts[i]||0; });
+  if (data.keys) players.forEach(function(p,i){ p.keys = data.keys[i]||0; });
+  if (data.pathMode || data.ruinMode || data.giftMode || data.keyMode){ autoFinish = false; }
+  try{ buildBoard(); }catch(e){}
+  try{ renderBossCrown(); }catch(e){}
+  if (data.beginnerModes) onlineBeginnerModes = data.beginnerModes;
+  if (data.pendingStartAbilities) pendingStartAbilities = data.pendingStartAbilities;
+  if (data.inventory) inventory = data.inventory;
+  if (data.plus1Bonus) plus1Bonus = data.plus1Bonus;
+  if (data.tokenPlusPending) tokenPlusPending = data.tokenPlusPending;
+  if (data.doubleStepPending) doubleStepPending = data.doubleStepPending;
+  if (data.mineTraps) mineTraps = data.mineTraps || {};
+  if (data.savings) savings = data.savings || {};
+  if (data.streaks) streaks = data.streaks || {};
+  if (data.newsBoost) newsBoost = data.newsBoost || {};
+  if (data.partyTurns !== undefined) partyTurns = data.partyTurns;
+  if (data.surrenderCount !== undefined) surrenderCount = data.surrenderCount;
+  if (data.logTail && data.logTail.length){ data.logTail.forEach(function(e){ if (e && e.seq > clientLogSeq){ clientLogSeq = e.seq; log(e.text, e.cls); } }); }
+  renderOnlinePlayers();
+  if (gameStarted){
+    document.getElementById('settingsOverlay').style.display = 'none';
+    document.getElementById('onlineOverlay').style.display = 'none';
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('gameControls').style.display = 'block';
+    document.getElementById('chatPanel').classList.add('show');
+    document.getElementById('voicePanel').style.display = 'block';
+  }
+  renderMines();
+  try{
+    if (gameStarted && prevPositions && players.length === prevPositions.length){
+      const changed = [];
+      players.forEach(function(p,i){ if (prevPositions[i] !== null && !eliminated.has(i) && p.pos !== prevPositions[i]) changed.push(i); });
+      if (changed.length === 1){
+        const api = changed[0], fromP = prevPositions[api], toP = players[api].pos;
+        const d = (toP - fromP + PATH_VALUES.length) % PATH_VALUES.length;
+        if (d >= 1 && d <= 24) animatePiecePath(api, fromP, toP);
+      }
+    }
+  }catch(e){}
+  updateUI();
+  if (gameOver && gameStarted && !resultsShown){ resultsShown = true; const wi = players.findIndex(p=>p.finished); showResults(wi >= 0 ? wi : 0); }
+}
+
+function onlineSync(){
+  if (isHost && mqttClient && onlineMode) broadcastGameState('gameState');
+}
+
+// Chat
+let diceChatSeen = [];
+function addChatMessage(nick, text, isMe, isSys, msgId){
+  const box = document.getElementById('chatMessages');
+  if (!box) return;
+  if (msgId){
+    if (diceChatSeen.indexOf(msgId) !== -1) return;
+    diceChatSeen.push(msgId);
+    if (diceChatSeen.length > 200) diceChatSeen = diceChatSeen.slice(-100);
+  }
+  const d = document.createElement('div');
+  d.className = 'chat-msg' + (isMe?' me':'') + (isSys?' sys':'');
+  d.textContent = isSys ? text : '';
+  if (!isSys) d.innerHTML = '<span class="nick">' + nick + ':</span> ' + text;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendChat(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || !mqttClient) return;
+  const displayName = (spectatorMode && isHost) ? '\u{1F441} ' + myNickname : myNickname;
+  const msgId = Date.now() + '-' + Math.random().toString(36).substr(2,6);
+  if (isHost){
+    mqttClient.publish('dice/' + roomCode + '/state', JSON.stringify({type:'chat', nickname: displayName, text: text, msgId: msgId}));
+    addChatMessage(displayName, text, true, false, msgId);
+  } else {
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'chat', nickname: displayName, text: text, msgId: msgId}));
+    addChatMessage(displayName, text, true, false, msgId);
+  }
+  input.value = '';
+}
+
+// Voice chat (WebRTC)
+async function toggleVoice(){
+  if (!voiceOn){
+    try {
+      voiceStream = await navigator.mediaDevices.getUserMedia({audio: true});
+      voiceOn = true;
+      document.getElementById('voiceBtn').textContent = '\uD83D\uDD07 Выключить микрофон';
+      document.getElementById('voiceBtn').classList.add('on');
+      voiceEnsurePeers();
+      updateVoiceParticipants();
+    } catch(e){
+      setOnlineStatus('\u041E\u0448\u0438\u0431\u043A\u0430 \u043C\u0438\u043A\u0440\u043E\u0444\u043E\u043D\u0430: ' + e.message, true, false);
+    }
+  } else {
+    if (voiceStream) { voiceStream.getTracks().forEach(t=> t.stop()); voiceStream = null; }
+    voiceOn = false;
+    document.getElementById('voiceBtn').textContent = '\uD83C\uDF99 Включить микрофон';
+    document.getElementById('voiceBtn').classList.remove('on');
+    for (const id in voicePCs){ voicePCs[id].close(); delete voicePCs[id]; }
+    updateVoiceParticipants();
+  }
+}
+
+function voiceEnsurePeers(){
+  if (!voiceOn || !onlineMode) return;
+  for (const p of onlinePlayers){ if (p.id !== myPlayerId) createVoicePeer(p.id); }
+}
+function createVoicePeer(peerId){
+  if (voicePCs[peerId]) return;
+  const pc = new RTCPeerConnection(STUN_SERVERS);
+  voicePCs[peerId] = pc;
+  if (voiceStream) voiceStream.getTracks().forEach(track=> pc.addTrack(track, voiceStream));
+  pc.ontrack = (event)=>{
+    const audio = new Audio();
+    audio.srcObject = event.streams[0];
+    audio.autoplay = true;
+    audio.play();
+  };
+  pc.onicecandidate = (event)=>{
+    if (event.candidate) mqttClient.publish('dice/' + roomCode + '/voice', JSON.stringify({type:'ice', from: myPlayerId, to: peerId, data: event.candidate}));
+  };
+  if (myPlayerId < peerId){
+    pc.createOffer().then(offer=>{
+      pc.setLocalDescription(offer);
+      mqttClient.publish('dice/' + roomCode + '/voice', JSON.stringify({type:'offer', from: myPlayerId, to: peerId, data: offer}));
+    });
+  }
+}
+
+function handleVoiceSignal(sig){
+  if (sig.to !== myPlayerId && sig.from !== myPlayerId) return;
+  if (sig.type === 'offer' && sig.to === myPlayerId){
+    let pc = voicePCs[sig.from];
+    if (!pc){
+      pc = new RTCPeerConnection(STUN_SERVERS);
+      voicePCs[sig.from] = pc;
+      if (voiceStream) voiceStream.getTracks().forEach(track=> pc.addTrack(track, voiceStream));
+      pc.ontrack = (event)=>{ const audio = new Audio(); audio.srcObject = event.streams[0]; audio.autoplay = true; audio.play(); };
+      pc.onicecandidate = (event)=>{ if (event.candidate) mqttClient.publish('dice/' + roomCode + '/voice', JSON.stringify({type:'ice', from: myPlayerId, to: sig.from, data: event.candidate})); };
+    }
+    pc.setRemoteDescription(new RTCSessionDescription(sig.data));
+    pc.createAnswer().then(answer=>{ pc.setLocalDescription(answer); mqttClient.publish('dice/' + roomCode + '/voice', JSON.stringify({type:'answer', from: myPlayerId, to: sig.from, data: answer})); });
+  } else if (sig.type === 'answer' && sig.to === myPlayerId){
+    const pc = voicePCs[sig.from];
+    if (pc) pc.setRemoteDescription(new RTCSessionDescription(sig.data));
+  } else if (sig.type === 'ice' && sig.to === myPlayerId){
+    const pc = voicePCs[sig.from];
+    if (pc && sig.data) pc.addIceCandidate(new RTCIceCandidate(sig.data));
+  }
+}
+
+function updateVoiceParticipants(){
+  const el = document.getElementById('voiceParticipants');
+  if (!el) return;
+  if (!voiceOn){ el.textContent = ''; return; }
+  const others = onlinePlayers.filter(p=> p.id !== myPlayerId);
+  el.textContent = others.length > 0 ? '\u041D\u0430 \u0441\u0432\u044F\u0437\u0438: ' + others.map(p=>p.nickname).join(', ') : '\u041E\u0436\u0438\u0434\u0430\u043D\u0438\u0435 \u0434\u0440\u0443\u0433\u0438\u0445 \u0438\u0433\u0440\u043E\u043A\u043E\u0432...';
+}
+
+// Online UI event listeners
+// Settings modal
+document.getElementById('settingsBtn').addEventListener('click', function(){
+  document.getElementById('settingsOverlay').style.display = 'flex';
+});
+document.getElementById('settingsCloseX').addEventListener('click', function(){
+  document.getElementById('settingsOverlay').style.display = 'none';
+});
+
+// Online modal
+document.getElementById('onlineBtn').addEventListener('click', function(){
+  document.getElementById('onlineOverlay').style.display = 'flex';
+});
+document.getElementById('onlineCloseX').addEventListener('click', function(){
+  document.getElementById('onlineOverlay').style.display = 'none';
+  // Если реальной онлайн-игры нет — снимаем залипший онлайн-режим
+  if (!(mqttClient && mqttClient.connected)){
+    onlineMode = false;
+    updateUI();
+  }
+});
+
+document.getElementById('hostTgl').addEventListener('click', function(){
+  isHost = !isHost;
+  this.classList.toggle('on', isHost);
+  document.getElementById('hostFields').style.display = isHost ? 'block' : 'none';
+  document.getElementById('joinFields').style.display = isHost ? 'none' : 'block';
+  document.getElementById('onlineConnectBtn').textContent = isHost ? 'Создать комнату' : 'Подключиться';
+  if (!isHost){ spectatorMode = false; document.getElementById('spectatorTgl').classList.remove('on'); }
+  setOnlineStatus('', false, false);
+});
+
+// Spectator toggle
+document.getElementById('spectatorTgl').addEventListener('click', function(){
+  spectatorMode = !spectatorMode;
+  this.classList.toggle('on', spectatorMode);
+});
+
+document.getElementById('beginnerOnlineTgl').addEventListener('click', function(){
+  beginnerMode = !beginnerMode;
+  this.classList.toggle('on', beginnerMode);
+  if (document.getElementById('beginnerTgl')){
+    document.getElementById('beginnerTgl').classList.toggle('on', beginnerMode);
+  }
+  if (beginnerMode) resetBeginnerHints();
+  renderOnlinePlayers();
+});
+
+document.getElementById('onlineConnectBtn').addEventListener('click', function(){
+  const nick = document.getElementById('nicknameInput').value.trim();
+  if (nick.length < 2){ setOnlineStatus('Введите никнейм (минимум 2 символа)', true, false); return; }
+  myNickname = nick;
+  if (typeof mqtt === 'undefined'){ setOnlineStatus('Библиотека MQTT не загрузилась. Проверьте интернет, обновите страницу (F5) или попробуйте другую сеть.', true, false); return; }
+  onlineMode = true;
+  if (isHost){
+    if (roomCode){
+      if (mqttClient && mqttClient.connected && onlinePlayers.length >= 2){ hostStartOnlineGame(); }
+      else if (mqttClient && mqttClient.connected){ setOnlineStatus('Комната ждёт игроков: подключено ' + onlinePlayers.length + ' из 2+. Код: ' + roomCode, true, false); }
+      else { setOnlineStatus('Подключение к брокеру ещё не установлено — подождите несколько секунд.', true, false); }
+      return;
+    }
+    roomCode = genRoomCode(); try { diceSaveSession(); } catch(e){}
+    connectMQTT();
+  }
+  else {
+    roomCode = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+    if (roomCode.length !== 5){ setOnlineStatus('Введите 5-символьный код комнаты', true, false); return; }
+    try { diceSaveSession(); } catch(e){}
+    connectMQTT();
+  }
+});
+
+document.getElementById('onlineStartBtn').addEventListener('click', function(){
+  if (isHost){
+    if (onlinePlayers.length >= 2) hostStartOnlineGame();
+    else setOnlineStatus('Нужно минимум 2 игрока — ждите подключений по коду ' + roomCode, true, false);
+  }
+});
+
+document.getElementById('chatSendBtn').addEventListener('click', sendChat);
+document.getElementById('chatInput').addEventListener('keydown', e=>{ if (e.key === 'Enter') sendChat(); });
+document.getElementById('voiceBtn').addEventListener('click', toggleVoice);
+
+// Online start handled by onlineStartBtn
+
+// Override roll for online
+document.getElementById('rollBtn').addEventListener('click', function(e){
+  if (onlineMode && !mqttClient){ onlineMode = false; updateUI(); } // защита от залипшего режима
+  if (onlineMode){
+    if (spectatorMode && isHost){ e.preventDefault(); e.stopPropagation(); return; }
+    if (isHost){
+      if (currentPlayer === myPlayerId && !isCurrentBot()){
+        e.preventDefault(); e.stopPropagation();
+        doRoll(); setTimeout(onlineSync, 700);
+      }
+    } else {
+      e.preventDefault(); e.stopPropagation();
+      if (currentPlayer === myPlayerId && mqttClient){
+        mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'roll', playerId: myPlayerId}));
+      }
+    }
+  }
+}, true);
+
+// Override release for online
+document.getElementById('releaseBtn').addEventListener('click', function(e){
+  if (onlineMode && !mqttClient){ onlineMode = false; updateUI(); } // защита от залипшего режима
+  if (onlineMode){
+    if (spectatorMode && isHost){ e.preventDefault(); e.stopPropagation(); return; }
+    if (isHost){ useReleaseToken(); setTimeout(onlineSync, 200); }
+    else if (mqttClient){ mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'release', playerId: myPlayerId})); }
+  }
+}, true);
+
+// Save original function references for client-side overrides
+var startChooseOrig = startChoose;
+var influenceChooseOrig = influenceChoose;
+var applyReturnOrig = applyReturn;
+var applyFreezeOrig = applyFreeze;
+var placeMineOrig = placeMine;
+var updateTurnOrig = updateTurn;
+
+// Override startChoose for clients
+startChoose = function(ability, pi){
+  if (onlineMode && !isHost && pi === myPlayerId && mqttClient){
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'startChoice', playerId: myPlayerId, ability: ability}));
+    closeStartModal();
+    return;
+  }
+  startChooseOrig(ability, pi);
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
+
+influenceChoose = function(ability, pi){
+  if (onlineMode && !isHost && pi === myPlayerId && mqttClient){
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'influenceChoose', playerId: myPlayerId, ability: ability}));
+    closeModal();
+    return;
+  }
+  influenceChooseOrig(ability, pi);
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
+
+applyReturn = function(pi, targetIdx){
+  if (onlineMode && !isHost && pi === myPlayerId && mqttClient){
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'applyReturn', playerId: myPlayerId, targetIdx: targetIdx}));
+    closeModal();
+    return;
+  }
+  applyReturnOrig(pi, targetIdx);
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
+
+applyFreeze = function(pi, targetIdx){
+  if (onlineMode && !isHost && pi === myPlayerId && mqttClient){
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'applyFreeze', playerId: myPlayerId, targetIdx: targetIdx}));
+    closeModal();
+    return;
+  }
+  applyFreezeOrig(pi, targetIdx);
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
+
+placeMine = function(pi, cellIdx){
+  if (onlineMode && !isHost && pi === myPlayerId && mqttClient){
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'placeMine', playerId: myPlayerId, cellIdx: cellIdx}));
+    minePlacingMode = false;
+    document.getElementById('mineHint').classList.remove('show');
+    document.querySelectorAll('.mine-target').forEach(c=>{ c.classList.remove('mine-target'); c.onclick = null; });
+    return;
+  }
+  placeMineOrig(pi, cellIdx);
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
+
+// Override buyAbility for online clients
+var buyAbilityOrig = buyAbility;
+buyAbility = function(itemId, pi){
+  if (onlineMode && !isHost && pi === myPlayerId && mqttClient){
+    mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'buyAbility', playerId: myPlayerId, itemId: itemId}));
+    document.getElementById('shopModal').style.display = 'none';
+    return;
+  }
+  buyAbilityOrig(itemId, pi);
+  if (onlineMode && isHost) setTimeout(onlineSync, 300);
+};
+
+// Override updateTurn to disable buttons when not your turn or spectator
+updateTurn = function(){
+  updateTurnOrig();
+  if (onlineMode){
+    const rollBtn = document.getElementById('rollBtn');
+    const releaseBtn = document.getElementById('releaseBtn');
+    const shopBtn = document.getElementById('shopBtn');
+    const tokenPlusBtn = document.getElementById('tokenPlusBtn');
+    const doubleStepBtn = document.getElementById('doubleStepBtn');
+    if (spectatorMode && isHost){
+      rollBtn.disabled = true;
+      if (releaseBtn) releaseBtn.disabled = true;
+      if (shopBtn) shopBtn.style.display = 'none';
+      if (tokenPlusBtn) tokenPlusBtn.style.display = 'none';
+      if (doubleStepBtn) doubleStepBtn.style.display = 'none';
+    } else if (currentPlayer !== myPlayerId){
+      rollBtn.disabled = true;
+      if (shopBtn) shopBtn.style.display = 'none';
+      if (tokenPlusBtn) tokenPlusBtn.style.display = 'none';
+      if (doubleStepBtn) doubleStepBtn.style.display = 'none';
+    } else if (!gameOver && !rolling){
+      rollBtn.disabled = (actionsLeft <= 0 && !freeRollPending);
+    }
+  }
+};
+
+// Periodic state sync
+setInterval(()=>{
+  if (isHost && mqttClient && onlineMode && gameStarted && !gameOver) broadcastGameState('gameState');
+}, 2000);
+
+buildBoard();
+makePlayers();
+renderDice(1,1);
+log('Новая игра. Игроков: '+playerCount+(botCount?' (ботов: '+botCount+', сложность: '+botDifficulty+')':'')+', цель: '+winSum);
+updateUI();
+updateSettingsSummary();
+
+// ===== REVIEWS =====
+let reviewRating = 0;
+
+function initReviewStars(){
+  const container = document.getElementById('reviewStars');
+  if (!container) return;
+  container.innerHTML = '';
+  for (let i=1; i<=5; i++){
+    const btn = document.createElement('button');
+    btn.className = 'star-btn';
+    btn.textContent = '\u2605';
+    btn.dataset.val = i;
+    btn.addEventListener('click', function(){
+      reviewRating = i;
+      document.querySelectorAll('.star-btn').forEach((b,idx)=> b.classList.toggle('active', idx < i));
+    });
+    container.appendChild(btn);
+  }
+}
+
+function loadReviews(){
+  try { return JSON.parse(localStorage.getItem('diceReviews') || '[]'); }
+  catch(e){ return []; }
+}
+
+function saveReviews(arr){
+  localStorage.setItem('diceReviews', JSON.stringify(arr));
+}
+
+function renderReviews(){
+  const reviews = loadReviews();
+  const listEl = document.getElementById('reviewsList');
+  const sumEl = document.getElementById('reviewsSummary');
+  if (!listEl) return;
+  if (reviews.length === 0){
+    sumEl.textContent = '';
+    listEl.innerHTML = '<p style="color:#8a7a60;font-size:13px">Пока нет отзывов. Будьте первым!</p>';
+    return;
+  }
+  const avg = (reviews.reduce((s,r)=>s+r.rating,0) / reviews.length).toFixed(1);
+  sumEl.innerHTML = '\u2B50 ' + avg + ' \u00B7 ' + reviews.length + ' ' + (reviews.length === 1 ? 'отзыв' : reviews.length < 5 ? 'отзыва' : 'отзывов');
+  listEl.innerHTML = reviews.map((r,idx)=>{
+    const stars = '\u2605'.repeat(r.rating) + '\u2606'.repeat(5-r.rating);
+    const date = new Date(r.date).toLocaleDateString('ru-RU');
+    return '<div class="review-card"><div class="r-head"><span class="r-name">' + r.name + '</span><span class="r-date">' + date + '</span></div><div class="r-stars">' + stars + '</div><div class="r-text">' + r.text + '</div><button class="r-del" onclick="deleteReview(' + idx + ')">Удалить</button></div>';
+  }).join('');
+}
+
+function deleteReview(idx){
+  const reviews = loadReviews();
+  reviews.splice(idx, 1);
+  saveReviews(reviews);
+  renderReviews();
+}
+
+document.getElementById('reviewSubmit').addEventListener('click', function(){
+  const name = document.getElementById('reviewName').value.trim() || 'Аноним';
+  const text = document.getElementById('reviewText').value.trim();
+  if (!text){ alert('Введите текст отзыва'); return; }
+  if (reviewRating === 0){ alert('Поставьте оценку'); return; }
+  const reviews = loadReviews();
+  reviews.unshift({name, rating: reviewRating, text, date: Date.now()});
+  saveReviews(reviews);
+  document.getElementById('reviewName').value = '';
+  document.getElementById('reviewText').value = '';
+  reviewRating = 0;
+  document.querySelectorAll('.star-btn').forEach(b=> b.classList.remove('active'));
+  renderReviews();
+});
+
+// Tab switching for reviews
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', function(){
+    if (this.dataset.page === 'reviews'){
+      switchToGame();
+      document.querySelectorAll('.page').forEach(p=> p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t=> t.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('page-reviews').classList.add('active');
+      renderReviews();
+    }
+  });
+});
+
+initReviewStars();
+renderReviews();
+
+
+// ===== WISHES =====
+function loadWishes(){ try { return JSON.parse(localStorage.getItem('diceWishes') || '[]'); } catch(e){ return []; } }
+function saveWishes(arr){ localStorage.setItem('diceWishes', JSON.stringify(arr)); }
+function renderWishes(){
+  const wishes = loadWishes();
+  const el = document.getElementById('wishesList');
+  if (!el) return;
+  if (wishes.length === 0){ el.innerHTML = '<p style="color:#9a8b76;font-size:14px">Пока нет пожеланий. Будьте первым!</p>'; return; }
+  el.innerHTML = wishes.map((w,idx)=>{
+    const d = new Date(w.date).toLocaleDateString('ru-RU');
+    return '<div class="review-card"><div class="r-head"><span class="r-name">'+w.name+'</span><span class="r-date">'+d+'</span></div><div class="r-text">'+w.text+'</div><button class="r-del" onclick="deleteWish('+idx+')">\u00d7</button></div>';
+  }).join('');
+}
+function deleteWish(idx){ const w = loadWishes(); w.splice(idx,1); saveWishes(w); renderWishes(); }
+function sendTelegramNotification(message){
+  const token = localStorage.getItem('tgBotToken');
+  const chatId = localStorage.getItem('tgChatId');
+  if (!token || !chatId) return;
+  fetch('https://api.telegram.org/bot'+token+'/sendMessage', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' })
+  }).catch(()=>{});
+}
+document.addEventListener('DOMContentLoaded', function(){
+  const wishBtn = document.getElementById('wishSubmit');
+  if (wishBtn){
+    wishBtn.addEventListener('click', function(){
+      const name = document.getElementById('wishName').value.trim() || '\u0410\u043d\u043e\u043d\u0438\u043c';
+      const text = document.getElementById('wishText').value.trim();
+      if (!text){ alert('\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0442\u0435\u043a\u0441\u0442'); return; }
+      const wishes = loadWishes();
+      wishes.unshift({ name, text, date: Date.now() });
+      saveWishes(wishes);
+      document.getElementById('wishName').value = '';
+      document.getElementById('wishText').value = '';
+      renderWishes();
+      sendTelegramNotification('\u{1F4AD} \u041d\u043e\u0432\u043e\u0435 \u043f\u043e\u0436\u0435\u043b\u0430\u043d\u0438\u0435\n\u0418\u043c\u044f: '+name+'\n'+text);
+    });
+  }
+  renderWishes();
+});
+
+// ===== ADMIN PANEL =====
+const ADMIN_EMAIL = 'egor.medvede2014@yandex.ru';
+let adminCode = null;
+let adminCodeTime = null;
+
+let adminClicks = [];
+function handleVerBadgeClick(){
+  const now = Date.now();
+  adminClicks = adminClicks.filter(function(t){ return now - t < 3000; });
+  adminClicks.push(now);
+  if (adminClicks.length >= 5){
+    adminClicks = [];
+    openAdminLogin();
+  }
+}
+
+function openAdminLogin(){
+  document.getElementById('adminOverlay').style.display = 'flex';
+  document.getElementById('adminLoginView').style.display = 'block';
+  document.getElementById('adminPanelView').style.display = 'none';
+  document.getElementById('adminStatus').textContent = '';
+  document.getElementById('adminCodeInput').value = '';
+}
+
+function openAdminPanel(){
+  document.getElementById('adminOverlay').style.display = 'flex';
+  document.getElementById('adminLoginView').style.display = 'none';
+  document.getElementById('adminPanelView').style.display = 'block';
+  const key = localStorage.getItem('w3fKey') || '';
+  const token = localStorage.getItem('tgBotToken') || '';
+  const chatId = localStorage.getItem('tgChatId') || '';
+  document.getElementById('w3fKey').value = key;
+  document.getElementById('tgToken').value = token;
+  document.getElementById('tgChatId').value = chatId;
+}
+
+function sendAdminCode(){
+  const key = localStorage.getItem('w3fKey');
+  if (!key){
+    document.getElementById('adminStatus').innerHTML = '<span style="color:#dc2626">\u0412\u0432\u0435\u0434\u0438\u0442\u0435 Web3Forms Access Key \u0432 \u043f\u043e\u043b\u0435 \u0432\u044b\u0448\u0435, \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 \u0438 \u043e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u043a\u043e\u0434</span>';
+    return;
+  }
+  adminCode = String(Math.floor(100000 + Math.random() * 900000));
+  adminCodeTime = Date.now();
+  
+  const statusEl = document.getElementById('adminStatus');
+  statusEl.innerHTML = '\u041e\u0442\u043f\u0440\u0430\u0432\u043a\u0430 \u043a\u043e\u0434\u0430...';
+  
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      access_key: key,
+      subject: '\u041a\u043e\u0434 \u0434\u043e\u0441\u0442\u0443\u043f\u0430 \u0432 \u0430\u0434\u043c\u0438\u043d-\u043f\u0430\u043d\u0435\u043b\u044c',
+      from_name: '\u041a\u0443\u0431\u0438\u043a\u0438 \u0438 \u043a\u043e\u0432\u0430\u0440\u0441\u0442\u0432\u043e',
+      message: '\u0412\u0430\u0448 \u043a\u043e\u0434 \u0434\u043e\u0441\u0442\u0443\u043f\u0430: ' + adminCode + '\n\n\u041a\u043e\u0434 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0442\u0435\u043b\u0435\u043d 10 \u043c\u0438\u043d\u0443\u0442.',
+      to: ADMIN_EMAIL
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success){
+      statusEl.innerHTML = '<span class="admin-saved">\u041a\u043e\u0434 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d \u043d\u0430 '+ADMIN_EMAIL+'</span>';
+    } else {
+      statusEl.innerHTML = '<span style="color:#dc2626">\u041e\u0448\u0438\u0431\u043a\u0430: '+(data.message||'\u043d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c')+'</span>';
+    }
+  })
+  .catch(() => {
+    statusEl.innerHTML = '<span style="color:#dc2626">\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0442\u0438. \u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u043a\u043b\u044e\u0447 Web3Forms.</span>';
+  });
+}
+
+function verifyAdminCode(){
+  const input = document.getElementById('adminCodeInput').value.trim();
+  const statusEl = document.getElementById('adminStatus');
+  if (!adminCode || !adminCodeTime){
+    statusEl.innerHTML = '<span style="color:#dc2626">\u0421\u043d\u0430\u0447\u0430\u043b\u0430 \u043e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u043a\u043e\u0434</span>';
+    return;
+  }
+  if (Date.now() - adminCodeTime > 600000){
+    statusEl.innerHTML = '<span style="color:#dc2626">\u041a\u043e\u0434 \u0438\u0441\u0442\u0451\u043a. \u041e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u043d\u043e\u0432\u044b\u0439.</span>';
+    return;
+  }
+  if (input === adminCode){
+    sessionStorage.setItem('adminAuth', '1');
+    openAdminPanel();
+  } else {
+    statusEl.innerHTML = '<span style="color:#dc2626">\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 \u043a\u043e\u0434</span>';
+  }
+}
+
+function saveAdminSettings(){
+  const key = document.getElementById('w3fKey').value.trim();
+  const token = document.getElementById('tgToken').value.trim();
+  const chatId = document.getElementById('tgChatId').value.trim();
+  localStorage.setItem('w3fKey', key);
+  localStorage.setItem('tgBotToken', token);
+  localStorage.setItem('tgChatId', chatId);
+  document.getElementById('adminPanelStatus').innerHTML = '<span class="admin-saved">\u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u043e!</span>';
+}
+
+function testTelegram(){
+  const token = document.getElementById('tgToken').value.trim();
+  const chatId = document.getElementById('tgChatId').value.trim();
+  if (!token || !chatId){
+    document.getElementById('adminPanelStatus').innerHTML = '<span style="color:#dc2626">\u0417\u0430\u043f\u043e\u043b\u043d\u0438\u0442\u0435 \u043e\u0431\u0430 \u043f\u043e\u043b\u044f</span>';
+    return;
+  }
+  fetch('https://api.telegram.org/bot'+token+'/sendMessage', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text: '\u2705 \u0422\u0435\u0441\u0442! \u0423\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u044f \u0440\u0430\u0431\u043e\u0442\u0430\u044e\u0442!' })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok){
+      document.getElementById('adminPanelStatus').innerHTML = '<span class="admin-saved">\u0422\u0435\u0441\u0442 \u0443\u0441\u043f\u0435\u0448\u043d\u044b\u0439!</span>';
+    } else {
+      document.getElementById('adminPanelStatus').innerHTML = '<span style="color:#dc2626">\u041e\u0448\u0438\u0431\u043a\u0430: '+(data.description||'')+'</span>';
+    }
+  })
+  .catch(() => {
+    document.getElementById('adminPanelStatus').innerHTML = '<span style="color:#dc2626">\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0442\u0438</span>';
+  });
+}
+
+// Hook into review submission to send Telegram notification
+function hookReviewSubmit(){
+  const btn = document.getElementById('reviewSubmit');
+  if (!btn || btn.dataset.hooked) return;
+  btn.dataset.hooked = '1';
+  btn.addEventListener('click', function(){
+    setTimeout(() => {
+      const reviews = loadReviews();
+      if (reviews.length > 0){
+        const r = reviews[0];
+        sendTelegramNotification('\u2B50 \u041d\u043e\u0432\u044b\u0439 \u043e\u0442\u0437\u044b\u0432\n\u0418\u043c\u044f: '+r.name+'\n\u041e\u0446\u0435\u043d\u043a\u0430: '+r.rating+'\n'+r.text);
+      }
+    }, 200);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){ try{
+  // Admin panel events
+  const codeBtn = document.getElementById('adminCodeBtn');
+  const verifyBtn = document.getElementById('adminVerifyBtn');
+  const saveBtn = document.getElementById('adminSaveBtn');
+  const testBtn = document.getElementById('tgTestBtn');
+  
+  if (codeBtn) codeBtn.addEventListener('click', sendAdminCode);
+  if (verifyBtn) verifyBtn.addEventListener('click', verifyAdminCode);
+  if (saveBtn) saveBtn.addEventListener('click', saveAdminSettings);
+  if (testBtn) testBtn.addEventListener('click', testTelegram);
+  
+  // Панель открывается только секретным способом (5 кликов по бейджу версии)
+  const saveKeyBtn = document.getElementById('adminSaveKeyBtn');
+  if (saveKeyBtn) saveKeyBtn.addEventListener('click', function(){
+    const v = document.getElementById('w3fLoginKey').value.trim();
+    if (v){
+      localStorage.setItem('w3fKey', v);
+      document.getElementById('adminStatus').innerHTML = '<span style="color:#16a34a">\u041a\u043b\u044e\u0447 \u0441\u043e\u0445\u0440\u0430\u043d\u0451\u043d \u2014 \u043e\u0442\u043f\u0440\u0430\u0432\u044c\u0442\u0435 \u043a\u043e\u0434</span>';
+    }
+  });
+  
+  hookReviewSubmit();
+  }catch(e){ try{ showErr('Ошибка инициализации: ' + ((e && e.message) || e)); }catch(_){} }
+});
+
+// Close admin overlay on background click
+document.addEventListener('DOMContentLoaded', function(){
+  const overlay = document.getElementById('adminOverlay');
+  if (overlay){
+    overlay.addEventListener('click', function(e){
+      if (e.target === overlay) overlay.style.display = 'none';
+    });
+  }
+});
+
+
+</script>
+<div class="beginner-hint" id="beginnerHint">
+    <span class="hint-close" onclick="closeBeginnerHint()">&times;</span>
+    <div class="hint-title" id="beginnerHintTitle"></div>
+    <div id="beginnerHintBody"></div>
+    <button class="hint-btn" onclick="closeBeginnerHint()">Понятно</button>
+  </div>
+<script>
+(function(){
+  var btn = document.getElementById('shopBtn'), card = document.getElementById('shopCard');
+  if(!btn || !card) return;
+  function sync(){ card.style.display = (getComputedStyle(btn).display === 'none') ? 'none' : ''; }
+  if (window.MutationObserver) new MutationObserver(sync).observe(btn, {attributes:true, attributeFilter:['style']});
+  sync();
+})();
+</script>
+<script>
+(function(){
+  function q(id){ return document.getElementById(id); }
+  var tc = q('turnCard'), pc = q('playersCard'), bc = q('boardCenterPanels');
+  if(!tc || !pc || !bc) return;
+  var origParent = tc.parentNode;
+  var ip = q('invPanel'), ic = q('invCard'), slot = q('invCardSlot');
+  var origInvParent = ip ? ip.parentNode : null;
+  var origInvNext = ip && ip.nextSibling ? ip.nextSibling : null;
+  var cl = q('centerLog'), lg = q('log');
+  var pp = q('pairPanel');
+  function inset(){
+    var b = q('board');
+    if(!b) return 0;
+    var wpx = b.getBoundingClientRect().width;
+    if(wpx <= 0) return 0;
+    var cell = (wpx - 12*5) / 13; // сетка 13x13, зазор 5px
+    return Math.max(0, cell + 5); // свободная зона 9x9: клетка + зазор с каждой стороны
+  }
+  function layout(){
+    var w = (window.innerWidth || document.documentElement.clientWidth || 921);
+    if(w >= 921){
+      if(tc.parentNode !== bc){ bc.appendChild(tc); bc.appendChild(pc); }
+      if(pp && pp.parentNode !== bc){ bc.appendChild(pp); }
+      bc.style.display = 'flex';
+      var b = q('board'), wrap = document.querySelector('.board-wrap');
+      if(b && wrap){
+        var br = b.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+        if(br.width > 0){
+          var pad = inset();
+          bc.style.top = (br.top - wr.top + pad) + 'px';
+          bc.style.left = (br.left - wr.left + pad) + 'px';
+          bc.style.width = (br.width - 2*pad) + 'px';
+          bc.style.height = (br.height - 2*pad) + 'px';
+        }
+      }
+      if(ip && slot && ip.parentNode !== slot){ slot.appendChild(ip); }
+      if(ic){ ic.style.display = (ip && ip.style.display && ip.style.display !== 'none') ? '' : 'none'; }
+      if(cl) cl.style.display = 'none';
+      if(lg) lg.style.display = 'block';
+    } else {
+      if(tc.parentNode !== origParent){ origParent.insertBefore(tc, origParent.firstChild); origParent.insertBefore(pc, tc.nextSibling); }
+      if(pp && pp.parentNode !== origParent){ origParent.insertBefore(pp, pc.nextSibling); }
+      bc.style.display = 'none';
+      if(ip && origInvParent && ip.parentNode !== origInvParent){ if(origInvNext) origInvParent.insertBefore(ip, origInvNext); else origInvParent.appendChild(ip); }
+      if(ic) ic.style.display = 'none';
+      if(cl) cl.style.display = 'none';
+      if(lg) lg.style.display = 'block';
+    }
+  }
+  window.addEventListener('resize', layout);
+  window.addEventListener('orientationchange', layout);
+  layout();
+  setTimeout(layout, 60);
+  setTimeout(layout, 400);
+  window.relayoutCenter = layout;
+})();
+</script>
+
+<!-- v16 session machinery -->
+<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:auto;cursor:pointer" onclick="handleVerBadgeClick()">v60</div>
+<div id="diceResumeBanner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99990;background:#16a34a;color:#fff;padding:8px 14px;border-radius:0 0 12px 12px;font-size:13px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.25)">&#128260; Сессия найдена: комната <span id="diceBannerCode"></span>
+<button id="diceBannerResume" style="background:#fff;color:#16a34a;border:none;border-radius:8px;padding:4px 10px;font-weight:700;cursor:pointer;margin-left:6px">Продолжить</button>
+<button id="diceBannerDismiss" style="background:none;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:8px;padding:4px 10px;cursor:pointer;margin-left:6px">Нет</button></div>
+<div class="modal-overlay" id="diceSessionModal" style="display:none;z-index:99999">
+  <div class="modal" style="max-width:340px;text-align:center">
+    <h3 style="margin-top:0">&#128260; Найдена незавершённая сессия</h3>
+    <p id="diceSessionInfo" style="font-size:14px;margin:8px 0 16px"></p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button id="diceResumeBtn" style="padding:10px;border-radius:10px;border:none;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;font-size:14px">&#9654; Продолжить сессию</button>
+      <button id="diceReenterBtn" style="padding:10px;border-radius:10px;border:1px solid rgba(180,160,130,.4);background:rgba(255,252,245,.8);color:#5a4a32;cursor:pointer;font-size:14px">&#9998; Ввести код заново</button>
+      <button id="diceResetBtn" style="padding:10px;border-radius:10px;border:1px solid rgba(220,80,80,.4);background:rgba(255,245,245,.8);color:#a33;cursor:pointer;font-size:14px">&#128465; Сбросить сессию</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var SKEY='diceSession_v14', SNAPKEY='diceSnapshot_v14';
+  var resumePending=false, retryTimer=null, retryCount=0;
+  function store(k,v){
+    try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){}
+    try{ sessionStorage.setItem(k, JSON.stringify(v)); }catch(e2){}
+  }
+  function load(k){
+    var o=null, s=null;
+    try{ o=JSON.parse(localStorage.getItem(k)); }catch(e){ o=null; }
+    try{ s=JSON.parse(sessionStorage.getItem(k)); }catch(e2){ s=null; }
+    if (s && (!o || (s.ts||0) >= (o.ts||0))) return s;
+    return o;
+  }
+  function sdel(k){ try{ localStorage.removeItem(k); }catch(e){} try{ sessionStorage.removeItem(k); }catch(e2){} }
+  function hideAll(){
+    var m=document.getElementById('diceSessionModal'); if(m) m.style.display='none';
+    var b=document.getElementById('diceResumeBanner'); if(b) b.style.display='none';
+  }
+  window.diceSaveSession=function(){
+    try{
+      store(SKEY, {roomCode:roomCode, isHost:isHost, nickname:myNickname, spectator:!!spectatorMode, beginner:!!beginnerMode, ts:Date.now()});
+      console.log('[dice-restore] session saved:', roomCode, isHost?'host':'client');
+    }catch(e){ console.log('[dice-restore] session save err', e); }
+  };
+  window.diceClearAll=function(){ sdel(SKEY); sdel(SNAPKEY); hideAll(); console.log('[dice-restore] session cleared'); };
+  window.diceClearSnapshot=function(){ sdel(SNAPKEY); };
+  window.diceSaveSnapshot=function(){
+    try{
+      if(!isHost || !gameStarted) return;
+      var snap={
+        gameStarted:true, ts:Date.now(), roomCode:roomCode,
+        winSum:winSum, autoFinish:autoFinish,
+        gamePlayers:players.map(function(p){return {name:p.name,color:p.color,pos:p.pos,sum:p.sum,skip:p.skip,finished:p.finished,isBot:p.isBot,cred:p.cred||0, health:p.health||100, mile:p.mile||0, misT:p.misT?p.misT.k:'', misProg:p.misProg||0, glory:p.glory||0, lead:p.lead||0, gross:p.gross||0, gifts:p.gifts||0, keys:p.keys||0};}),
+        currentPlayer:currentPlayer, gameOver:gameOver,
+        doublesInRow:doublesInRow, inPoliceMode:inPoliceMode, policeAttempts:policeAttempts,
+        abilities:abilities, actionsLeft:actionsLeft, freeRollPending:freeRollPending,
+        mines:mines, reconfiguredMines:reconfiguredMines, eliminated:Array.from(eliminated),
+        beginnerModes:onlineBeginnerModes,
+        pendingStartAbilities:pendingStartAbilities, inventory:inventory, plus1Bonus:plus1Bonus,
+        tokenPlusPending:tokenPlusPending, doubleStepPending:doubleStepPending,
+        partyTurns:partyTurns, surrenderCount:surrenderCount,
+        mileMode:mileMode, secretMode:secretMode, pathMode:pathMode, ruinMode:ruinMode, giftMode:giftMode, keyMode:keyMode, nomMode:nomMode, contracts:players.map(function(p,i){ return (contracts[i] && !contracts[i].done) ? {k:contracts[i].key, b:contracts[i].bonus, t:contracts[i].turnOnly?1:0} : null; }),
+        finHP:finHP, finishIdx:finishIdx, pathVals:PATH_VALUES.slice(), giftIdx:giftIdx, giftKind:giftKind, keyCells:keysOnBoard.slice(),
+        shieldCiphers:shieldCiphers, shieldGuessMem:shieldGuessMem,
+        partyStats:{start:partyStats.start,turns:partyStats.turns,players:partyStats.players},
+        logHistory:onlineLogHistory, logSeq:onlineLogSeq
+      };
+      store(SNAPKEY, snap);
+    }catch(e){ console.log('[dice-restore] snapshot err', e); }
+  };
+  window.diceRestoreParty=function(snap){
+    try{
+      if (snap.logHistory) onlineLogHistory = snap.logHistory;
+      if (snap.logSeq) onlineLogSeq = snap.logSeq;
+      winSum=snap.winSum||2000; autoFinish=snap.autoFinish!==false;
+      if (snap.econCred!==undefined) econCred=snap.econCred;
+      finishPenalty=0; policePenalty=Math.floor(winSum*0.1);
+      playerCount=snap.gamePlayers.length;
+      players=snap.gamePlayers.map(function(p){return {name:p.name,color:p.color,pos:p.pos,sum:p.sum,skip:!!p.skip,finished:!!p.finished,isBot:!!p.isBot,cred:p.cred||0, health:p.health||100, mile:p.mile||0, misT:(p.misT?misDef(p.misT):null), misProg:p.misProg||0, glory:p.glory||0, lead:p.lead||0, gross:p.gross||0, gifts:p.gifts||0, keys:p.keys||0};});
+      currentPlayer=snap.currentPlayer||0; gameOver=!!snap.gameOver; gameStarted=true;
+      doublesInRow=snap.doublesInRow||{}; inPoliceMode=snap.inPoliceMode||{}; policeAttempts=snap.policeAttempts||{};
+      abilities=snap.abilities||{};
+      actionsLeft=(typeof snap.actionsLeft==='number')?snap.actionsLeft:ACTIONS_PER_TURN;
+      freeRollPending=!!snap.freeRollPending; mines=snap.mines||{}; reconfiguredMines=snap.reconfiguredMines||{};
+      eliminated=new Set(snap.eliminated||[]);
+      if(snap.mileMode!==undefined) mileMode=snap.mileMode;
+      if(snap.secretMode!==undefined) secretMode=snap.secretMode;
+      if(snap.pathMode!==undefined) pathMode=snap.pathMode;
+      if(snap.ruinMode!==undefined) ruinMode=snap.ruinMode;
+      if(snap.giftMode!==undefined) giftMode=snap.giftMode;
+      if(snap.keyMode!==undefined) keyMode=snap.keyMode;
+      try{ if (window.syncModeTabs) window.syncModeTabs(); }catch(e){}
+      if(snap.pathVals && snap.pathVals.length===PATH_VALUES.length) PATH_VALUES=snap.pathVals.slice();
+      if(snap.finishIdx!==undefined) finishIdx=snap.finishIdx;
+      if(snap.finHP!==undefined) finHP=snap.finHP;
+      if(snap.giftIdx!==undefined) giftIdx=snap.giftIdx;
+      if(snap.giftKind!==undefined) giftKind=snap.giftKind;
+      if(snap.keyCells) keysOnBoard=snap.keyCells.slice();
+      if(snap.beginnerModes) onlineBeginnerModes=snap.beginnerModes;
+      pendingStartAbilities=snap.pendingStartAbilities||{}; inventory=snap.inventory||{}; plus1Bonus=snap.plus1Bonus||{};
+      tokenPlusPending=snap.tokenPlusPending||{}; doubleStepPending=snap.doubleStepPending||{};
+      partyTurns=snap.partyTurns||0; surrenderCount=snap.surrenderCount||0;
+      if(snap.shieldCiphers){ for(var k in shieldCiphers) delete shieldCiphers[k]; Object.assign(shieldCiphers, snap.shieldCiphers); }
+      if(snap.shieldGuessMem){ for(var k2 in shieldGuessMem) delete shieldGuessMem[k2]; Object.assign(shieldGuessMem, snap.shieldGuessMem); }
+      if(snap.partyStats){ partyStats.start=snap.partyStats.start||Date.now(); partyStats.turns=snap.partyStats.turns||0; partyStats.players=snap.partyStats.players||{}; }
+      resultsShown=false; minePlacingMode=false; influencePending=false; startAbilityPending=false;
+      document.getElementById('settingsOverlay').style.display='none';
+      document.getElementById('onlineOverlay').style.display='none';
+      document.getElementById('startScreen').style.display='none';
+      document.getElementById('gameControls').style.display='block';
+      document.getElementById('chatPanel').classList.add('show');
+      document.getElementById('voicePanel').style.display='block';
+      renderMines(); renderOnlinePlayers(); updateUI();
+      console.log('[dice-restore] party restored, current player:', currentPlayer);
+      try{ buildBoard(); renderMines(); }catch(e){}
+    }catch(e){ console.log('[dice-restore] restore err', e); }
+  };
+  window.diceStopJoinRetry=function(){ if(retryTimer){ clearInterval(retryTimer); retryTimer=null; } };
+  window.diceResumeAfterConnect=function(){
+    if(!resumePending) return;
+    resumePending=false;
+    console.log('[dice-restore] connected, resuming as', isHost?'host':'client');
+    try{
+      if(isHost){
+        var snap=load(SNAPKEY);
+        if(snap && snap.gameStarted && snap.roomCode===roomCode){
+          window.diceRestoreParty(snap);
+          setTimeout(function(){ try{ broadcastGameState('gameState'); }catch(e){} }, 500);
+          if(isCurrentBot() && !gameOver) setTimeout(function(){ try{ botInfluenceOrRoll(); }catch(e){} }, 3000);
+          setOnlineStatus('Сессия восстановлена — партия продолжается', false, true);
+        } else {
+          setOnlineStatus('Комната восстановлена. Код: ' + roomCode, false, true);
+        }
+      } else {
+        retryCount=0;
+        window.diceStopJoinRetry();
+        retryTimer=setInterval(function(){
+          retryCount++;
+          if(retryCount>6){
+            window.diceStopJoinRetry();
+            setOnlineStatus('Хост комнаты ' + roomCode + ' не отвечает — сессия сброшена. Создайте новую игру.', true, false);
+            window.diceClearAll();
+            return;
+          }
+          try{
+            if(mqttClient && mqttClient.connected){
+              mqttClient.publish('dice/' + roomCode + '/join', JSON.stringify({type:'join', nickname:myNickname, clientId:mqttClient.options.clientId, beginnerMode:beginnerMode, rejoin:true}));
+              setOnlineStatus('Ищем хоста комнаты ' + roomCode + '... (попытка ' + retryCount + '/6)', false, false);
+            }
+          }catch(e){}
+        }, 4000);
+      }
+    }catch(e){ console.log('[dice-restore] resume err', e); }
+  };
+  function resumeFromSession(){
+    var s=load(SKEY); if(!s || !s.roomCode) return;
+    hideAll();
+    try{
+      roomCode=s.roomCode; isHost=!!s.isHost; myNickname=s.nickname||'Игрок';
+      spectatorMode=!!s.spectator; beginnerMode=!!s.beginner;
+      var ht=document.getElementById('hostTgl'); if(ht) ht.classList.toggle('on', isHost);
+      var st=document.getElementById('spectatorTgl'); if(st) st.classList.toggle('on', spectatorMode);
+      var bt=document.getElementById('beginnerOnlineTgl'); if(bt) bt.classList.toggle('on', beginnerMode);
+      var hf=document.getElementById('hostFields'); if(hf) hf.style.display=isHost?'block':'none';
+      var cf=document.getElementById('clientFields'); if(cf) cf.style.display=isHost?'none':'block';
+      var ni=document.getElementById('nicknameInput'); if(ni) ni.value=myNickname;
+      var oo=document.getElementById('onlineOverlay'); if(oo) oo.style.display='flex';
+      resumePending=true; onlineMode = true;
+      setOnlineStatus('Восстанавливаем сессию: комната ' + roomCode + '...', false, false);
+      if(typeof mqtt==='undefined'){ setOnlineStatus('Библиотека MQTT не загрузилась — подождите или обновите страницу', true, false); return; }
+      connectMQTT();
+    }catch(e){ console.log('[dice-restore] resumeFromSession err', e); }
+  }
+  var s=load(SKEY);
+  if(s && s.roomCode && (Date.now()-(s.ts||0) < 1000*60*60*6)){
+    var role = s.isHost ? (s.spectator?'хост-зритель':'хост') : 'игрок';
+    var info=document.getElementById('diceSessionInfo');
+    if(info) info.innerHTML='Комната: <b>'+s.roomCode+'</b><br>Ник: <b>'+(s.nickname||'—')+'</b><br>Роль: <b>'+role+'</b>';
+    var m=document.getElementById('diceSessionModal'); if(m) m.style.display='flex';
+    var bc=document.getElementById('diceBannerCode'); if(bc) bc.textContent=s.roomCode;
+    var bn=document.getElementById('diceResumeBanner'); if(bn) bn.style.display='block';
+    var rb=document.getElementById('diceResumeBtn'); if(rb) rb.addEventListener('click', resumeFromSession);
+    var bb=document.getElementById('diceBannerResume'); if(bb) bb.addEventListener('click', resumeFromSession);
+    var bd=document.getElementById('diceBannerDismiss'); if(bd) bd.addEventListener('click', hideAll);
+    var eb=document.getElementById('diceReenterBtn'); if(eb) eb.addEventListener('click', function(){
+      sdel(SKEY); sdel(SNAPKEY); hideAll();
+      var oo=document.getElementById('onlineOverlay'); if(oo) oo.style.display='flex';
+      var ni=document.getElementById('nicknameInput'); if(ni && s.nickname) ni.value=s.nickname;
+    });
+    var rs=document.getElementById('diceResetBtn'); if(rs) rs.addEventListener('click', function(){ sdel(SKEY); sdel(SNAPKEY); hideAll(); });
+    console.log('[dice-restore] session found at load:', s.roomCode, role);
+  }
+  setInterval(function(){ try{ window.diceSaveSnapshot(); }catch(e){} }, 5000);
+})();
+</script>
+<div class="ver-badge">v60</div>
+</body>
+</html>
