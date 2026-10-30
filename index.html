@@ -413,14 +413,16 @@
   .badge-inv { background:rgba(139,92,246,.18); color:#6d28d9; }
   .inv-panel { display:none; flex-direction:column; gap:6px; margin-top:8px; }
   .inv-title { font-size:11px; color:#8a7a60; font-weight:700; text-transform:uppercase; letter-spacing:.8px; }
-  .inv-chip { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:10px; background:rgba(139,92,246,.1); border:1px solid rgba(139,92,246,.3); }
-  .inv-chip .inv-ico { position:relative; flex:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; cursor:pointer; border:1px solid rgba(139,92,246,.55); background:linear-gradient(135deg,#8b5cf6,#7c3aed); color:#fff; transition:.15s; padding:0; }
-  .inv-chip .inv-ico:hover { transform:scale(1.12); box-shadow:0 0 0 4px rgba(139,92,246,.22); }
-  .inv-chip .inv-ico:active { transform:scale(.94); }
+  .inv-combo { display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 12px; border-radius:12px; background:rgba(139,92,246,.1); border:1px solid rgba(139,92,246,.3); }
+  .inv-item { display:flex; align-items:center; gap:6px; }
+  .inv-badge { position:absolute; top:-5px; right:-5px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:#ef4444; color:#fff; font-size:10px; font-weight:800; line-height:16px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,.4); pointer-events:none; z-index:2; }
+  .inv-combo .inv-ico { position:relative; flex:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; cursor:pointer; border:1px solid rgba(139,92,246,.55); background:linear-gradient(135deg,#8b5cf6,#7c3aed); color:#fff; transition:.15s; padding:0; }
+  .inv-combo .inv-ico:hover { transform:scale(1.12); box-shadow:0 0 0 4px rgba(139,92,246,.22); }
+  .inv-combo .inv-ico:active { transform:scale(.94); }
   .inv-tip { position:absolute; bottom:calc(100% + 9px); left:50%; transform:translateX(-50%) translateY(3px); width:max-content; max-width:200px; background:rgba(43,33,20,.93); color:#fff7ea; font-size:11px; font-weight:500; line-height:1.35; padding:7px 10px; border-radius:9px; text-align:left; opacity:0; visibility:hidden; transition:.15s; pointer-events:none; z-index:60; box-shadow:0 5px 16px rgba(60,45,20,.35); text-shadow:none; }
   .inv-tip::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:rgba(43,33,20,.93); }
-  .inv-chip .inv-ico:hover .inv-tip { opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
-  .inv-chip .inv-name { font-size:12px; font-weight:700; color:#4a3d2e; flex:1; }
+  .inv-combo .inv-ico:hover .inv-tip { opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
+  .inv-cap { font-size:12px; font-weight:700; color:#4a3d2e; flex:none; }
   #shopCard .btn { width:100%; }
   .badge-plus1 { background:rgba(34,197,94,.18); color:#15803d; }
 
@@ -1566,12 +1568,17 @@ function renderInvPanel(){
     precise: 'Ход на 1–3 клетки по выбору (расходует действие). Проходные бонусы и клетка приземления срабатывают.',
     trap: 'Ловушка: выберите цель и числовую клетку. Цель теряет 100 HP, наступивший не-цель — 25 HP. Сапёр обезвреживает.'
   };
-  let html = '<div class="inv-title">🎒 Панель способностей — нажмите значок, чтобы активировать</div>';
-  inv.forEach(itemId=>{
+  let html = '<div class="inv-combo"><span class="inv-cap">🎒 Способности:</span>';
+  const groups = {};
+  inv.forEach(itemId=>{ const meta = INV_META[itemId]; if (!meta) return; (groups[itemId] = groups[itemId] || []).push(itemId); });
+  Object.keys(groups).forEach(itemId=>{
     const meta = INV_META[itemId];
-    if (!meta) return;
-    html += '<div class="inv-chip"><button class="inv-ico" onclick="useInvItem('+currentPlayer+', \''+itemId+'\')" title="Активировать: '+meta.name+'"><span class="inv-tip">'+(TIPS[itemId]||'Активировать способность')+'</span>'+meta.icon+'</button><span class="inv-name">'+meta.name+'</span></div>';
+    const n = groups[itemId].length;
+    const badge = n > 1 ? '<span class="inv-badge">'+n+'</span>' : '';
+    const ttl = 'Активировать: '+meta.name+(n>1?' ×'+n:'');
+    html += '<span class="inv-item"><button class="inv-ico" onclick="useInvItem('+currentPlayer+', \''+itemId+'\')" title="'+ttl+'"><span class="inv-tip">'+(TIPS[itemId]||'Активировать способность')+'</span>'+meta.icon+badge+'</button><span class="inv-name">'+meta.name+'</span></span>';
   });
+  html += '</div>';
   panel.innerHTML = html;
   panel.style.display = 'flex';
   if (invCardEl) invCardEl.style.display = (slot && panel.parentNode === slot) ? '' : 'none';
@@ -2629,7 +2636,8 @@ function startChoose(ability, pi){
   if (!abilities[pi]) initAbilities(pi);
   if (ability === 'finance'){
     (inventory[pi] = inventory[pi] || []).push('finance');
-    log('💳 '+p.name+' получил Фин. Ловкость 2.0 — способность на панели, активируется в свой ход до броска', 'win');
+    const invDupCnt = (inventory[pi]||[]).filter(function(x){return x==='finance';}).length;
+    log('💳 '+p.name+' получил Фин. Ловкость 2.0 — способность на панели, активируется в свой ход до броска'+(invDupCnt>1?' (копится: теперь ×'+invDupCnt+')':''), 'win');
   } else if (ability === 'sapper'){
     abilities[pi].sapper = true; abilities[pi].sapperUses = 1;
     log('\u{1F6E1}\uFE0F '+p.name+' получил Сапёра', 'sapper');
@@ -2702,7 +2710,8 @@ function botChooseStartAbility(pi, noBonus){
   const choice = noBonus ? 1 + Math.floor(Math.random()*3) : Math.floor(Math.random()*4);
   if (choice === 0){
     (inventory[pi] = inventory[pi] || []).push('finance');
-    log('💳 \u{1F916} '+p.name+' получил Фин. Ловкость 2.0 — активирует в свой ход', 'win');
+    const invDupCnt = (inventory[pi]||[]).filter(function(x){return x==='finance';}).length;
+    log('💳 \u{1F916} '+p.name+' получил Фин. Ловкость 2.0 — активирует в свой ход'+(invDupCnt>1?' (копится: теперь ×'+invDupCnt+')':''), 'win');
   } else if (choice === 1){
     abilities[pi].sapper = true; abilities[pi].sapperUses = 1;
     log('\u{1F6E1}\uFE0F \u{1F916} '+p.name+' получил Сапёра', 'sapper');
@@ -3440,7 +3449,8 @@ function influenceChoose(ability, pi){
     closeModal();
     if (!inventory[pi]) inventory[pi] = [];
     inventory[pi].push(ability);
-    log('🎒 «'+INV_META[ability].name+'» добавлена на панель способностей — активируйте в свой ход до броска!', 'win');
+    const invDupCnt = (inventory[pi]||[]).filter(function(x){return x===ability;}).length;
+    log('🎒 «'+INV_META[ability].name+'» '+(invDupCnt>1?'копится на панели: теперь ×'+invDupCnt+' — активируйте в свой ход до броска!':'добавлена на панель способностей — активируйте в свой ход до броска!'), 'win');
     afterInfluence(pi);
     if (onlineMode && isHost) setTimeout(onlineSync, 300);
     return;
@@ -3713,7 +3723,8 @@ function botChooseInfluence(pi){
   const choice = ids[Math.floor(Math.random()*ids.length)];
   if (!inventory[pi]) inventory[pi] = [];
   inventory[pi].push(choice);
-  log('🤖 '+players[pi].name+' добавил «'+INV_META[choice].name+'» на панель способностей', 'bot');
+  const invDupCnt = (inventory[pi]||[]).filter(function(x){return x===choice;}).length;
+  log('🤖 '+players[pi].name+' добавил «'+INV_META[choice].name+'» на панель способностей'+(invDupCnt>1?' — копится: теперь ×'+invDupCnt:''), 'bot');
   afterInfluence(pi);
 }
 
@@ -4122,7 +4133,8 @@ function buyAbility(itemId, pi){
     document.getElementById('shopModal').style.display = 'none';
     if (!inventory[pi]) inventory[pi] = [];
     inventory[pi].push(itemId);
-    log('🎒 «'+item.name+'» добавлена на панель способностей — активируйте в свой ход до броска!', 'win');
+    const invDupCnt = (inventory[pi]||[]).filter(function(x){return x===itemId;}).length;
+    log('🎒 «'+item.name+'» '+(invDupCnt>1?'копится на панели: теперь ×'+invDupCnt+' — активируйте в свой ход до броска!':'добавлена на панель способностей — активируйте в свой ход до броска!'), 'win');
     updateUI();
     if (onlineMode && isHost) setTimeout(onlineSync, 300);
     if (p.isBot) setTimeout(function(){ if (actionsLeft > 0 && inventory[pi] && inventory[pi].length) botUseInventory(pi); else botEndOrRoll(pi); }, 900);
@@ -5571,25 +5583,4 @@ document.addEventListener('DOMContentLoaded', function(){
   var s=load(SKEY);
   if(s && s.roomCode && (Date.now()-(s.ts||0) < 1000*60*60*6)){
     var role = s.isHost ? (s.spectator?'хост-зритель':'хост') : 'игрок';
-    var info=document.getElementById('diceSessionInfo');
-    if(info) info.innerHTML='Комната: <b>'+s.roomCode+'</b><br>Ник: <b>'+(s.nickname||'—')+'</b><br>Роль: <b>'+role+'</b>';
-    var m=document.getElementById('diceSessionModal'); if(m) m.style.display='flex';
-    var bc=document.getElementById('diceBannerCode'); if(bc) bc.textContent=s.roomCode;
-    var bn=document.getElementById('diceResumeBanner'); if(bn) bn.style.display='block';
-    var rb=document.getElementById('diceResumeBtn'); if(rb) rb.addEventListener('click', resumeFromSession);
-    var bb=document.getElementById('diceBannerResume'); if(bb) bb.addEventListener('click', resumeFromSession);
-    var bd=document.getElementById('diceBannerDismiss'); if(bd) bd.addEventListener('click', hideAll);
-    var eb=document.getElementById('diceReenterBtn'); if(eb) eb.addEventListener('click', function(){
-      sdel(SKEY); sdel(SNAPKEY); hideAll();
-      var oo=document.getElementById('onlineOverlay'); if(oo) oo.style.display='flex';
-      var ni=document.getElementById('nicknameInput'); if(ni && s.nickname) ni.value=s.nickname;
-    });
-    var rs=document.getElementById('diceResetBtn'); if(rs) rs.addEventListener('click', function(){ sdel(SKEY); sdel(SNAPKEY); hideAll(); });
-    console.log('[dice-restore] session found at load:', s.roomCode, role);
-  }
-  setInterval(function(){ try{ window.diceSaveSnapshot(); }catch(e){} }, 5000);
-})();
-</script>
-<div class="ver-badge">v58</div>
-</body>
-</html>
+   
