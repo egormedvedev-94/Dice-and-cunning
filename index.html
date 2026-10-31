@@ -475,6 +475,57 @@
 .inv-badge{position:absolute;top:-5px;right:-7px;min-width:15px;height:15px;padding:0 4px;border-radius:999px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;line-height:15px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.3);pointer-events:none}
 .inv-item .inv-tip{visibility:hidden;opacity:0;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#2d2417;color:#f5ead3;font-size:11px;line-height:1.35;padding:6px 8px;border-radius:8px;width:max-content;max-width:230px;z-index:30;transition:opacity .15s;pointer-events:none}
 .inv-item:hover .inv-tip{visibility:visible;opacity:1}
+.key-tray{min-height:44px;padding:8px;background:rgba(59,130,246,.06);border-radius:12px}
+.inv-empty{font-size:13px;color:#6a5d4a}
+.key-chip{display:flex;align-items:center;justify-content:center;width:46px;height:40px;border-radius:10px;cursor:pointer;font-size:20px;border:2px solid transparent;box-shadow:0 2px 6px rgba(0,0,0,.08);transition:transform .15s,border-color .15s}
+.key-chip:hover{transform:translateY(-2px)}
+.key-chip.copper{background:linear-gradient(135deg,#f5d9a8,#e0a95e)}
+.key-chip.silver{background:linear-gradient(135deg,#eef2f7,#b9c4cf)}
+.key-chip.gold{background:linear-gradient(135deg,#ffe9a8,#e8b53a)}
+.key-chip.sel{border-color:#b91c1c;transform:translateY(-3px) scale(1.06);box-shadow:0 4px 12px rgba(185,28,28,.25)}
+.chest-rack{display:flex;gap:16px;flex-wrap:wrap}
+.chest-card{width:150px;text-align:center;opacity:.72;filter:grayscale(.3)}
+.chest-card.openable{cursor:pointer;opacity:1;filter:none}
+.chest-card.openable .chest-visual{animation:chestBreathe 2.2s ease-in-out infinite}
+@keyframes chestBreathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.chest-visual{position:relative;width:110px;height:84px;margin:6px auto 4px}
+.chest-body{position:absolute;left:4px;right:4px;bottom:0;height:52px;border-radius:0 0 10px 10px;background:linear-gradient(180deg,#a9702f,#7c4a12);box-shadow:inset 0 3px 6px rgba(255,255,255,.25),inset 0 -6px 10px rgba(0,0,0,.35);z-index:2}
+.chest-lid{position:absolute;left:4px;right:4px;top:0;height:34px;border-radius:10px 10px 3px 3px;background:linear-gradient(180deg,#c98d3f,#9a5f1d);transform-origin:6px 34px;transition:transform .6s cubic-bezier(.2,.9,.3,1.2);z-index:3;box-shadow:inset 0 3px 5px rgba(255,255,255,.3),inset 0 -4px 8px rgba(0,0,0,.3)}
+.chest-card.open .chest-lid{transform:rotate(-110deg)}
+.chest-card.iron .chest-body{background:linear-gradient(180deg,#9aa7b5,#5d6b7a)}
+.chest-card.iron .chest-lid{background:linear-gradient(180deg,#c3cdd8,#7c8a99)}
+.chest-card.royal .chest-body{background:linear-gradient(180deg,#ffd76a,#c9962a)}
+.chest-card.royal .chest-lid{background:linear-gradient(180deg,#ffe9a8,#d8a63a)}
+.chest-inside{position:absolute;left:8px;right:8px;bottom:6px;height:40px;border-radius:6px;background:radial-gradient(ellipse at center,#ffd76a 0%,#8a5a12 85%);opacity:0;transition:opacity .5s .15s;z-index:1;display:flex;align-items:center;justify-content:center;font-size:22px}
+.chest-card.open .chest-inside{opacity:1}
+.chest-lock{position:absolute;left:50%;top:26px;transform:translateX(-50%);width:22px;height:30px;border-radius:6px;background:linear-gradient(180deg,#f6d365,#b8860b);z-index:4;box-shadow:0 2px 4px rgba(0,0,0,.4)}
+.keyhole{position:absolute;left:50%;top:9px;transform:translateX(-50%);width:6px;height:12px;background:#3a2a10;border-radius:3px;transition:transform .5s}
+.keyhole::after{content:'';position:absolute;left:1px;top:8px;width:4px;height:4px;background:#3a2a10;border-radius:50%}
+.chest-card.turn .keyhole{transform:translateX(-50%) rotate(90deg)}
+.key-fly{position:absolute;left:50%;top:-26px;transform:translate(40px,-50px) rotate(30deg);font-size:22px;opacity:0;z-index:6;pointer-events:none}
+.chest-card.fly .key-fly{animation:flyKey .7s ease-in forwards}
+@keyframes flyKey{0%{opacity:0;transform:translate(40px,-50px) rotate(30deg)}30%{opacity:1}100%{opacity:1;transform:translate(0,6px) rotate(0deg)}}
+.chest-card.shake .chest-visual{animation:chestShake .4s ease-in-out}
+@keyframes chestShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-2.5deg)}75%{transform:rotate(2.5deg)}}
+.chest-loot{position:absolute;left:50%;bottom:40px;font-size:26px;opacity:0;transform:translateX(-50%);z-index:5;pointer-events:none}
+.chest-card.pop .chest-loot{animation:lootPop 1.1s ease-out forwards}
+@keyframes lootPop{0%{opacity:0;transform:translate(-50%,10px) scale(.4)}30%{opacity:1;transform:translate(-50%,-34px) scale(1.25)}70%{opacity:1;transform:translate(-50%,-52px) scale(1)}100%{opacity:0;transform:translate(-50%,-70px) scale(.9)}}
+.chest-sparkles{position:absolute;left:50%;top:6px;transform:translateX(-50%);font-size:14px;opacity:0;z-index:6;pointer-events:none;letter-spacing:6px}
+.chest-card.pop .chest-sparkles{animation:sparkle 1.2s ease-out forwards}
+@keyframes sparkle{0%{opacity:0}25%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-18px)}}
+.chest-label{font-size:13px;font-weight:700;color:#4a3c28}
+.chest-hint{font-size:11px;color:#6a5d4a;margin-top:2px}
+.shelf-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;min-height:56px;padding:10px;background:rgba(120,80,30,.08);border-radius:12px;transition:box-shadow .5s}
+.shelf-item{width:132px;text-align:center;background:linear-gradient(135deg,#fff7e6,#ffedd0);border:1.5px solid #e6c98f;border-radius:10px;padding:8px 6px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.12);transition:transform .15s}
+.shelf-item:hover{transform:translateY(-3px) rotate(-1deg)}
+.shelf-ic{font-size:26px}
+.shelf-nm{font-size:12px;font-weight:700;color:#5a4632;margin-top:2px}
+.shelf-tag{font-size:10px;color:#8a7a5e;margin-top:2px}
+.coupon-item{width:150px;text-align:center;background:repeating-linear-gradient(45deg,#fff,#fff 8px,#f7f2e6 8px,#f7f2e6 16px);border:2px dashed #c9962a;border-radius:10px;padding:8px 6px;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.coupon-pct{font-size:20px;font-weight:800;color:#b45309}
+#invShelf.flash{animation:shelfFlash .6s ease}
+@keyframes shelfFlash{0%{box-shadow:0 0 0 rgba(255,200,0,0)}40%{box-shadow:0 0 24px rgba(255,200,0,.9)}100%{box-shadow:0 0 0 rgba(255,200,0,0)}}
+.loot-flyer{position:fixed;z-index:99999;font-size:38px;pointer-events:none;transition:left .7s cubic-bezier(.35,.7,.35,1),top .7s cubic-bezier(.35,.7,.35,1),transform .7s;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
 </style>
 <style>
 .contract-panel{margin:8px 0;padding:8px 12px;background:rgba(255,255,255,.65);border:1px dashed #b09a6a;border-radius:10px;font-size:13px;color:#4a3d2e;display:none}
@@ -636,10 +687,10 @@
   </div>
 <div class="tabs">
     <div class="tab active" data-page="game">&#127922; Игра</div>
+        <div class="tab" data-page="inventory">🎒 Инвентарь</div>
     <div class="tab" data-page="rules">&#128214; Правила</div>
     <div class="tab" data-page="updates">&#128260; Обновления</div>
     <div class="tab" data-page="reviews">&#128172; Отзывы</div>
-    <div class="tab" data-page="inventory">🎒 Инвентарь</div>
   </div>
 
   <!-- ИГРА -->
@@ -859,7 +910,7 @@
           <li><b>💥 Соперник подорвался на вашей мине</b> — +100 очков. Если этот подрыв выбил игрока (0 HP) — ещё +200 очков (итого +300).</li>
           <li><b>⚡ Инициатива</b> — +10 кр. Первый раз за ход, когда игрок тратит очко действия на покупку в магазине или активацию способности с панели.</li>
         </ul></div></details>
-        <details><summary>⭐ Серия удачных ходов</summary><div class="r-body"><p>Каждый ход без попадания в Полицию и без подрыва добавляет +0.1 к множителю числовых клеток (до ×2.0). Попадание в Полицию, подрыв на мине или ловушке обнуляют серию. Тренд 📰 удваивает следующую числовую клетку. Ход, в котором игрок потратил очко действия на покупку или активацию способности, дополнительно даёт +0.05 к множителю (счётчик «инициативы» </p></div></details>
+        <details><summary>⭐ Серия удачных ходов</summary><div class="r-body"><p>Каждый ход без попадания в Полицию и без подрыва добавляет +0.1 к множителю числовых клеток (до ×2.0). Попадание в Полицию, подрыв на мине или ловушке обнуляют серию. Тренд 📰 удваивает следующую числовую клетку. Ход, в котором игрок потратил очко действия на покупку или активацию способности, дополнительно даёт +0.05 к множителю (счётчик «инициативы») </p></div></details>
         <details><summary>🏆 Награды за активность</summary><div class="r-body"><p>Активность вознаграждается кредитами — валютой магазина: тактика приближает к победе, а не отдаляет от неё. Когда сумма уже достигла цели, все начисленные очки конвертируются в кредиты один к одному — сверх цели вы играете на кредиты.</p><p><b>⚡ Инициатива — +10 кр.</b> Первый раз за ход, когда игрок тратит очко действия на покупку в магазине или активацию способности с панели. Эти кредиты также добавляют +0.05 к множителю серии удачных ходов.</p><p><b>📜 Контракты.</b> В начале партии игрок получает одно случайное задание (панель в блоке «Ход»): купить способность, активировать способность, сделать ставку в 🎰 Банкомате, установить мину, заблокировать Возврат или Заморозку Защитой, выйти из Полиции дублем. Выполнение приносит +30…+40 кр. Новый контракт выдаётся при попадании на Старт своим ходом.</p><p><b>🏆 Разовые достижения.</b> Первая покупка +20 кр., первая мина +20 кр., первый Налог +20 кр., первая перенастройка мины Сапёром +30 кр., взлом шифра Защиты +20 кр. Каждое — один раз за партию.</p><p><b>🪞 Витрина магазина.</b> Каждые 5 ходов одна случайная способность продаётся за полцены — скидка действует для всех до следующей ротации.</p></div></details>
         </div>
         <details><summary>⚖️ Режим экономики</summary><div class="r-body"><p>В настройках (⚙) и в окне онлайн-игры (🌐) — тумблер «💳 Кредитная экономика». Выбор сохраняется между партиями; в онлайн-игре режим задаёт хост. Переключать можно только между партиями.</p><p><b>Классическая система:</b> покупки тратят очки из суммы. Цены: Жетон хода 80, Жетон 100, Мина 100, Аптечка 130, Заморозка и Ловушка 180, Налог/Возврат/Вклад 200, Сапёр 150, Блокировка и Точный шаг 250, Ревизор 300, Фин. Ловкость 350. Инициатива — +50 очков, награды за активность — очками (пока сумма не достигнута).</p><p><b>Кредитная система:</b> отдельный кошелёк — старт 40 кр., +3 кр. за каждый ход, доходы за круг, Старт, подрывы, Защиту, взлом шифра, Полицию-дубль и инициативу (+10 кр.). Покупки не трогают очки победы; Налог, Штраф Полиции и Блокировка бьют только по сумме.</p></div></details>
@@ -899,7 +950,8 @@
       <div class="rules">
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
-        <ul><li><b>🎯 Цель — по режимам (v60)</b><br>Вкладка «Правила» переработана: у каждого режима победы — своя цель. Режим 🔑 «Собери три ключа»: победа засчитывается только на Финише с тремя ключами, очковая цель не действует (очки — игровая механика). Сундуки открываются только после окончания партии — во вкладке «🎒 Инвентарь».</li><li><b>✂️ Провода Сапёра и 🪤 Ловушка по заслугам (v59)</b><br>Сапёр: чтобы обезвредить или перенастроить мину — перережьте правильный провод (🔴 красный, 🔵 синий, 🟡 жёлтый; правильный — случайный). Не угадали — мина срабатывает; «Оставить на поле» — без угадывания. Боты тоже режут провода: лёгкий угадывает в 1/3 случаев, сложный — в 1/2. Ловушка (45 кр.) открывается по заслугам — после успешного обезвреживания мины Сапёром или первого подрыва на мине (правило для людей и ботов). Подобранные 🔑 ключи копятся в копилке: 1 ключ открывает 1 сундук.</li>
+        <ul><li><b>🗝 Сундуки и предметы стали физическими (v63)</b><br>Сундуки трёх видов (📦 деревянный, 🧰 кованый, 👑 королевский) открываются ключом: ключ вставляется в замок и поворачивается, крышка откидывается, предмет выпрыгивает с искрами и летит на полку инвентаря. Способности с полки можно взять кликом прямо в партии, купоны 🏷️ сгорают при покупке. Проигравшим теперь тоже достаётся сундук — утешительная награда за упорство.</li>
+<li><b>🎯 Цель — по режимам (v60)</b><br>Вкладка «Правила» переработана: у каждого режима победы — своя цель. Режим 🔑 «Собери три ключа»: победа засчитывается только на Финише с тремя ключами, очковая цель не действует (очки — игровая механика). Сундуки открываются только после окончания партии — во вкладке «🎒 Инвентарь».</li><li><b>✂️ Провода Сапёра и 🪤 Ловушка по заслугам (v59)</b><br>Сапёр: чтобы обезвредить или перенастроить мину — перережьте правильный провод (🔴 красный, 🔵 синий, 🟡 жёлтый; правильный — случайный). Не угадали — мина срабатывает; «Оставить на поле» — без угадывания. Боты тоже режут провода: лёгкий угадывает в 1/3 случаев, сложный — в 1/2. Ловушка (45 кр.) открывается по заслугам — после успешного обезвреживания мины Сапёром или первого подрыва на мине (правило для людей и ботов). Подобранные 🔑 ключи копятся в копилке: 1 ключ открывает 1 сундук.</li>
         <li><b>💳 Сверх цели — в кредиты (v58)</b><br>Ограничение на сумму возвращено: при достигнутой цели очки больше не копятся. В кредитном режиме 💳 все очки сверх цели конвертируются в кредиты один к одному: числовые клетки, Удача, круги Старт—Старт, проход мимо мины, бонусы минёра, выход из Полиции дублем, телепорт-наказание. В классическом режиме очки сверх цели не начисляются, как раньше. Исправлено зависание после броска Босса: ход передаётся, интерфейс обновляется, бот получает импульс.</li><li><b>⚙ Двухколоночные настройки (v56)</b><br>Окно настроек расширено: слева — режим победы карточками-вкладками и модификаторы 🧨/🎁, справа — партия и переключатели. На узких экранах колонки складываются в одну.</li><li><b>Редизайн окна настроек (v56)</b><br>Окно настроек по образцу монополии: слева — вертикальный список режимов победы, активный подсвечен оранжевым; справа — крупное описание выбранного режима, модификаторы и тумблеры партии. Верхние поля (игроки, боты, сложность, сумма) собраны в компактную сетку.</li><li><b>Вкладки режимов вместо тумблеров (v54)</b><br>Режимы победы (🎲 Классический, 👑 Босс, ⚡ Три вехи, 🎯 Тайные цели, ⚔️ Три пути, 🔑 Ключи) выбираются вкладками с описанием; тумблеры режимов убраны из настроек и онлайн-окна.</li><li><b>🏅 Контракты на ход + 🏆 в классике (v53)</b><br>Контракты на ход (задание каждый ход, награда 90–120, сгорает без штрафа) и Внутрипартийные номинации стали частью классической игры — тумблеры убраны. Контракты теперь синхронизируются в онлайн-партии и сохраняются в снапшоте сессии.</li>
           <li><b>🕵️ Кража цели (v52)</b><br>Новый предмет «Агент под прикрытием»: обменяет вашу тайную цель с целью случайного соперника (цель + прогресс). Выпадает только при включённых 🎯 Тайных целях; без них — просто +150 очков.</li>
           <li><b>🏆 Внутрипартийные номинации (v50)</b><br>Новый тумблер (⚙ и 🌐): в итогах партии подводятся 10 номинаций по счётчикам активности — от 💣 Подрывника до 🏁 Спринтера. Ничья делит номинацию, пустые категории скрыты. Заодно исправлены: синтаксическая ошибка в онлайн-payload (которая ломала публикацию состояния), потеря ключей при Возврате (теперь рассыпаются у возвращаемого, а не у атакующего) и добавлен начальный спавн ключей на старте партии.</li>
@@ -1006,17 +1058,22 @@
     <div class="card">
       <div class="rules">
         <h3>🎒 Инвентарь</h3>
-        <p>Ваши 📦 сундуки и 🔑 ключи между партиями: один ключ открывает один сундук, добыча копится и работает в следующей партии.</p>
+        <p>Сундуки и ключи — настоящие предметы: выберите 🔑 ключ из связки, кликните по сундуку — ключ вставится в замок, сундук откроется, а предмет улетит на полку.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0">
           <div style="background:rgba(245,158,11,.14);border-radius:12px;padding:12px 18px;font-size:14px;font-weight:700;color:#92400e">📦 Сундуков: <b id="invChests">0</b></div>
           <div style="background:rgba(59,130,246,.12);border-radius:12px;padding:12px 18px;font-size:14px;font-weight:700;color:#1d4ed8">🔑 Ключей: <b id="invKeys">0</b></div>
         </div>
         <div id="invNote" style="font-size:13px;color:#b91c1c;font-weight:600;margin-bottom:10px"></div>
-        <button class="btn primary" id="invOpenChestBtn" onclick="openChest()" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-weight:700">📦 Открыть сундук</button>
-        <div id="invLoot" style="margin-top:10px"></div>
+        <h4 style="margin:6px 0 8px">🔑 Связка ключей</h4>
+        <div id="invKeyChips" class="key-tray" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+        <h4 style="margin:16px 0 4px">📦 Полка сундуков</h4>
+        <div id="invChestRack" class="chest-rack"></div>
+        <div id="invLoot" style="margin-top:14px"></div>
+        <h4 style="margin:16px 0 4px">🎁 Полка предметов</h4>
+        <div id="invShelf" class="shelf-grid"></div>
         <div id="invDisc" style="font-size:13px;color:#6a5d4a;margin-top:10px"></div>
         <div id="invCopyList" style="font-size:13px;color:#6a5d4a;margin-top:10px"></div>
-        <p style="font-size:12px;color:#6a5d4a;margin-top:14px">Сундуки появляются как предметы и награды в партии, ключи — в режиме «Собери три ключа». Всё сохраняется в браузере между партиями.</p>
+        <p style="font-size:12px;color:#6a5d4a;margin-top:14px">📦 Деревянный, 🧰 кованый и 👑 королевский сундуки дают разную добычу. Сундуки выпадают за победы и в утешение проигравшим, ключи — в режиме «Собери три ключа». Всё сохраняется в браузере между партиями.</p>
       </div>
     </div>
   </div>
@@ -1560,45 +1617,92 @@ let shopAbilities = {};
 let pendingStartAbilities = {}; // {pi: 'noBonus' | 'none'} - controls what happens when player lands on Start
 let inventory = {}; // {pi: [itemId,...]} — панель способностей
 
-// ===== МЕТА: сундуки, ключи и сундучные скидки =====
-const META_KEY='kub_meta_v1';
-function metaLoad(){ try{ const v=JSON.parse(localStorage.getItem(META_KEY)); if(v && typeof v==='object') return {chests:v.chests||0, keys:v.keys||0, inv:Array.isArray(v.inv)?v.inv:[], disc:v.disc||null}; }catch(e){} return {chests:0, keys:0, inv:[], disc:null}; }
+// ===== МЕТА: сундуки и ключи как предметы (v63) =====
+const META_KEY='kub_meta_v2';
+const CHEST_KINDS={
+ wood:{id:'wood',icon:'📦',name:'Деревянный сундук',cls:'wood',abilityP:0.55,discMin:10,discMax:40,desc:'способность 55% · скидка до −40%'},
+ iron:{id:'iron',icon:'🧰',name:'Кованый сундук',cls:'iron',abilityP:0.75,discMin:25,discMax:55,desc:'способность 75% · скидка до −55%'},
+ royal:{id:'royal',icon:'👑',name:'Королевский сундук',cls:'royal',abilityP:1,bonusP:0.5,bonusPct:40,desc:'способность 100% + бонус-скидка −40%'}
+};
+const KEY_KINDS={
+ copper:{id:'copper',icon:'🔑',name:'Медный ключ',cls:'copper'},
+ silver:{id:'silver',icon:'🗝️',name:'Серебряный ключ',cls:'silver'},
+ gold:{id:'gold',icon:'🗝️',name:'Золотой ключ',cls:'gold'}
+};
+let invSelKey=null, invAnimLock=false, lastLootText='';
+function metaLoad(){ try{ const v=JSON.parse(localStorage.getItem(META_KEY)); if(v && typeof v==='object' && Array.isArray(v.chests)) return {chests:v.chests.filter(k=>CHEST_KINDS[k]), keys:(Array.isArray(v.keys)?v.keys:[]).filter(k=>KEY_KINDS[k]), inv:Array.isArray(v.inv)?v.inv:[], disc:v.disc||null}; }catch(e){}
+ try{ const v=JSON.parse(localStorage.getItem('kub_meta_v1')); if(v && typeof v==='object') return {chests:Array(v.chests||0).fill('wood'), keys:Array(v.keys||0).fill('copper'), inv:Array.isArray(v.inv)?v.inv:[], disc:v.disc||null}; }catch(e){}
+ return {chests:[],keys:[],inv:[],disc:null}; }
 function metaSave(m){ try{ localStorage.setItem(META_KEY, JSON.stringify(m)); }catch(e){} }
-function metaGain(kind, id, pct){ try{ const m=metaLoad(); if(kind==='chest') m.chests=(m.chests||0)+1; else if(kind==='key') m.keys=(m.keys||0)+1; else if(kind==='ability') m.inv.push(id); else if(kind==='disc') m.disc={id:id,pct:pct}; metaSave(m); renderMetaCard(); }catch(e){} }
-function metaConsumeChest(){ const m=metaLoad(); if((m.chests||0)>0){ m.chests--; metaSave(m); return true; } return false; }
+function rollChestKind(){ const r=Math.random(); return r<0.65?'wood':(r<0.93?'iron':'royal'); }
+function rollKeyKind(){ const r=Math.random(); return r<0.6?'copper':(r<0.9?'silver':'gold'); }
+function metaGain(kind, id, pct){ try{ const m=metaLoad(); if(kind==='chest') m.chests.push(rollChestKind()); else if(kind==='key') m.keys.push(rollKeyKind()); else if(kind==='ability') m.inv.push(id); else if(kind==='disc') m.disc={id:id,pct:pct}; metaSave(m); renderMetaCard(); }catch(e){} }
 function metaGrantAbilities(pi){ try{ const m=metaLoad(); if(!m.inv.length || !players[pi]) return; const ids=[]; m.inv=m.inv.filter(id=>{ if(INV_META[id]){ ids.push(id); return false; } return true; }); metaSave(m); if(!ids.length) return; if(!inventory[pi]) inventory[pi]=[]; ids.forEach(id=>inventory[pi].push(id)); log('📦 Из сундуков на панель выданы: '+ids.map(id=>INV_META[id].icon+' '+INV_META[id].name).join(', ')+' — одноразовые, работают в любой партии!', 'win'); }catch(e){} }
-function metaChestRoll(){ const pool=SHOP_ITEMS.map(i=>i.id); const it=()=>SHOP_ITEMS.find(i=>i.id===id); let id=pool[Math.floor(Math.random()*pool.length)]; if(Math.random()<0.6){ metaGain('ability', id); const t=SHOP_ITEMS.find(i=>i.id===id); return {kind:'ability', id:id, name:t?t.name:id, icon:t?t.icon:'🎁', pct:0}; } const pct=10+Math.floor(Math.random()*7)*5; metaGain('disc', id, pct); const t=SHOP_ITEMS.find(i=>i.id===id); return {kind:'disc', id:id, name:t?t.name:id, icon:t?t.icon:'🏷️', pct:pct}; }
-function renderMetaCard(){ try{ const m=metaLoad(); const info=document.getElementById('metaInfo'); const btn=document.getElementById('openChestBtn'); const list=document.getElementById('metaInvList'); const loot=document.getElementById('metaLoot'); if(info){ let s='Сундуков: <b>'+m.chests+'</b> · 🔑 Ключей: <b>'+(m.keys||0)+'</b>'; const d=m.disc; if(d && d.pct>0){ const t=SHOP_ITEMS.find(i=>i.id===d.id); s+='<br>🏷️ скидка −'+d.pct+'% на «'+(t?t.name:d.id)+'»'; } if(m.chests>0 && (m.keys||0)===0) s+='<br>🗝 Есть сундук — нужен 🔑 ключ (режим «Собери три ключа»)'; if(m.chests>0 && gameStarted && !gameOver) s+='<br>🔒 Открываются после окончания партии'; info.innerHTML=s; } if(btn) btn.style.display = (m.chests>0 && !(gameStarted && !gameOver)) ? '' : 'none'; if(list){ const names=m.inv.map(id=>INV_META[id]?INV_META[id].icon+' '+INV_META[id].name:'🎁 '+id); list.innerHTML = names.length?('<b>В копилке:</b> '+names.join(', ')+' — одноразовые, выдадутся на панель в начале следующей партии.'):''; } if(loot && m.chests===0 && false) loot.innerHTML=''; renderInvPage(); }catch(e){} }
+function metaChestRoll(ck){ const K=CHEST_KINDS[ck]||CHEST_KINDS.wood; const pool=SHOP_ITEMS.map(i=>i.id); let id=pool[Math.floor(Math.random()*pool.length)]; const t=SHOP_ITEMS.find(i=>i.id===id);
+ if(Math.random()<K.abilityP){ metaGain('ability', id); const loot={kind:'ability', id:id, name:t?t.name:id, icon:t?t.icon:'🎁', pct:0};
+  if(K.bonusP && Math.random()<K.bonusP){ const mm=metaLoad(); if(!(mm.disc && mm.disc.pct>0)){ const id2=pool[Math.floor(Math.random()*pool.length)]; const t2=SHOP_ITEMS.find(i=>i.id===id2); metaGain('disc', id2, K.bonusPct); loot.bonus={id:id2, name:t2?t2.name:id2, icon:t2?t2.icon:'🏷️', pct:K.bonusPct}; } }
+  return loot; }
+ const pct=K.discMin+Math.floor(Math.random()*((K.discMax-K.discMin)/5+1))*5;
+ metaGain('disc', id, pct); return {kind:'disc', id:id, name:t?t.name:id, icon:t?t.icon:'🏷️', pct:pct}; }
+function renderMetaCard(){ try{ const m=metaLoad(); const nc=(m.chests||[]).length, nk=(m.keys||[]).length; const info=document.getElementById('metaInfo'); const btn=document.getElementById('openChestBtn'); const list=document.getElementById('metaInvList'); const loot=document.getElementById('metaLoot');
+ if(info){ let s='📦 Сундуков: <b>'+nc+'</b> · 🔑 Ключей: <b>'+nk+'</b>'; const d=m.disc; if(d && d.pct>0){ const t=SHOP_ITEMS.find(i=>i.id===d.id); s+='<br>🏷️ скидка −'+d.pct+'% на «'+(t?t.name:d.id)+'»'; } if(nc>0 && nk===0) s+='<br>🗝 Есть сундук — нужен 🔑 ключ (режим «Собери три ключа»)'; if(nc>0 && gameStarted && !gameOver) s+='<br>🔒 Открываются после окончания партии'; info.innerHTML=s; }
+ if(btn) btn.style.display=(nc>0 && !(gameStarted && !gameOver))?'':'none';
+ if(list){ const names=(m.inv||[]).map(id=>INV_META[id]?INV_META[id].icon+' '+INV_META[id].name:'🎁 '+id); list.innerHTML=names.length?('<b>В копилке:</b> '+names.join(', ')+' — одноразовые, лежат на полке во вкладке «🎒 Инвентарь».'):''; }
+ if(loot && lastLootText) loot.innerHTML=lastLootText;
+ renderInvPage(); }catch(e){} }
 function renderInvPage(){ try{
-  const m = metaLoad();
-  const el = (id)=>document.getElementById(id);
-  const c = el('invChests'), k = el('invKeys'), d = el('invDisc'),
-        inv = el('invCopyList'), btn = el('invOpenChestBtn'),
-        loot = el('invLoot'), note = el('invNote');
-  if(c) c.textContent = m.chests||0;
-  if(k) k.textContent = m.keys||0;
-  if(d){
-    const disc = m.disc;
-    if(disc && disc.pct>0){
-      const t = SHOP_ITEMS.find(i=>i.id===disc.id);
-      d.innerHTML = '🏷️ скидка −'+disc.pct+'% на «'+(t?t.name:disc.id)+'» — сгорит после первой покупки по скидке';
-      d.style.display = '';
-    } else d.style.display = 'none';
-  }
-  if(inv){
-    const names = (m.inv||[]).map(id=>INV_META[id]?INV_META[id].icon+' '+INV_META[id].name:'🎁 '+id);
-    inv.innerHTML = names.length
-      ? '<b>Копилка способностей:</b> '+names.join(', ')+' — одноразовые, выдадутся на панель в начале следующей партии.'
-      : 'Копилка способностей пуста — сундук может выпасть способностью или скидкой.';
-  }
-  if(btn) btn.style.display = (m.chests>0 && !(gameStarted && !gameOver)) ? '' : 'none';
-  if(note) note.innerHTML = (gameStarted && !gameOver)
-    ? '🔒 Сундуки открываются только после окончания партии.'
-    : ((m.chests>0 && (m.keys||0)===0) ? '🗝 Есть сундук — нужен 🔑 ключ (режим «Собери три ключа»).' : '');
+ if(invAnimLock) return;
+ const m=metaLoad(); const el=(id)=>document.getElementById(id);
+ const nc=(m.chests||[]).length, nk=(m.keys||[]).length;
+ if(invSelKey && (m.keys||[]).indexOf(invSelKey)<0) invSelKey=null;
+ const c=el('invChests'), k=el('invKeys'), d=el('invDisc'), inv=el('invCopyList'), note=el('invNote'), tray=el('invKeyChips'), rack=el('invChestRack'), shelf=el('invShelf');
+ if(c) c.textContent=nc; if(k) k.textContent=nk;
+ if(d){ const disc=m.disc; if(disc && disc.pct>0){ const t=SHOP_ITEMS.find(i=>i.id===disc.id); d.innerHTML='🏷️ Активная скидка: −'+disc.pct+'% на «'+(t?t.name:disc.id)+'» — купон сгорит после первой покупки по скидке.'; d.style.display=''; } else d.style.display='none'; }
+ if(inv){ const names=(m.inv||[]).map(id=>INV_META[id]?INV_META[id].icon+' '+INV_META[id].name:'🎁 '+id); inv.innerHTML=names.length?'<b>Копилка способностей:</b> '+names.join(', ')+' — одноразовые, лежат на полке ниже; выдадутся на панель в начале следующей партии, если не взять кликом.':''; }
+ if(tray){ const ks=m.keys||[]; tray.innerHTML=ks.length?ks.map(function(kid){ const K=KEY_KINDS[kid]||KEY_KINDS.copper; return '<div class="key-chip '+K.cls+(invSelKey===kid?' sel':'')+'" onclick="selectKey(\''+kid+'\')" title="'+K.name+'">'+K.icon+'</div>'; }).join(''):'<span class="inv-empty">Связка пуста — ключи добываются в режиме «Собери три ключа»</span>'; }
+ if(rack){ const cs=m.chests||[]; rack.innerHTML=cs.length?cs.map(function(cid,i2){ const C=CHEST_KINDS[cid]||CHEST_KINDS.wood; const openable=!!invSelKey && !(gameStarted && !gameOver); return '<div class="chest-card '+C.cls+(openable?' openable':'')+'" data-rid="'+cid+'_'+i2+'" onclick="onChestClick(\''+cid+'_'+i2+'\')"><div class="chest-visual"><div class="chest-inside"><span class="chest-gift">🎁</span></div><div class="chest-body"></div><div class="chest-lid"></div><div class="chest-lock"><div class="keyhole"></div></div><div class="key-fly">'+(invSelKey?(KEY_KINDS[invSelKey]||KEY_KINDS.copper).icon:'🔑')+'</div><div class="chest-loot"></div><div class="chest-sparkles">✨</div></div><div class="chest-label">'+C.icon+' '+C.name+'</div><div class="chest-hint">'+C.desc+'</div></div>'; }).join(''):'<span class="inv-empty">Полка пуста — сундуки выпадают за победы и в утешение проигравшим</span>'; }
+ if(shelf){ const disc=(m.disc && m.disc.pct>0)?m.disc:null; let h='';
+  (m.inv||[]).forEach(function(id,idx){ const M=INV_META[id]; const t=SHOP_ITEMS.find(x=>x.id===id); const nm=M?M.name:(t?t.name:id); const ic=M?M.icon:(t?t.icon:'🎁'); h+='<div class="shelf-item" onclick="takeInvItem('+idx+')" title="Клик — взять в текущую партию"><div class="shelf-ic">'+ic+'</div><div class="shelf-nm">'+nm+'</div><div class="shelf-tag">одноразовый · клик — взять</div></div>'; });
+  if(disc){ const tt=SHOP_ITEMS.find(x=>x.id===disc.id); h+='<div class="coupon-item" title="Активен при покупке «'+(tt?tt.name:disc.id)+'»"><div class="coupon-pct">−'+disc.pct+'%</div><div class="shelf-nm">'+(tt?tt.name:disc.id)+'</div><div class="shelf-tag">купон · сгорит при покупке</div></div>'; }
+  shelf.innerHTML=h||'<span class="inv-empty">Полка пуста — откройте сундук, и предмет появится здесь</span>'; }
+ if(note) note.innerHTML=(gameStarted && !gameOver)?'🔒 Сундуки открываются только после окончания партии.':(nc>0 && nk===0)?'🗝 Есть сундук — нужен 🔑 ключ (режим «Собери три ключа»).':(nc>0?(invSelKey?'Ключ выбран — кликните по сундуку!':'Выберите 🔑 ключ из связки и кликните по сундуку.'):'');
 }catch(e){} }
-function openChest(){ try{ const m0=metaLoad(); if((m0.chests||0)<=0) return; if(gameStarted && !gameOver){ const bx=document.getElementById('metaLoot'); if(bx) bx.innerHTML='<div style="background:rgba(239,68,68,.12);border-radius:10px;padding:8px 10px;font-size:12.5px;color:#b91c1c;margin-top:6px">🔒 Сундуки открываются только после окончания партии.</div>'; return; } if((m0.keys||0)<=0){ const bx=document.getElementById('metaLoot'); if(bx) bx.innerHTML='<div style="background:rgba(239,68,68,.12);border-radius:10px;padding:8px 10px;font-size:12.5px;color:#b91c1c;margin-top:6px">🗝 Нужен ключ! Подберите 🔑 в режиме «Собери три ключа» — 1 ключ открывает 1 сундук.</div>'; return; } m0.chests--; m0.keys--; metaSave(m0); const loot=metaChestRoll(); const box=document.getElementById('metaLoot'); if(box){ let txt; if(loot.kind==='ability'){ txt='🎉 '+loot.icon+' «'+loot.name+'» — одноразовая копия способности! Выдастся на панель в начале следующей партии (или в этой, если начать заново).'; } else { txt='🎉 🏷️ «'+loot.name+'» — скидка <b>−'+loot.pct+'%</b> в магазине! Сгорит после первой покупки по скидке.'; } box.innerHTML='<div style="background:rgba(245,158,11,.14);border-radius:10px;padding:8px 10px;font-size:12.5px;color:#92400e;margin-top:6px">'+txt+'</div>'; const invL=document.getElementById('invLoot'); if(invL) invL.innerHTML=box.innerHTML; } log('📦 Открыт сундук: '+(loot.kind==='ability'?'способность «'+loot.name+'»':'скидка −'+loot.pct+'% на «'+loot.name+'»')+'.', 'win'); renderMetaCard(); }catch(e){} }
-function metaResultsLine(){ try{ const m=metaLoad(); return '<div style="margin-top:6px;font-size:13px;color:#6a5d4a">📦 Сундуков: <b>'+m.chests+'</b> · 🔑 Ключей: <b>'+(m.keys||0)+'</b> — открытие: 1 ключ = 1 сундук</div>'; }catch(e){ return ''; } }
-if(document.readyState!=='loading') renderMetaCard(); else document.addEventListener('DOMContentLoaded', renderMetaCard);
+function invMsg(t2){ const n=document.getElementById('invNote'); if(n) n.innerHTML=t2; }
+function selectKey(kid){ try{ const m=metaLoad(); if((m.keys||[]).indexOf(kid)<0) return; invSelKey=(invSelKey===kid?null:kid); beepTone(760,0.06,'square',0.12,0); renderInvPage(); }catch(e){} }
+function onChestClick(rid){ try{
+ const m=metaLoad(); const ck=String(rid).split('_')[0]; if((m.chests||[]).indexOf(ck)<0) return;
+ if(gameStarted && !gameOver){ invMsg('🔒 Сундуки открываются только после окончания партии.'); return; }
+ if(!invSelKey){ invMsg('🗝 Сначала выберите ключ из связки 🔑.'); return; }
+ const card=document.querySelector('.chest-card[data-rid="'+rid+'"]'); if(!card || card.classList.contains('opening')) return;
+ invAnimLock=true; card.classList.add('opening','fly'); beepTone(1300,0.06,'square',0.12,0.5);
+ setTimeout(()=>{ card.classList.add('turn'); beepTone(520,0.1,'square',0.14,0); beepTone(880,0.08,'square',0.1,0.08); },700);
+ setTimeout(()=>{ card.classList.add('open','shake'); beepTone(150,0.3,'sawtooth',0.08,0); beepTone(110,0.3,'sawtooth',0.06,0.12); },1300);
+ setTimeout(()=>{ const loot=metaChestRoll(ck); card.classList.add('pop'); if(typeof sndWin==='function') sndWin(); const pop=card.querySelector('.chest-loot'); if(pop) pop.textContent=loot.icon;
+  const m2=metaLoad(); const ci=(m2.chests||[]).indexOf(ck); if(ci>=0) m2.chests.splice(ci,1); const ki=(m2.keys||[]).indexOf(invSelKey); if(ki>=0) m2.keys.splice(ki,1); invSelKey=null; metaSave(m2);
+  let txt; if(loot.kind==='ability'){ txt='🎉 '+loot.icon+' «'+loot.name+'» — одноразовая копия способности! Летит на полку предметов.'; } else { txt='🎉 🏷️ «'+loot.name+'» — скидка <b>−'+loot.pct+'%</b> в магазине! Купон на полке, сгорит после первой покупки по скидке.'; }
+  if(loot.bonus) txt+='<br>🎁 Бонус королевского сундука: 🏷️ «'+loot.bonus.name+'» −'+loot.bonus.pct+'%!';
+  lastLootText=txt; const mL=document.getElementById('metaLoot'); if(mL) mL.innerHTML=txt;
+  const invL=document.getElementById('invLoot'); if(invL) invL.innerHTML='<div style="background:rgba(245,158,11,.14);border-radius:10px;padding:8px 10px;font-size:12.5px;color:#92400e;margin-top:6px">'+txt+'</div>';
+  log('📦 Открыт сундук ('+(CHEST_KINDS[ck]?CHEST_KINDS[ck].name:'сундук')+'): '+(loot.kind==='ability'?'способность «'+loot.name+'»':'скидка −'+loot.pct+'% на «'+loot.name+'»')+'.', 'win');
+  setTimeout(()=>flyLootToShelf(loot.icon),250);
+ },1900);
+ setTimeout(()=>{ invAnimLock=false; renderInvPage(); },2800);
+}catch(e){} }
+function takeInvItem(idx){ try{ const m=metaLoad(); const id=(m.inv||[])[idx]; if(!id) return;
+ if(gameStarted && !gameOver){ const pi=players.findIndex(pl=>pl && !pl.isBot); if(pi<0){ invMsg('В партии только боты — предмет останется на полке.'); return; } m.inv.splice(idx,1); metaSave(m); if(!inventory[pi]) inventory[pi]=[]; inventory[pi].push(id); const M=INV_META[id]; log('🎁 С полки взят предмет: '+(M?M.icon+' '+M.name:id)+' — одноразовый.', 'win'); if(typeof renderInvPanel==='function') renderInvPanel(); renderInvPage(); }
+ else invMsg('Сейчас партии нет — предметы с полки выдадутся автоматически в начале следующей партии.');
+}catch(e){} }
+function flyLootToShelf(icon){ try{ const rack=document.getElementById('invChestRack'); const shelf=document.getElementById('invShelf'); if(!rack||!shelf) return;
+ const a=rack.getBoundingClientRect(), b=shelf.getBoundingClientRect(); const f=document.createElement('div'); f.className='loot-flyer'; f.textContent=icon;
+ f.style.left=(a.left+a.width/2-19)+'px'; f.style.top=(a.top+30)+'px'; document.body.appendChild(f);
+ requestAnimationFrame(()=>{ f.style.left=(b.left+b.width/2-19)+'px'; f.style.top=(b.top+16)+'px'; f.style.transform='scale(.72)'; });
+ setTimeout(()=>{ f.remove(); shelf.classList.add('flash'); beepTone(1040,0.09,'triangle',0.12,0); beepTone(1560,0.12,'triangle',0.1,0.09); setTimeout(()=>shelf.classList.remove('flash'),650); },720);
+}catch(e){} }
+function openChest(){ try{ const m=metaLoad(); if(!(m.chests||[]).length) return; if(gameStarted && !gameOver){ invMsg('🔒 Сундуки открываются только после окончания партии.'); return; } if(!invSelKey){ if(!(m.keys||[]).length){ invMsg('🗝 Нужен ключ! Подберите 🔑 в режиме «Собери три ключа» — 1 ключ открывает 1 сундук.'); return; } invSelKey=m.keys[0]; }
+ const tb=document.querySelector('.tab[data-page="inventory"]'); if(tb) tb.click(); renderInvPage(); setTimeout(()=>onChestClick(m.chests[0]+'_0'),220);
+}catch(e){} }
+function metaResultsLine(){ try{ const m=metaLoad(); return '<div style="margin-top:6px;font-size:13px;color:#6a5d4a">📦 Сундуков: <b>'+((m.chests||[]).length)+'</b> · 🔑 Ключей: <b>'+((m.keys||[]).length)+'</b> — открывайте во вкладке «🎒 Инвентарь»: ключ вставляется в замок. Сундуки дают за победу и в утешение проигравшим.</div>'; }catch(e){ return ''; } }
+if(document.readyState!=='loading') setTimeout(renderMetaCard,50); else document.addEventListener('DOMContentLoaded', renderMetaCard);
 
 // ===== ПАНЕЛЬ СПОСОБНОСТЕЙ =====
 const INV_META = {
@@ -2418,6 +2522,7 @@ function winGame(p){
   if (fc) fc.classList.add('won');
   log(keyMode ? ('🔑 '+p.name+' собрал все три ключа и добрался до Финиша — ПОБЕДА!') : ('\u{1F3C6} '+p.name+' набрал '+p.sum+' — ПОБЕДА!'), 'win');
   if(p && !p.isBot){ try{ metaGain('chest'); log('📦 '+p.name+': сундук за победу добавлен в копилку мета-наград! Откройте его после окончания партии во вкладке «🎒 Инвентарь».', 'win'); }catch(e){} }
+  try{ const wi=players.indexOf(p); players.forEach(function(pp,pi2){ if(pp && !pp.isBot && pi2!==wi){ const ck=(Math.random()<0.8?'wood':'iron'); const mm=metaLoad(); mm.chests.push(ck); metaSave(mm); log('📦 Утешительный сундук ('+CHEST_KINDS[ck].name+') для '+pp.name+' — за упорство!', 'win'); } }); renderMetaCard(); }catch(e){}
   showResults(players.indexOf(p));
   updateUI();
 }
