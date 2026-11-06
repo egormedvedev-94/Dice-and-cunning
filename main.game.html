@@ -1821,10 +1821,12 @@ function useInvItem(pi, itemId, botPick){
       log('🧾 '+p.name+' активировал Ревизора: 3 хода защиты — Налоги против вас будут отражены зеркально!', 'tax');
     }
   } else if (itemId === 'return' || itemId === 'freeze'){
-    if (rivals.length === 0){ log('Соперников нет — способность осталась на панели.', 'pen'); return; }
+    let actRivals = rivals;
+    if (itemId === 'return') actRivals = rivals.filter(function(r){ return !inPoliceMode[r.i]; });
+    if (actRivals.length === 0){ log(itemId === 'return' ? '\u{1F694} ' + p.name + ': все соперники в Полиции — Возврат не применился. Остался на панели.' : 'Соперников нет — способность осталась на панели.', 'pen'); return; }
     if (botPick){
-      const bR2 = (bossMode && bossIdx >= 0 && bossIdx !== pi) ? rivals.find(r=>r.i===bossIdx) : null;
-      invApplyTargetCore(pi, (bR2 || rivals[Math.floor(Math.random()*rivals.length)]).i, itemId);
+      const bR2 = (bossMode && bossIdx >= 0 && bossIdx !== pi) ? actRivals.find(r=>r.i===bossIdx) : null;
+      invApplyTargetCore(pi, (bR2 || actRivals[Math.floor(Math.random()*actRivals.length)]).i, itemId);
     } else {
       showInvTargetModal(pi, itemId);
     }
@@ -1882,8 +1884,12 @@ function invPlaceMine(pi, cellIdx){
   updateUI();
 }
 function showInvTargetModal(pi, kind){
-  const rivals = invRivals(pi);
-  if (rivals.length === 0) return;
+  let rivals = invRivals(pi);
+  if (kind === 'return') rivals = rivals.filter(function(r){ return !inPoliceMode[r.i]; });
+  if (rivals.length === 0){
+    if (kind === 'return') log('\u{1F694} Возврат не действует: все соперники в Полиции. Способность осталась на панели.', 'pen');
+    return;
+  }
   const modal = document.getElementById('influenceModal');
   const content = document.getElementById('influenceModalContent');
   const title = kind === 'return' ? '\u21A9\uFE0F Возврат' : kind === 'freeze' ? '\u2744\uFE0F Заморозка' : '\u{1F4B4} Налог';
@@ -2007,6 +2013,7 @@ function invApplyTargetGo(pi, targetIdx, itemId){
     pst(targetIdx,'sblk',1); misEvent(targetIdx,'sblk'); pathEvent(targetIdx,'glory',1);
     log(players[pi].name+' применил '+label+', но '+target.name+' заблокировал Защитой!', 'sapper');
   } else if (itemId === 'return'){
+    if (inPoliceMode[targetIdx]){ log('\u{1F694} Возврат не действует: ' + target.name + ' задержан в Полиции. Способность осталась на панели.', 'pen'); return; }
     target.pos = 0;
     pendingStartAbilities[targetIdx] = 'noBonus';
     pst(pi,'ret',1); keyDrop(targetIdx,'возврат'); misEvent(pi,'ret');
@@ -2021,6 +2028,12 @@ function invApplyTargetGo(pi, targetIdx, itemId){
 }
 
 function invApplyTargetCore(pi, targetIdx, itemId){
+  if (itemId === 'return' && inPoliceMode[targetIdx]){
+    log('\u{1F694} \u21A9\uFE0F Возврат не действует: ' + players[targetIdx].name + ' задержан в Полиции. Способность осталась на панели.', 'pen');
+    try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){}
+    updateUI();
+    return;
+  }
   shieldAttempt(pi, targetIdx, function(){ shieldConsumeOnly(pi, itemId); invApplyTargetGo(pi, targetIdx, itemId); try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); }, function(){ shieldRefund(); try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); }, true, function(){ try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); });
 }
 function invApplyTarget(pi, targetIdx, itemId){
@@ -3722,6 +3735,7 @@ function closeModal(){
 
 function applyReturnGo(pi, targetIdx){
   const target = players[targetIdx];
+  if (inPoliceMode[targetIdx]){ log('\u{1F694} Возврат не действует: ' + target.name + ' задержан в Полиции.', 'pen'); try{ closeModal(); }catch(err){} afterInfluence(pi); return; }
   // Check protection
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
@@ -4425,6 +4439,13 @@ function placeMineShop(pi, cellIdx){
 
 function applyReturnShopGo(pi, targetIdx){
   const target = players[targetIdx];
+  if (inPoliceMode[targetIdx]){
+    log('\u{1F694} Возврат не действует: ' + target.name + ' задержан в Полиции.', 'pen');
+    document.getElementById('influenceModal').style.display = 'none';
+    updateUI();
+    if (onlineMode && isHost) setTimeout(onlineSync, 300);
+    return;
+  }
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
     awardProtectBonus(targetIdx);
