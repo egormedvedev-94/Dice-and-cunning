@@ -525,6 +525,19 @@
 @keyframes lootLand{0%{transform:scale(1.3)}60%{transform:scale(.92)}100%{transform:scale(1)}}
 .shelf-flash{animation:shelfFlash .6s ease-out}
 @keyframes shelfFlash{0%{box-shadow:0 0 0 0 rgba(245,158,11,.55)}100%{box-shadow:0 0 0 18px rgba(245,158,11,0)}}
+/* 🐉 Шкала здоровья Наи (v67) */
+.dbar { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:10px; background:rgba(120,70,20,.08); margin-bottom:8px; font-size:13px; }
+.dbar .dbar-title { font-weight:bold; }
+.dbar .dbar-segs { display:flex; gap:4px; }
+.dbar .dbar-segs i.dseg { display:inline-block; width:26px; height:9px; border-radius:5px; background:#d8cdbb; box-shadow:inset 0 1px 2px rgba(0,0,0,.25); transition:background .3s; }
+.dbar .dbar-segs i.dseg.on { background:linear-gradient(90deg,#22c55e,#16a34a); }
+.dbar .dbar-segs.mid i.dseg.on { background:linear-gradient(90deg,#f59e0b,#d97706); }
+.dbar .dbar-segs.low i.dseg.on { background:linear-gradient(90deg,#ef4444,#b91c1c); animation:dragonPulse 1s ease-in-out infinite; }
+.dbar .dbar-count { margin-left:auto; font-weight:bold; color:#7c2d12; }
+@keyframes dragonPulse { 0%,100%{ opacity:1 } 50%{ opacity:.4 } }
+.fin-dragon .dseg { display:inline-block; width:7px; height:7px; border-radius:2px; margin-left:2px; background:rgba(0,0,0,.15); vertical-align:middle; }
+.fin-dragon .dseg.on { background:#f59e0b; box-shadow:0 0 3px rgba(245,158,11,.9); }
+.fin-dragon .dseg.dmg { background:#ef4444; box-shadow:0 0 3px rgba(239,68,68,.9); }
 </style>
 <style>
 .contract-panel{margin:8px 0;padding:8px 12px;background:rgba(255,255,255,.65);border:1px dashed #b09a6a;border-radius:10px;font-size:13px;color:#4a3d2e;display:none}
@@ -607,7 +620,7 @@
             <div class="mtab" data-mode="mile"><div class="mi">⚡</div><div class="mn">Три вехи</div><div class="md">⭐ за 40/70/100% цели — на Финиш только с тремя звёздами</div></div>
             <div class="mtab" data-mode="secret"><div class="mi">🎯</div><div class="mn">Тайные цели</div><div class="md">У каждого своя скрытая миссия — выполнил и победил</div></div>
             <div class="mtab" data-mode="path"><div class="mi">⚔️</div><div class="mn">Три пути</div><div class="md">💰 богатство / ⚔️ доминирование / ✨ слава — любой из путей</div></div>
-            <div class="mtab" data-mode="key"><div class="mi">🔑</div><div class="mn">Собери три ключа</div><div class="md">Три ключа на поле — соберите все и дойдите до Финиша</div></div>
+            <div class="mtab" data-mode="key"><div class="mi">🔑</div><div class="mn">Собери три ключа</div><div class="md">Три ключа на поле — соберите все и дойдите до Финиша</div></div><div class="mtab" data-mode="dragon"><div class="mi">🐉</div><div class="mn">Дракон Ная</div><div class="md">Победи дракона на Финише или защити его — три чешуи, стороны и огонь</div></div>
           </div>
         </div>
         <div class="set-col">
@@ -618,6 +631,7 @@
           <div class="set-title">Модификаторы</div>
           <div class="field switch"><span>🧨 Разрушаемый Финиш (трон держится 3 удара)</span><div class="tgl" id="ruinTgl"></div></div>
           <div class="field switch"><span>🎁 Загадочные предметы (каждые 8 ходов)</span><div class="tgl" id="giftTgl"></div></div>
+          <div class="field switch"><span>🎭 Дракон: случайно раздать роли</span><div class="tgl" id="dragonRndTgl"></div></div>
           <div class="set-title">Партия</div>
           <div class="field switch"><span>Автопереход на Финиш</span><div class="tgl" id="autoTgl"></div></div>
           <div class="field switch"><span>🎭 Выбор пары кубиков (1-й, 2-й или сумма)</span><div class="tgl" id="pairTgl"></div></div>
@@ -634,7 +648,7 @@
 <div class="modal-overlay" id="onlineOverlay" style="display:none">
     <div class="modal" style="max-width:740px;position:relative">
       <button class="close-x" id="onlineCloseX" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a7a60;padding:4px 8px;line-height:1">&times;</button>
-      <h2>&#127760; Онлайн-игра <span id="onlineVerTag" style="font-size:12px;color:#999;font-weight:400;vertical-align:middle">v65</span></h2>
+      <h2>&#127760; Онлайн-игра <span id="onlineVerTag" style="font-size:12px;color:#999;font-weight:400;vertical-align:middle">v67</span></h2>
       <div id="onlineFields">
         <div class="field">
           <label>Ваш никнейм</label>
@@ -654,7 +668,7 @@
             <div class="mtab" data-mode="mile"><div class="mi">⚡</div><div class="mn">Три вехи</div><div class="md">⭐ за 40/70/100% цели — на Финиш только с тремя звёздами</div></div>
             <div class="mtab" data-mode="secret"><div class="mi">🎯</div><div class="mn">Тайные цели</div><div class="md">У каждого своя скрытая миссия — выполнил и победил</div></div>
             <div class="mtab" data-mode="path"><div class="mi">⚔️</div><div class="mn">Три пути</div><div class="md">💰 богатство / ⚔️ доминирование / ✨ слава — любой из путей</div></div>
-            <div class="mtab" data-mode="key"><div class="mi">🔑</div><div class="mn">Собери три ключа</div><div class="md">Три ключа на поле — соберите все и дойдите до Финиша</div></div>
+            <div class="mtab" data-mode="key"><div class="mi">🔑</div><div class="mn">Собери три ключа</div><div class="md">Три ключа на поле — соберите все и дойдите до Финиша</div></div><div class="mtab" data-mode="dragon"><div class="mi">🐉</div><div class="mn">Дракон Ная</div><div class="md">Победи дракона на Финише или защити его — три чешуи, стороны и огонь</div></div>
             </div>
           </div>
           <div class="set-col">
@@ -725,7 +739,7 @@
           <button class="btn shop-btn" id="shopBtn" style="display:none;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;font-weight:700">Открыть магазин</button>
         </div>
                 <div class="card" id="turnCard">
-          <h2>Ход</h2>
+          <h2>Ход</h2><div class="dbar" id="dragonBar" style="display:none"></div>
           <div id="startScreen">
             <div class="hint">Нажмите «Начать игру», чтобы бросить кубики</div>
             <button class="btn start-btn" id="startBtn">&#9654; Начать игру</button>
@@ -832,6 +846,25 @@
 <details><summary>🎁 Загадочные предметы</summary><div class="r-body"><p>Каждые 8 ходов на случайной свободной числовой клетке (без мин и ловушек) появляется предмет — виден на поле. Наступивший игрок сразу его подбирает: 🍀 Клевер +200 очков · 🧰 Аптечка +25 HP · 🪙 Сундук +150 очков · 🎟 Набор жетонов +1 к броску (до +2) · 💣 Гремучая коробка −50 HP (при нуле — выбытие) · 🪞 Кривое зеркало: единоличный лидер теряет 100 очков · ❄️ Ледяная посылка: пропуск следующего хода · 🎲 Дублёр: бесплатный доп. бросок в этом ходу · 📈 Маяк тренда: следующая числовая клетка даст двойные очки · 🎩 Фокусник: +100 очков всем, кроме подборщика · 🕵️ Агент под прикрытием: обменяет вашу тайную цель с целью случайного соперника (выпадает только при включённых 🎯 Тайных целях; без них — просто +150 очков). Предмет одноразовый, эффект объявляется в журнале. Сочетается с любым режимом победы.</p></div></details>
 
 <details><summary>🔑 Собери три ключа</summary><div class="r-body"><p>Режим победы: на поле появляются три ключа — на свободных числовых клетках. Наступивший игрок подбирает ключ на своей клетке. Собрав все три ключа, нужно добраться до клетки «Финиш» — победа засчитывается только там. Очковая цель в этом режиме не действует: очки начисляются как игровая механика (числовые клетки, Банкомат, конвертация в кредиты), но победы не дают. На Финише без трёх ключей — телепорт-наказание. Сундуки 📦 открываются только после окончания партии — во вкладке «🎒 Инвентарь». Ключи теряются при возврате по клетке «Возврат» и при выбытии из игры — потерянные ключи рассыпаются по новым свободным клеткам, и гонка продолжается. Бейдж 🔑 показывает прогресс (N/3).</p></div></details>
+
+<details>
+<summary>🐉 Дракон Ная</summary>
+
+Режим победы: на клетке Финиш сидит дракон Ная (названа в честь стримерши Наи с Twitch) с тремя чешуями — полоска здоровья из трёх сегментов, видна на клетке Финиша. Каждый игрок при старте выбирает сторону (или роли раздаются случайно — тумблер «🎭 Дракон: случайно раздать роли»; боты всегда получают роли случайно).
+
+- Сумма урона генерируется при старте каждой партии: 30–60% от суммы для победы, кратно 10. Очковая цель на Финиш в этом режиме не действует.
+- ⚔️ Охотник на Финише с суммой ≥ суммы урона снимает одну чешую и отправляется на Старт без бонуса. Снята третья чешуя — Ная повержена, охотник с последним ударом побеждает. Суммы меньше — Ная наносит 25 HP урона и телепортирует фишку на случайную числовую клетку.
+- 🌿 Защитник Наи на Финише безнаказанно переносится на случайную числовую клетку — Ная охраняет своих.
+- 🧨 Бомба (50 кр., магазин) — только охотникам: с ≤3 клеток до Финиша сбивает чешую, срабатывает сразу при покупке.
+- 🧪 Эликсир Наи (40 кр.) — только Защитникам Наи: доливает повреждённую чешую или воскрешает снятую.
+- 🔥 Огненный залп (70 кр.) — только Защитникам Наи: укажите три числовые клетки — все стоящие на них игроки теряют 25 HP.
+- 🐉 Пробуждение — каждые 8 ходов Ная дышит огнём: охотники, стоящие на нечётных числовых клетках, теряют 25 HP.
+- ↩️ Возврат в этом режиме не отправляет на Старт, а наносит 25 HP урона цели (Защита по-прежнему блокирует первой).
+- 💣 Мины вернулись в режим Дракона Наи: как из магазина, так и со способностей клетки «Влияние» — 50 HP урона (перенастроенная — 25). 🛡 Сапёр и 🪤 Ловушка тоже снова доступны.
+- 💣 Мины и чешуи Наи: подрыв Защитника Наи наносит такой же урон внешней целой чешуи дракона — если рухнет последняя, побеждает охотник, владелец мины. Подрыв Охотника, наоборот, лечит Наю на величину урона мины: сначала доливается повреждённая чешуя, излишек воскрешает разрушенную.
+- Побеждает охотник, разрушивший третью чешую, или Защитники Наи — если все охотники выбыли (0 HP или сдача). Если выбыл последний живой игрок вообще, побеждает единственный выживший по общим правилам. Шкала здоровья Наи дублируется в блоке «Ход»: панель «🐉 Ная» с тремя шкалами-чешуями — у каждой свой запас 100 HP из 300 общих, заполнение показано отдельно; мини-шкала с заполнением каждой чешуи видна и на самой клетке Финиша.
+
+</details>
 
 <details>
 <summary>🏆 Внутрипартийные номинации</summary>
@@ -952,7 +985,7 @@
       <div class="rules">
         <h3>Обновления игры</h3>
         <p>Здесь фиксируются все изменения в правилах и механике игры.</p>
-        <ul><li><b>📈 Вклад — доходный (v65)</b><br>Вклад переработан: +200 стартовый взнос, за каждый пройденный круг +100 процентов (до 1000), а поглощённый Налог возвращается в вклад наполовину — Налог против владельца вклада теперь обходится вдвое дешевле. Цена — 60 кр. Заодно Ревизор и Точный шаг теперь выпадают и на клетке «Старт», а боты под Налогом копят Вклад.</li><li><b>🗝 Сундуки — предметы (v63)</b><br>Сундуки и ключи в инвентаре стали физическими предметами трёх видов: 📦 деревянный, 🧰 кованый и 👑 королевский. Выберите ключ 🔑 из связки и кликните по сундуку: ключ вставится в замок и повернётся, крышка откинется, а предмет вылетит на полку. Проигравшие тоже получают утешительный сундук за упорство!</li><li><b>🎯 Цель — по режимам (v60)</b><br>Вкладка «Правила» переработана: у каждого режима победы — своя цель. Режим 🔑 «Собери три ключа»: победа засчитывается только на Финише с тремя ключами, очковая цель не действует (очки — игровая механика). Сундуки открываются только после окончания партии — во вкладке «🎒 Инвентарь».</li><li><b>✂️ Провода Сапёра и 🪤 Ловушка по заслугам (v59)</b><br>Сапёр: чтобы обезвредить или перенастроить мину — перережьте правильный провод (🔴 красный, 🔵 синий, 🟡 жёлтый; правильный — случайный). Не угадали — мина срабатывает; «Оставить на поле» — без угадывания. Боты тоже режут провода: лёгкий угадывает в 1/3 случаев, сложный — в 1/2. Ловушка (45 кр.) открывается по заслугам — после успешного обезвреживания мины Сапёром или первого подрыва на мине (правило для людей и ботов). Подобранные 🔑 ключи копятся в копилке: 1 ключ открывает 1 сундук.</li>
+        <ul><li><b>🐉 Защитники Наи и мины (v68)</b><br>Сторона Наи переименована в Защитников Наи. Мины, Сапёр и Ловушка вернулись в режим Дракона. У каждой чешуи теперь своя шкала здоровья (100 HP, всего 300): урон мины дробит шкалу внешней чешуи, а мина, попавшая по Охотнику, лечит Наю. Индикаторы на Финише и в блоке «Ход» показывают заполнение каждой чешуи отдельно. Боты научились ставить мины и покупать Сапёра в этом режиме.</li><li><b>🐉 Шкала здоровья Наи (v67)</b><br>У Наи появилась полноценная шкала здоровья: панель «🐉 Ная» с тремя сегментами-чешуями в блоке «Ход» — зелёная, пока чешуи целы, оранжевая после первого удара, красная с пульсацией на последней чешуе. Мини-шкала дублируется на самой клетке Финиша. Шкала обновляется автоматически после удара охотника, Бомбы, Эликсира и Пробуждения. Заодно исправлен сбой загрузки: состояние Наи перенесено в основной блок скрипта.</li><li><b>🐉 Дракон Ная (v66)</b><br>Новый режим победы: Ная с тремя чешуями сидит на Финише. Стороны выбираются при старте (или случайно — тумблер «🎭»): охотники бьют дракона суммой урона (30–60% от цели, генерируется каждую партию) и Бомбой с ≤3 клеток до Финиша; сторона Наи лечит чешуи Эликсиром и наводит Огненный залп. 🐉 Пробуждение каждые 8 ходов бьёт охотников на нечётных клетках. Возврат наносит 25 HP урона вместо отправки на Старт. Мины, Сапёр и Ловушка запрещены. Побеждает охотник с последним ударом или сторона Наи, если все охотники выбыли.</li><li><b>📈 Вклад — доходный (v65)</b><br>Вклад переработан: +200 стартовый взнос, за каждый пройденный круг +100 процентов (до 1000), а поглощённый Налог возвращается в вклад наполовину — Налог против владельца вклада теперь обходится вдвое дешевле. Цена — 60 кр. Заодно Ревизор и Точный шаг теперь выпадают и на клетке «Старт», а боты под Налогом копят Вклад.</li><li><b>🗝 Сундуки — предметы (v63)</b><br>Сундуки и ключи в инвентаре стали физическими предметами трёх видов: 📦 деревянный, 🧰 кованый и 👑 королевский. Выберите ключ 🔑 из связки и кликните по сундуку: ключ вставится в замок и повернётся, крышка откинется, а предмет вылетит на полку. Проигравшие тоже получают утешительный сундук за упорство!</li><li><b>🎯 Цель — по режимам (v60)</b><br>Вкладка «Правила» переработана: у каждого режима победы — своя цель. Режим 🔑 «Собери три ключа»: победа засчитывается только на Финише с тремя ключами, очковая цель не действует (очки — игровая механика). Сундуки открываются только после окончания партии — во вкладке «🎒 Инвентарь».</li><li><b>✂️ Провода Сапёра и 🪤 Ловушка по заслугам (v59)</b><br>Сапёр: чтобы обезвредить или перенастроить мину — перережьте правильный провод (🔴 красный, 🔵 синий, 🟡 жёлтый; правильный — случайный). Не угадали — мина срабатывает; «Оставить на поле» — без угадывания. Боты тоже режут провода: лёгкий угадывает в 1/3 случаев, сложный — в 1/2. Ловушка (45 кр.) открывается по заслугам — после успешного обезвреживания мины Сапёром или первого подрыва на мине (правило для людей и ботов). Подобранные 🔑 ключи копятся в копилке: 1 ключ открывает 1 сундук.</li>
         <li><b>💳 Сверх цели — в кредиты (v58)</b><br>Ограничение на сумму возвращено: при достигнутой цели очки больше не копятся. В кредитном режиме 💳 все очки сверх цели конвертируются в кредиты один к одному: числовые клетки, Удача, круги Старт—Старт, проход мимо мины, бонусы минёра, выход из Полиции дублем, телепорт-наказание. В классическом режиме очки сверх цели не начисляются, как раньше. Исправлено зависание после броска Босса: ход передаётся, интерфейс обновляется, бот получает импульс.</li><li><b>⚙ Двухколоночные настройки (v56)</b><br>Окно настроек расширено: слева — режим победы карточками-вкладками и модификаторы 🧨/🎁, справа — партия и переключатели. На узких экранах колонки складываются в одну.</li><li><b>Редизайн окна настроек (v56)</b><br>Окно настроек по образцу монополии: слева — вертикальный список режимов победы, активный подсвечен оранжевым; справа — крупное описание выбранного режима, модификаторы и тумблеры партии. Верхние поля (игроки, боты, сложность, сумма) собраны в компактную сетку.</li><li><b>Вкладки режимов вместо тумблеров (v54)</b><br>Режимы победы (🎲 Классический, 👑 Босс, ⚡ Три вехи, 🎯 Тайные цели, ⚔️ Три пути, 🔑 Ключи) выбираются вкладками с описанием; тумблеры режимов убраны из настроек и онлайн-окна.</li><li><b>🏅 Контракты на ход + 🏆 в классике (v53)</b><br>Контракты на ход (задание каждый ход, награда 90–120, сгорает без штрафа) и Внутрипартийные номинации стали частью классической игры — тумблеры убраны. Контракты теперь синхронизируются в онлайн-партии и сохраняются в снапшоте сессии.</li>
           <li><b>🕵️ Кража цели (v52)</b><br>Новый предмет «Агент под прикрытием»: обменяет вашу тайную цель с целью случайного соперника (цель + прогресс). Выпадает только при включённых 🎯 Тайных целях; без них — просто +150 очков.</li>
           <li><b>🏆 Внутрипартийные номинации (v50)</b><br>Новый тумблер (⚙ и 🌐): в итогах партии подводятся 10 номинаций по счётчикам активности — от 💣 Подрывника до 🏁 Спринтера. Ничья делит номинацию, пустые категории скрыты. Заодно исправлены: синтаксическая ошибка в онлайн-payload (которая ломала публикацию состояния), потеря ключей при Возврате (теперь рассыпаются у возвращаемого, а не у атакующего) и добавлен начальный спавн ключей на старте партии.</li>
@@ -1198,6 +1231,9 @@ let pathMode = (function(){ try{ return localStorage.getItem('kub_path') === '1'
 let ruinMode = (function(){ try{ return localStorage.getItem('kub_ruin') === '1'; }catch(e){ return false; } })();
 let giftMode = (function(){ try{ return localStorage.getItem('kub_gift') === '1'; }catch(e){ return false; } })();
 let keyMode = (function(){ try{ return localStorage.getItem('kub_key') === '1'; }catch(e){ return false; } })();
+let dragonMode = (function(){ try{ return localStorage.getItem('kub_dragon') === '1'; }catch(e){ return false; } })();
+var dragonScales = 3, dragonDmg = 0, dragonScaleHp = [100,100,100], dragonRoles = [], dragonTimer = 0, zalpSel = null; // 🐉 состояние Наи — объявлено в основном блоке, чтобы быть видимым везде
+let dragonRandomRoles = (function(){ try{ return localStorage.getItem('kub_dragon_random') === '1'; }catch(e){ return false; } })();
 const nomMode = true, ctrMode = true;
 const PATH_TARGET = 10, PATH_WEALTH = 1.5, FINISH_HP = 3, KEY_TOTAL = 3;
 let giftTimer = 0, giftIdx = -1, giftKind = -1, keysOnBoard = [];
@@ -1592,7 +1628,7 @@ function showcasePrice(itemId){
   return it ? Math.ceil(it.price/2) : null;
 }
 function botBuyReason(itemId){
-  return {token:'готовится к Полиции', firstaid:'восстанавливает здоровье',
+  return {dragonBomb:'бросает бомбу в Наю', dragonElixir:'лечит чешую Наи', dragonZalp:'наводит Огненный залп', token:'готовится к Полиции', firstaid:'восстанавливает здоровье',
     revizor:'отражает чужой Налог', sapper:'обезвреживает чужие мины',
     mine:'минирует путь соперников', freeze:'замораживает близкого к победе',
     return:'возвращает соперника на Старт', protect:'защищается от Возврата/Заморозки',
@@ -1821,12 +1857,10 @@ function useInvItem(pi, itemId, botPick){
       log('🧾 '+p.name+' активировал Ревизора: 3 хода защиты — Налоги против вас будут отражены зеркально!', 'tax');
     }
   } else if (itemId === 'return' || itemId === 'freeze'){
-    let actRivals = rivals;
-    if (itemId === 'return') actRivals = rivals.filter(function(r){ return !inPoliceMode[r.i]; });
-    if (actRivals.length === 0){ log(itemId === 'return' ? '\u{1F694} ' + p.name + ': все соперники в Полиции — Возврат не применился. Остался на панели.' : 'Соперников нет — способность осталась на панели.', 'pen'); return; }
+    if (rivals.length === 0){ log('Соперников нет — способность осталась на панели.', 'pen'); return; }
     if (botPick){
-      const bR2 = (bossMode && bossIdx >= 0 && bossIdx !== pi) ? actRivals.find(r=>r.i===bossIdx) : null;
-      invApplyTargetCore(pi, (bR2 || actRivals[Math.floor(Math.random()*actRivals.length)]).i, itemId);
+      const bR2 = (bossMode && bossIdx >= 0 && bossIdx !== pi) ? rivals.find(r=>r.i===bossIdx) : null;
+      invApplyTargetCore(pi, (bR2 || rivals[Math.floor(Math.random()*rivals.length)]).i, itemId);
     } else {
       showInvTargetModal(pi, itemId);
     }
@@ -1884,12 +1918,8 @@ function invPlaceMine(pi, cellIdx){
   updateUI();
 }
 function showInvTargetModal(pi, kind){
-  let rivals = invRivals(pi);
-  if (kind === 'return') rivals = rivals.filter(function(r){ return !inPoliceMode[r.i]; });
-  if (rivals.length === 0){
-    if (kind === 'return') log('\u{1F694} Возврат не действует: все соперники в Полиции. Способность осталась на панели.', 'pen');
-    return;
-  }
+  const rivals = invRivals(pi);
+  if (rivals.length === 0) return;
   const modal = document.getElementById('influenceModal');
   const content = document.getElementById('influenceModalContent');
   const title = kind === 'return' ? '\u21A9\uFE0F Возврат' : kind === 'freeze' ? '\u2744\uFE0F Заморозка' : '\u{1F4B4} Налог';
@@ -2013,12 +2043,14 @@ function invApplyTargetGo(pi, targetIdx, itemId){
     pst(targetIdx,'sblk',1); misEvent(targetIdx,'sblk'); pathEvent(targetIdx,'glory',1);
     log(players[pi].name+' применил '+label+', но '+target.name+' заблокировал Защитой!', 'sapper');
   } else if (itemId === 'return'){
-    if (inPoliceMode[targetIdx]){ log('\u{1F694} Возврат не действует: ' + target.name + ' задержан в Полиции. Способность осталась на панели.', 'pen'); return; }
+    if (dragonMode){ dragonDamageFromReturn(pi, targetIdx); }
+    else {
     target.pos = 0;
     pendingStartAbilities[targetIdx] = 'noBonus';
     pst(pi,'ret',1); keyDrop(targetIdx,'возврат'); misEvent(pi,'ret');
     log(players[pi].name+' применил Возврат: '+target.name+' отправлен на Старт. Без +100, но с выбором защиты.', 'pen');
     if (bossMode && bossIdx === targetIdx) dethrone('Возврат на Старт — трон потерян!');
+    }
   } else {
     if (!abilities[targetIdx]) initAbilities(targetIdx);
     abilities[targetIdx].frozen = true;
@@ -2028,12 +2060,6 @@ function invApplyTargetGo(pi, targetIdx, itemId){
 }
 
 function invApplyTargetCore(pi, targetIdx, itemId){
-  if (itemId === 'return' && inPoliceMode[targetIdx]){
-    log('\u{1F694} \u21A9\uFE0F Возврат не действует: ' + players[targetIdx].name + ' задержан в Полиции. Способность осталась на панели.', 'pen');
-    try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){}
-    updateUI();
-    return;
-  }
   shieldAttempt(pi, targetIdx, function(){ shieldConsumeOnly(pi, itemId); invApplyTargetGo(pi, targetIdx, itemId); try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); }, function(){ shieldRefund(); try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); }, true, function(){ try{ document.getElementById('influenceModal').style.display = 'none'; }catch(err){} updateUI(); });
 }
 function invApplyTarget(pi, targetIdx, itemId){
@@ -2134,6 +2160,7 @@ function buildBoard(){
         d.title = val;
         d.innerHTML = '<span class="val">' + (val === "Полиция" ? "\u{1F693}" : val === "Влияние" ? "\u2B50" : val === "Новости" ? "\u{1F4F0}" : val === "Банкомат" ? "\u{1F3B0}" : val) + '</span>';
         if (ruinMode && val === "Финиш") d.innerHTML += '<span class="finhp">🧨' + finHP + '/' + FINISH_HP + '</span>';
+        if (dragonMode && val === "Финиш") d.innerHTML += '<span class="finhp fin-dragon">🐉' + dragonScales + '/3</span>';
         if (giftMode && idx === giftIdx) d.innerHTML += '<span class="giftdot">🎁</span>';
         if (keysOnBoard.indexOf(idx) >= 0) d.innerHTML += '<span class="keydot">🔑</span>';
         const pc = document.createElement('div');
@@ -2639,6 +2666,7 @@ function movePlayerLogic(p, pi, steps){
     if (beginnerMode && !p.isBot && !shownHints.has('policeDirect')) showBeginnerHint('policeDirect', '🚔 Полиция', 'Прямое попадание — пропуск следующего хода. Способности, мины и жетон освобождения сохраняются: после пропуска вы ходите свободно, жетон не тратится.');
   } else if (val === "Финиш"){
     misEvent(pi,'finishvis'); pst(pi,'finvis',1);
+    if (dragonMode){ try{ dragonFinishVisit(pi); }catch(e){ log('🐉 ошибка дракона: '+e.message); } updateUI(); return; }
     if (bossMode && bossIdx >= 0 && bossIdx !== pi){
       const b = players[bossIdx];
       b.health = Math.max(0, (b.health || 100) - BOSS_SIEGE_DMG);
@@ -2860,6 +2888,10 @@ function applyMineBlast(pi, pos){
   pst(pi,'expl',1); pst(pi,'exdmg',dmg);
   grantTrapUnlock(pi);
   log('💥 '+p.name+' наступил на мину (установлена '+players[mineOwner].name+') — −'+dmg+' HP ('+players[pi].health+'/100)!', 'pen');
+  if (dragonMode && !gameOver){
+    if (dragonSideOf(pi) === 'dragon'){ dragonScaleDamage(dmg, mineOwner); }
+    else { dragonScaleHeal(dmg); }
+  }
   if (players[mineOwner] && !eliminated.has(mineOwner)){
     if (players[mineOwner].sum < winSum){
       players[mineOwner].sum += 100;
@@ -3016,6 +3048,7 @@ function nextTurn(){
   if (secretMode) players.forEach(function(pp,ii){ if (pp && !eliminated.has(ii)) misCheck(ii); });
   if (pathMode && !gameOver) pathLeadCheck();
   if (giftMode && !gameOver){ giftTimer++; if (giftTimer % 8 === 0) spawnGift(); }
+  if (dragonMode && !gameOver){ dragonTimer++; if (dragonTimer % 8 === 0) dragonAwakening(); }
   if (keyMode && !gameOver){ const held = players.reduce(function(s,q){ return s + ((q && q.keys) ? q.keys : 0); }, 0); const need = KEY_TOTAL - keysOnBoard.length - held; if (need > 0){ const free = freeCellsForDrop(); for (var k2 = 0; k2 < need && free.length; k2++){ keysOnBoard.push(free.splice(Math.floor(Math.random()*free.length),1)[0]); } buildBoard(); } }
   // 👑 Осада Босса (v43): тик после завершённого хода
   if (bossMode && bossIdx >= 0){
@@ -3735,7 +3768,6 @@ function closeModal(){
 
 function applyReturnGo(pi, targetIdx){
   const target = players[targetIdx];
-  if (inPoliceMode[targetIdx]){ log('\u{1F694} Возврат не действует: ' + target.name + ' задержан в Полиции.', 'pen'); try{ closeModal(); }catch(err){} afterInfluence(pi); return; }
   // Check protection
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
@@ -3746,6 +3778,7 @@ function applyReturnGo(pi, targetIdx){
     afterInfluence(pi);
     return;
   }
+  if (dragonMode){ dragonDamageFromReturn(pi, targetIdx); closeModal(); afterInfluence(pi); return; }
   const oldPos = target.pos;
   target.pos = 0;
   pendingStartAbilities[targetIdx] = 'noBonus';
@@ -3912,6 +3945,21 @@ function botShopThink(pi){
   const ab = abilities[pi] || {};
   const dist = winSum - p.sum;
   const ok = (cost) => walletOf(p) - cost >= (econCred?15:450);
+  if (dragonMode){
+    const drole = dragonRoles[pi] || 'hunter';
+    let myMinesD = 0; Object.values(mines).forEach(o=>{ if(o===pi) myMinesD++; });
+    if (drole==='dragon'){
+      if (dragonScales < 3 && ok(40) && Math.random() < 0.6) return 'dragonElixir';
+      if (dragonScales > 0 && ok(70) && Math.random() < 0.5) return 'dragonZalp';
+      if (!ab.sapper && ok(60) && Math.random() < 0.4) return 'sapper';
+      if (myMinesD < 2 && ok(30) && Math.random() < 0.4) return 'mine';
+      return null;
+    }
+    const distB = (finishIdx - p.pos + PATH_VALUES.length) % PATH_VALUES.length;
+    if (dragonScales > 0 && distB <= 3 && ok(50)) return 'dragonBomb';
+    if (myMinesD < 2 && ok(30) && Math.random() < 0.5) return 'mine';
+    return null;
+  }
   if (inPoliceMode[pi] && !ab.token && ok(30)) return 'token';
   if ((p.health || 100) <= 75 && ok(35)) return 'firstaid';
   const noRevInInv = (inventory[pi] || []).indexOf('revizor') < 0;
@@ -4037,6 +4085,7 @@ function startGame(){
   document.getElementById('startScreen').style.display = 'none';
   document.getElementById('gameControls').style.display = 'block';
   log('Игра началась. Цель: '+winSum+'. Игроков: '+players.length+(botCount?' (ботов: '+botCount+', сложность: '+botDifficulty+')':'')+'. Автопереход: '+(autoFinish?'вкл':'выкл'));
+  if (dragonMode && !onlineMode){ try{ initDragon(); }catch(e){ log('🐉 ошибка старта дракона: '+e.message); } }
   updateUI();
   if (!onlineMode && !gameOver && isCurrentBot()) setTimeout(botInfluenceOrRoll, 1500);
 }
@@ -4155,11 +4204,11 @@ if (!soundOn) document.getElementById('sndBtn').querySelector('.hdr-ico').textCo
   var t2=document.getElementById('econOnlineTgl'); if(t2){ t2.classList.toggle('on',econCred); t2.addEventListener('click',function(){ if(gameStarted) return; econCred=!econCred; localStorage.setItem('kub_econ',econCred?'1':'0'); t2.classList.toggle('on',econCred); var t1=document.getElementById('econTgl'); if(t1) t1.classList.toggle('on',econCred); updateSettingsSummary(); }); }
 })();
 (function(){
-  function currentMode(){ if (bossMode) return 'boss'; if (mileMode) return 'mile'; if (secretMode) return 'secret'; if (pathMode) return 'path'; if (keyMode) return 'key'; return ''; }
+  function currentMode(){ if (bossMode) return 'boss'; if (mileMode) return 'mile'; if (secretMode) return 'secret'; if (pathMode) return 'path'; if (keyMode) return 'key'; if (dragonMode) return 'dragon'; return ''; }
   function applyMode(kind){
     if (gameStarted) return;
-    bossMode=(kind==='boss'); mileMode=(kind==='mile'); secretMode=(kind==='secret'); pathMode=(kind==='path'); keyMode=(kind==='key');
-    try{ localStorage.setItem('kub_boss',bossMode?'1':'0'); localStorage.setItem('kub_mile',mileMode?'1':'0'); localStorage.setItem('kub_secret',secretMode?'1':'0'); localStorage.setItem('kub_path',pathMode?'1':'0'); localStorage.setItem('kub_key',keyMode?'1':'0'); }catch(e){}
+    bossMode=(kind==='boss'); mileMode=(kind==='mile'); secretMode=(kind==='secret'); pathMode=(kind==='path'); keyMode=(kind==='key'); dragonMode=(kind==='dragon');
+    try{ localStorage.setItem('kub_boss',bossMode?'1':'0'); localStorage.setItem('kub_mile',mileMode?'1':'0'); localStorage.setItem('kub_secret',secretMode?'1':'0'); localStorage.setItem('kub_path',pathMode?'1':'0'); localStorage.setItem('kub_key',keyMode?'1':'0'); localStorage.setItem('kub_dragon',dragonMode?'1':'0'); }catch(e){} try{ updateDragonBadge(); }catch(e){}
     if (kind){ autoFinish=false; var at=document.getElementById('autoTgl'); if(at) at.classList.remove('on'); }
     syncModeTabs(); updateSettingsSummary();
   }
@@ -4169,17 +4218,19 @@ boss:{t:'👑 Босс на Финише',d:'Дошедший до Финиша 
 mile:{t:'⚡ Три вехи',d:'⭐ присваивается за первое достижение порогов 40%, 70% и 100% от цели — числовые клетки, Удача, Банкомат и побег из Полиции дублем тоже дают звёзды. На клетку «Финиш» пускают только с тремя звёздами, иначе — телепорт-наказание. Звёзды не теряются, даже если сумма падает.'},
 secret:{t:'🎯 Тайные цели',d:'Каждый игрок получает скрытую миссию — выполнив её, он побеждает мгновенно, даже не дойдя до Финиша. Соперники видят лишь бейдж 🎯 с прогрессом (N/M), но не знают, какая именно цель. Миссии: 💰 Магнат, 🗓 Марафон, 🛒 Тактик, 🎰 Инвестор, 💣 Минёр и другие. Миссии не повторяются у разных игроков.'},
 path:{t:'⚔️ Три пути',d:'Победить можно любым из трёх путей — Финиш не нужен: 💰 Богатство — заработать 150% от целевой суммы; ⚔️ Доминирование — быть единоличным лидером 10 своих ходов подряд; ✨ Слава — набрать 10 очков активности (дубли, покупки, блоки Защитой, выигрыши в Банкомате). Бейдж ⚔️ показывает лучший из путей в процентах.'},
-key:{t:'🔑 Собери три ключа',d:'На поле появляются три ключа — на свободных числовых клетках. Наступивший игрок подбирает ключ на своей клетке; собрал все три — беги на Финиш: победа засчитывается только там, очковая цель не действует. Ключи теряются при Возврате и выбытии из игры — потерянные рассыпаются по новым клеткам, и гонка продолжается.'}
+key:{t:'🔑 Собери три ключа',d:'На поле появляются три ключа — на свободных числовых клетках. Наступивший игрок подбирает ключ на своей клетке; собрал все три — беги на Финиш: победа засчитывается только там, очковая цель не действует. Ключи теряются при Возврате и выбытии из игры — потерянные рассыпаются по новым клеткам, и гонка продолжается.'},
+dragon:{t:'🐉 Дракон Ная',d:'На Финише сидит дракон Ная с тремя чешуями — у каждой своя шкала здоровья 100 HP (всего 300). Выберите роль при старте: ⚔️ Охотник — добраться до Финиша с суммой урона (генерируется каждую партию, 30–60% от цели) и разрушить чешую, или 🌿 Защитники Наи — лечить дракона Эликсиром и наводить Огненный залп. Пробуждение каждые 8 ходов бьёт охотников на нечётных клетках, Возврат наносит 25 HP урона. Мины возвращены: подрыв Защитника ранит чешую Наи, подрыв Охотника лечит дракона; Сапёр и Ловушка также доступны.'}
 };
   function syncModeTabs(){ var cur=currentMode(); document.querySelectorAll('.mtab').forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-mode')===cur); }); var info=MODE_INFO[cur]||MODE_INFO['']; document.querySelectorAll('.mdd-t').forEach(function(el){ el.textContent=info.t; }); document.querySelectorAll('.mdd-d').forEach(function(el){ el.textContent=info.d; }); }
   window.syncModeTabs = syncModeTabs;
   document.querySelectorAll('.mtab').forEach(function(el){ el.addEventListener('click', function(){ var m=this.getAttribute('data-mode'); if (gameStarted) return; applyMode(m===currentMode()?'':m); }); });
-  function syncIndUI(){ var arr=[['ruin',ruinMode,['ruinTgl','ruinOnlineTgl']],['gift',giftMode,['giftTgl','giftOnlineTgl']]]; arr.forEach(function(e){ e[2].forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.toggle('on', e[1]); }); }); }
+  function syncIndUI(){ var arr=[['ruin',ruinMode,['ruinTgl','ruinOnlineTgl']],['gift',giftMode,['giftTgl','giftOnlineTgl']],['dragonRnd',dragonRandomRoles,['dragonRndTgl']]]; arr.forEach(function(e){ e[2].forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.toggle('on', e[1]); }); }); }
   function clickInd(kind){ if (gameStarted) return;
     if (kind==='ruin'){ ruinMode=!ruinMode; try{ localStorage.setItem('kub_ruin',ruinMode?'1':'0'); }catch(e){} }
+    else if (kind==='dragonRnd'){ dragonRandomRoles=!dragonRandomRoles; try{ localStorage.setItem('kub_dragon_random',dragonRandomRoles?'1':'0'); }catch(e){} }
     else { giftMode=!giftMode; try{ localStorage.setItem('kub_gift',giftMode?'1':'0'); }catch(e){} }
     syncIndUI(); updateSettingsSummary(); }
-  [['ruinTgl','ruin'],['giftTgl','gift'],['ruinOnlineTgl','ruin'],['giftOnlineTgl','gift']].forEach(function(e){ var el=document.getElementById(e[0]); if(el) el.addEventListener('click', function(){ clickInd(e[1]); }); });
+  [['ruinTgl','ruin'],['giftTgl','gift'],['dragonRndTgl','dragonRnd'],['ruinOnlineTgl','ruin'],['giftOnlineTgl','gift']].forEach(function(e){ var el=document.getElementById(e[0]); if(el) el.addEventListener('click', function(){ clickInd(e[1]); }); });
   syncModeTabs(); syncIndUI();
 })();
 document.getElementById('beginnerTgl').addEventListener('click', function(){
@@ -4322,7 +4373,10 @@ const SHOP_ITEMS = [
   {id:'deposit', cat:'eco', icon:'📈', name:'Вклад', desc:'Стартовый взнос +200 (до 1000). За каждый пройденный круг +100 процентов. Поглощённый Налог возвращается в вклад наполовину. Поглощает телепорт-наказание', price:60},
   {id:'trap', cat:'atk', icon:'🪤', name:'Ловушка', desc:'Мина-ловушка: цель −100 HP, не-цель −25. Сапёр спасает. Открывается по заслугам', price:45},
   {id:'revizor', cat:'eco', icon:'🧾', name:'Ревизор', desc:'Активация: 3 хода защиты от Налога. Налог против вас снимается, инициатор сам платит ту же сумму — зеркально, 3 хода; накопление Налога инициатора сбрасывается', price:75},
-  {id:'finance', cat:'def', icon:'💳', name:'Финансовая Ловкость 2.0', desc:'Активация: 3 хода иммунитета к Налогу + регенерация +200 по истечении. Пока на панели перехватывает Налог: не действует и даёт +150', price:85}
+  {id:'finance', cat:'def', icon:'💳', name:'Финансовая Ловкость 2.0', desc:'Активация: 3 хода иммунитета к Налогу + регенерация +200 по истечении. Пока на панели перехватывает Налог: не действует и даёт +150', price:85},
+  {id:'dragonBomb', cat:'atk', icon:'🧨', name:'Бомба (Дракон)', desc:'Режим 🐉: охотник с ≤3 клетками до Финиша сбивает с Наи чешую. Срабатывает сразу при покупке', price:50},
+  {id:'dragonElixir', cat:'def', icon:'🧪', name:'Эликсир Наи', desc:'Режим 🐉: восстанавливает снятую чешую Наи (макс. 3/3). Срабатывает сразу при покупке', price:40},
+  {id:'dragonZalp', cat:'atk', icon:'🔥', name:'Огненный залп', desc:'Режим 🐉: сторона Наи выбирает три числовые клетки — стоящие на них теряют 25 HP', price:70}
 ];
 
 function showShop(){
@@ -4382,6 +4436,13 @@ function buyAbility(itemId, pi){
   if (!abilities[pi]) initAbilities(pi);
   const item = SHOP_ITEMS.find(i => i.id === itemId);
   if (!item) return;
+    if (dragonMode){
+    const drole = dragonRoles[pi] || 'hunter';
+    if (itemId==='dragonBomb' && drole!=='hunter'){ log('🧨 Бомба доступна только Охотникам — вы — Защитник Наи.', 'pen'); return; }
+    if ((itemId==='dragonElixir' || itemId==='dragonZalp') && drole==='hunter'){ log('🧪 Это оружие Защитников Наи — охотникам недоступно.', 'pen'); return; }
+    if (itemId==='dragonBomb'){ const dist=(finishIdx - p.pos + PATH_VALUES.length) % PATH_VALUES.length; if(dragonScales<=0){ return; } if(dist>3){ log('🧨 Бомбу можно бросить только с ≤3 клеток до Финиша (сейчас '+dist+').', 'pen'); return; } }
+    if (itemId==='dragonElixir' && dragonTotalHp() >= 300){ log('🧪 У Наи все чешуи здоровы — эликсир не нужен.', 'pen'); return; }
+  }
   if (itemId === 'trap' && !p.trapUnlocked){ log('🔒 Ловушка ещё не открыта: обезвредьте мину Сапёром или впервые подорвитесь на мине.', 'pen'); return; }
   const base = econCred ? item.price : (PTS_PRICES[itemId]!=null?PTS_PRICES[itemId]:item.price);
   const eff = itemCost(itemId) || base;
@@ -4394,6 +4455,9 @@ function buyAbility(itemId, pi){
   if (p.isBot) log('🤖 '+p.name+' — '+botBuyReason(itemId)+'.', 'win');
   boughtEver[pi] = true; markActive(pi); completeContract(pi,'buy'); misEvent(pi,'buy'); pathEvent(pi,'glory',1);
   ACH[pi] = ACH[pi]||{}; if (!ACH[pi].purch){ ACH[pi].purch = 1; awardActivity(pi,100,'Первая покупка'); }
+  if (itemId === 'dragonBomb'){ dragonApplyBomb(pi); return; }
+  if (itemId === 'dragonElixir'){ dragonApplyElixir(pi); return; }
+  if (itemId === 'dragonZalp'){ dragonStartZalp(pi); return; }
   if (itemId === 'sapper'){ abilities[pi].sapper = true; abilities[pi].sapperUses = 1; }
   else if (itemId === 'protect'){ abilities[pi].protect = true; shieldGrant(pi); }
   else if (itemId === 'token'){ abilities[pi].token = true; }
@@ -4439,24 +4503,20 @@ function placeMineShop(pi, cellIdx){
 
 function applyReturnShopGo(pi, targetIdx){
   const target = players[targetIdx];
-  if (inPoliceMode[targetIdx]){
-    log('\u{1F694} Возврат не действует: ' + target.name + ' задержан в Полиции.', 'pen');
-    document.getElementById('influenceModal').style.display = 'none';
-    updateUI();
-    if (onlineMode && isHost) setTimeout(onlineSync, 300);
-    return;
-  }
   if (abilities[targetIdx] && abilities[targetIdx].protect){
     abilities[targetIdx].protect = false;
     awardProtectBonus(targetIdx);
     pst(targetIdx,'sblk',1); misEvent(targetIdx,'sblk'); pathEvent(targetIdx,'glory',1);
     log(players[pi].name+' применил Возврат из магазина, но '+target.name+' заблокировал Защитой!', 'sapper');
   } else {
+    if (dragonMode){ dragonDamageFromReturn(pi, targetIdx); }
+    else {
     const oldPos = target.pos;
     target.pos = 0;
     pendingStartAbilities[targetIdx] = 'noBonus';
     pst(pi,'ret',1); keyDrop(targetIdx,'возврат'); misEvent(pi,'ret');
     log(players[pi].name+' применил Возврат из магазина: '+target.name+' отправлен на Старт. Без +100, но с выбором защиты.', 'pen');
+    }
   }
   document.getElementById('influenceModal').style.display = 'none';
   updateUI();
@@ -5705,7 +5765,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 <!-- v16 session machinery -->
-<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:auto;cursor:pointer" onclick="handleVerBadgeClick()">v65</div>
+<div id="diceVerBadge" style="position:fixed;left:10px;bottom:10px;z-index:99990;background:#2563eb;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;opacity:.8;pointer-events:auto;cursor:pointer" onclick="handleVerBadgeClick()">v67</div>
 <div id="diceResumeBanner" style="display:none;position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99990;background:#16a34a;color:#fff;padding:8px 14px;border-radius:0 0 12px 12px;font-size:13px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.25)">&#128260; Сессия найдена: комната <span id="diceBannerCode"></span>
 <button id="diceBannerResume" style="background:#fff;color:#16a34a;border:none;border-radius:8px;padding:4px 10px;font-weight:700;cursor:pointer;margin-left:6px">Продолжить</button>
 <button id="diceBannerDismiss" style="background:none;color:#fff;border:1px solid rgba(255,255,255,.6);border-radius:8px;padding:4px 10px;cursor:pointer;margin-left:6px">Нет</button></div>
@@ -5896,7 +5956,93 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   setInterval(function(){ try{ window.diceSaveSnapshot(); }catch(e){} }, 5000);
 })();
+
+/* ===== 🐉 Дракон Ная (v66) ===== */
+/* состояние дракона (dragonScales, dragonDmg, dragonRoles, dragonTimer, zalpSel) объявлено в основном блоке после dragonMode */
+function dragonSideOf(i){ return (dragonRoles[i] || 'hunter'); }
+function dragonDistToFinish(pi){ const p = players[pi]; return (finishIdx - p.pos + PATH_VALUES.length) % PATH_VALUES.length; }
+function dragonHpOf(i){ return (dragonScaleHp && dragonScaleHp[i]) || 0; }
+function dragonTotalHp(){ return (dragonScaleHp||[0,0,0]).reduce(function(a,b){ return a + (b||0); }, 0); }
+function dragonSyncScales(){ if(!dragonScaleHp || dragonScaleHp.length !== 3) dragonScaleHp = [100,100,100]; dragonScales = dragonScaleHp.filter(function(h){ return h > 0; }).length; }
+function dragonOuterIdx(){ dragonSyncScales(); for(let i=0;i<3;i++){ if((dragonScaleHp[i]||0) > 0) return i; } return -1; }
+function dragonScaleDamage(dmg, killerPi){ if(!dragonMode || gameOver) return; dragonSyncScales(); const oi = dragonOuterIdx(); if(oi < 0) return; dragonScaleHp[oi] = Math.max(0, (dragonScaleHp[oi]||0) - dmg); dragonSyncScales(); const gone = dragonScaleHp[oi] === 0; if(gone){ log('💥 Взрыв разрушает чешую Наи! Осталось чешуй: ' + dragonScales + '/3', 'boss'); } else { log('💥 Мина ранит чешую Наи: −' + dmg + ' HP шкалы (' + dragonScaleHp[oi] + '/100).', 'boss'); } updateDragonBadge(); if(gone && dragonScales <= 0 && !gameOver){ let k = (killerPi != null && players[killerPi] && !eliminated.has(killerPi)) ? killerPi : null; if(k == null){ for(let i=0;i<players.length;i++){ if(players[i] && !eliminated.has(i) && dragonSideOf(i) === 'hunter'){ k = i; break; } } } if(k != null) dragonWin(k); } }
+function dragonScaleHeal(amount){ if(!dragonMode || gameOver) return; dragonSyncScales(); const before = dragonTotalHp(); let left = amount; for(let pass=0; pass<2; pass++){ for(let i=0;i<3;i++){ if(left <= 0) break; const hp = dragonScaleHp[i]||0; if(pass === 0 && hp > 0 && hp < 100){ const add = Math.min(left, 100 - hp); dragonScaleHp[i] = hp + add; left -= add; } else if(pass === 1 && hp <= 0){ const add = Math.min(left, 100); dragonScaleHp[i] = add; left -= add; } } } dragonSyncScales(); updateDragonBadge(); if(dragonTotalHp() > before){ log('💚 Мина задела охотника — Ная восстанавливается: +' + amount + ' HP (' + dragonTotalHp() + '/300).', 'win'); } }
+function updateDragonBadge(){ try{ const fc = document.querySelector('.cell.finish'); if(fc){ let sp = fc.querySelector('.fin-dragon'); if(!sp){ sp = document.createElement('span'); sp.className='finhp fin-dragon'; fc.appendChild(sp); } let seg=''; for(let i=0;i<3;i++){ const hp = dragonHpOf(i); seg += '<i class="dseg'+(hp>0?' on':'')+(hp>0&&hp<100?' dmg':'')+'"></i>'; } sp.innerHTML = '🐉 '+dragonScales+'/3 '+seg; } const bar = document.getElementById('dragonBar'); if(bar){ bar.style.display = dragonMode ? 'flex' : 'none'; let seg2=''; const totHp = dragonTotalHp(); for(let i=0;i<3;i++){ const hp = dragonHpOf(i); const pct = Math.max(0, Math.min(100, hp)); const col = hp<=0 ? '#d8cdbb' : (pct>=100 ? '#16a34a' : (pct>=50 ? '#f59e0b' : '#ef4444')); seg2 += '<i class="dseg" style="background:linear-gradient(90deg,' + col + ' ' + pct + '%,#d8cdbb ' + pct + '%)"></i>'; } const cls = dragonScales>=3 ? 'full' : (dragonScales===2 ? 'mid' : 'low'); bar.innerHTML = '<span class="dbar-title">🐉 Ная</span><span class="dbar-segs '+cls+'">'+seg2+'</span><span class="dbar-count">'+dragonScales+'/3 чешуи · '+totHp+'/300 HP</span>'; } }catch(e){} }
+function checkDragonWin(){ if(!dragonMode || gameOver) return; const alive = players.map((pp,i)=>({p:pp,i:i})).filter(x=>x.p && !eliminated.has(x.i)); if(!alive.length) return; const hunters = alive.filter(x=>dragonSideOf(x.i)==='hunter'); if(hunters.length===0){ const best = alive.slice().sort((a,b)=>(b.p.sum||0)-(a.p.sum||0))[0]; gameOver = true; best.p.finished = true; best.p.pos = finishIdx; const fc = document.querySelector('.cell.finish'); if(fc) fc.classList.add('won'); log('🌿 Все охотники выбыли — Ная спасена! ПОБЕДА Защитников Наи ('+best.p.name+')!', 'win'); try{ showResults(best.i); }catch(e){} updateUI(); } }
+function dragonWin(pi){ if(gameOver) return; gameOver = true; const w = players[pi]; w.finished = true; w.pos = finishIdx; const fc = document.querySelector('.cell.finish'); if(fc) fc.classList.add('won'); log('🏆 '+w.name+' снял последнюю чешую — Ная повержена! ПОБЕДА охотника!', 'win'); try{ showResults(pi); }catch(e){} updateUI(); }
+function dragonDamage(ti, dmg){ const p = players[ti]; if(!p || eliminated.has(ti)) return; p.health = Math.max(0, (p.health||100) - dmg); if (p.health <= 0){ log('💀 ' + p.name + ' выбывает (0 HP) от драконьего огня!', 'pen'); try{ resetAllAbilities(ti); }catch(e){} eliminated.add(ti); } else { log('🔥 ' + p.name + ' теряет ' + dmg + ' HP (' + p.health + '/100).'); } }
+function dragonTeleport(pi){ const p = players[pi]; const opts = []; for(let t=0;t<PATH_VALUES.length;t++){ if(typeof PATH_VALUES[t] === 'number' && t !== finishIdx) opts.push(t); } const t = opts.length ? opts[Math.floor(Math.random()*opts.length)] : 0; p.pos = t; try{ if(tryMineExplode(pi, t)) return; }catch(e){} try{ if(tryTrapExplode(pi, t)) return; }catch(e){} try{ finishTeleportTurn(pi); }catch(e){} }
+function dragonFinishVisit(pi){
+  const p = players[pi];
+  if (dragonScales <= 0){ updateUI(); return; }
+  if (dragonSideOf(pi) === 'hunter'){
+    if ((p.sum||0) >= dragonDmg){
+      const hitOi = dragonOuterIdx();
+      if (hitOi >= 0){ dragonScaleHp[hitOi] = 0; dragonSyncScales(); }
+      log('⚔️ ' + p.name + ' наносит удар по Нае: сумма ' + (p.sum||0) + ' ≥ ' + dragonDmg + ' — чешуя разрушена! Осталось: ' + dragonScales + '/3', 'boss');
+      updateDragonBadge();
+      if (dragonScales <= 0){ dragonWin(pi); return; }
+      p.pos = 0;
+      log('↩️ ' + p.name + ' отброшен на Старт — Ная злая, но живая.', 'pen');
+    } else {
+      log('🐉 Ная выдыхает пламя: сумма ' + p.name + ' (' + (p.sum||0) + ') меньше ' + dragonDmg + ' — 25 HP урона и телепорт!', 'pen');
+      dragonDamage(pi, 25);
+      if (eliminated.has(pi)){ updateUI(); return; }
+      dragonTeleport(pi);
+      return;
+    }
+  } else {
+    log('🌿 Ная встречает своего защитника: ' + p.name + ' безнаказанно переносится.', 'win');
+    dragonTeleport(pi);
+    return;
+  }
+  checkDragonWin();
+  updateUI();
+}
+function dragonAwakening(){ if(!dragonMode || gameOver) return; const hit = []; players.forEach((pp,i)=>{ if(pp && !eliminated.has(i) && dragonSideOf(i)==='hunter'){ const v = PATH_VALUES[pp.pos]; if(typeof v === 'number' && v % 2 === 1) hit.push(i); } }); if(!hit.length){ log('🐉 Ная дышит огнём — но охотники все на чётных клетках, урона нет.'); return; } log('🐉 ПРОБУЖДЕНИЕ: Ная выдыхает огонь по нечётным клеткам!', 'pen'); hit.forEach(i=>dragonDamage(i, 25)); checkDragonWin(); updateUI(); }
+function dragonDamageFromReturn(pi, ti){ const t = players[ti]; if(!t || eliminated.has(ti)) return; try{ pst(pi,'ret',1); misEvent(pi,'ret'); }catch(e){} log('🐉 Ная перехватывает Возврат: ' + t.name + ' получает 25 HP урона вместо отправки на Старт!', 'pen'); dragonDamage(ti, 25); }
+function dragonApplyBomb(pi){ const p = players[pi]; if(dragonScales <= 0) return; const boi = dragonOuterIdx(); if(boi < 0) return; dragonScaleHp[boi] = 0; dragonSyncScales(); log('💥 ' + p.name + ' бросает бомбу в Наю: чешуя разрушена! Осталось ' + dragonScales + '/3', 'boss'); updateDragonBadge(); if(dragonScales <= 0){ dragonWin(pi); return; } checkDragonWin(); }
+function dragonApplyElixir(pi){ if(!dragonMode) return; dragonSyncScales(); if(dragonTotalHp() >= 300) return; let left = 100; const revived = []; for(let pass=0; pass<2; pass++){ for(let i=0;i<3;i++){ if(left <= 0) break; const hp = dragonScaleHp[i]||0; if(pass === 0 && hp > 0 && hp < 100){ const add = Math.min(left, 100 - hp); dragonScaleHp[i] = hp + add; left -= add; } else if(pass === 1 && hp <= 0){ const add = Math.min(left, 100); dragonScaleHp[i] = add; left -= add; revived.push(i+1); } } } dragonSyncScales(); log('🧪 ' + players[pi].name + ' лечит Наю эликсиром: +' + (100-left) + ' HP' + (revived.length ? ', воскрешена чешуя' : '') + ' (' + dragonScales + '/3 · ' + dragonTotalHp() + '/300)!', 'win'); updateDragonBadge(); }
+function dragonZalpFire(pi, cells){ try{ document.getElementById('mineHint').classList.remove('show'); }catch(e){} document.querySelectorAll('.cell.path').forEach(cell=>{ cell.classList.remove('mine-target'); cell.onclick = null; }); log('🔥 Огненный залп Наи: ' + cells.map(i=>('клетка '+PATH_VALUES[i])).join(', ') + '!', 'pen'); cells.forEach(ci=>{ players.forEach((pp,i)=>{ if(pp && i !== pi && !eliminated.has(i) && pp.pos === ci) dragonDamage(i, 25); }); }); checkDragonWin(); updateUI(); }
+function dragonZalpBot(pi){ const nums = []; for(let t=0;t<PATH_VALUES.length;t++){ if(typeof PATH_VALUES[t]==='number') nums.push(t); } const pick = []; while(pick.length < 3 && nums.length){ const k = Math.floor(Math.random()*nums.length); pick.push(nums.splice(k,1)[0]); } dragonZalpFire(pi, pick); }
+function dragonZalpPick(pi, idx){ if(!zalpSel) return; if(zalpSel.picks.indexOf(idx) < 0) zalpSel.picks.push(idx); if(zalpSel.picks.length >= 3){ const picks = zalpSel.picks.slice(); zalpSel = null; dragonZalpFire(pi, picks); } }
+function dragonStartZalp(pi){ if(players[pi] && players[pi].isBot){ dragonZalpBot(pi); return; } zalpSel = {pi: pi, picks: []}; try{ const mh = document.getElementById('mineHint'); if(mh){ mh.textContent = '🔥 Выберите три числовые клетки для Огненного залпа'; mh.classList.add('show'); } }catch(e){} document.querySelectorAll('.cell.path').forEach(cell=>{ const idx = parseInt(cell.dataset.index); const val = PATH_VALUES[idx]; if(typeof val === 'number'){ cell.classList.add('mine-target'); cell.onclick = function(){ dragonZalpPick(pi, idx); }; } }); }
+function dragonFinalizeRoles(){
+  players.forEach((pp,i)=>{ if(!dragonRoles[i]) dragonRoles[i] = Math.random() < 0.5 ? 'hunter' : 'dragon'; });
+  if(!players.some((pp,i)=>dragonRoles[i]==='hunter')){ let j = 0; while(j < players.length && players[j] && players[j].isBot) j++; dragonRoles[Math.min(j, players.length-1)] = 'hunter'; }
+  if(!players.some((pp,i)=>dragonRoles[i]==='dragon')){ dragonRoles[players.length-1] = 'dragon'; }
+  if(dragonRandomRoles){
+    const n = players.length; dragonRoles = new Array(n).fill('dragon'); const hunters = Math.ceil(n/2); const idxs = players.map((pp,i)=>i).sort(()=>Math.random()-0.5); for(let k=0;k<hunters;k++) dragonRoles[idxs[k]] = 'hunter';
+  }
+  const h = players.filter((pp,i)=>dragonRoles[i]==='hunter').length;
+  log('🐉 Ная пробуждается на Финише! Сумма урона для удара: ' + dragonDmg + '. Роли: охотников — ' + h + ', защитников Наи — ' + (players.length - h) + '.', 'boss');
+  updateDragonBadge();
+}
+function dragonAskRoles(){
+  const humans = []; players.forEach((pp,i)=>{ if(pp && !pp.isBot) humans.push(i); });
+  let hi = 0;
+  function next(){
+    if(hi >= humans.length){ dragonFinalizeRoles(); updateUI(); return; }
+    const i = humans[hi++];
+    const ov = document.createElement('div');
+    ov.style.cssText = 'position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(25,18,8,.78);z-index:100000;display:flex;align-items:center;justify-content:center';
+    ov.innerHTML = '<div style="background:#fff7ea;border-radius:16px;padding:24px 28px;max-width:360px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.4)"><div style="font-size:40px">🐉</div><h3 style="margin:8px 0">Выбор стороны</h3><p style="font-size:13px;color:#5a4a30">' + players[i].name + ', на чьей вы стороне? ⚔️ Охотники сражаются с Наей на Финише, 🌿 Защитники Наи оберегают её и лечат.</p><div style="margin-top:14px;display:flex;gap:10px;justify-content:center"><button id="dRoleH" style="padding:10px 16px;border-radius:10px;border:none;background:#7c3aed;color:#fff;font-weight:700;cursor:pointer">⚔️ Охотник</button><button id="dRoleD" style="padding:10px 16px;border-radius:10px;border:none;background:#b45309;color:#fff;font-weight:700;cursor:pointer">🌿 Защитники Наи</button></div></div>';
+    document.body.appendChild(ov);
+    document.getElementById('dRoleH').onclick = function(){ dragonRoles[i] = 'hunter'; ov.remove(); next(); };
+    document.getElementById('dRoleD').onclick = function(){ dragonRoles[i] = 'dragon'; ov.remove(); next(); };
+  }
+  next();
+}
+function initDragon(){
+  if(!dragonMode) return;
+  dragonScales = 3; dragonScaleHp = [100,100,100]; dragonRoles = new Array(players.length).fill(null); dragonTimer = 0; zalpSel = null;
+  const g = winSum || 1000;
+  dragonDmg = Math.max(100, Math.round(g*(0.3 + Math.random()*0.3)/10)*10);
+  if(dragonRandomRoles){ dragonFinalizeRoles(); } else { dragonAskRoles(); }
+  try{ updateDragonBadge(); }catch(e){}
+}
+// ===== конец модуля Дракон Ная =====
 </script>
-<div class="ver-badge">v65</div>
+<div class="ver-badge">v67</div>
 </body>
 </html>
